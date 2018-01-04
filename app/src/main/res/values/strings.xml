@@ -1,11 +1,9 @@
 <resources>
-    <string name="app_name">Imenu</string>
-    <string name="ButtonLog">Log In</string>
-    <string name="EditTexUserName">User name</string>>
-    <string name="EditTextPassword">Password</string>
-    <string name="TextViewProductName">Product name</string>
-    <string name="TextViewPric">Pric</string>
-    <string name="TextViewAmount">Amount</string>.
-    <string name="ButtonEnter">Enter</string>
-    <string name="title_activity_test">TestActivity</string>
+    <string name="app_name" translatable="false">neXpos</string>
+    <string name="credit">credit</string>
+    <string name="cash">cash</string>
+    <string name="enter">enter</string>
+    <string name="productName">Product Name</string>
+    <string name="price">Price</string>
+    <string name="amount">amount</string>
 </resources>

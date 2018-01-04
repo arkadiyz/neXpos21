@@ -44,6 +44,25 @@
                 android:id="@+id/relativeHederUnderHeder"
                 >
 
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/textViewProductName"
+                        android:text="@string/productName"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/textViewAmount"
+                        android:text="@string/amount"
+                        android:layout_centerHorizontal="true"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/textViewPrice"
+                        android:text="@string/cash"
+                        android:layout_alignParentRight="true"
+                        android:layout_alignParentEnd="true"/>
+
             </RelativeLayout>
             <ListView
                 android:layout_width="match_parent"

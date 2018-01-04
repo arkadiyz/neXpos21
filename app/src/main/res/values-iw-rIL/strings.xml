@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">דוגמה</string>
-    <string name="ButtonLog">התחבר</string>
-    <string name="EditTexUserName">שם משתמש</string>
-    <string name="EditTextPassword">סיסמה</string>
-    <string name="TextViewProductName">מוצר</string>
-    <string name="TextViewPric">מחיר</string>
-    <string name="TextViewAmount">כמות</string>
-    <string name="ButtonEnter">הכנס</string>
+    <string name="app_name">neXpos</string>
+    <string name="credit">אשראי</string>
+    <string name="cash">מזומן</string>
+    <string name="enter">אישור</string>
+    <string name="productName">שם מוצר</string>
+    <string name="price">מחיר</string>
+    <string name="amount">כמות</string>
 </resources>
