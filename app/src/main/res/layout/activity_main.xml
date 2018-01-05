@@ -81,15 +81,34 @@
                 android:id="@+id/relattiveLayoutSummary"
 
                 android:layout_alignParentBottom="true">
+
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="20dp">
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentLeft="true"
-                        android:text="סהכ"/>
+                        android:id="@+id/textViewTotal"
+                        android:layout_alignParentRight="true"
+                        android:layout_alignParentEnd="true"
+                        android:paddingLeft="70dp"
+                        android:text="@string/total"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+
+                        android:layout_centerHorizontal="true"
+                        android:text="test"/>
                 </RelativeLayout>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/textViewTotalNumber"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentBottom="true"
+                    android:textSize="25sp"
+                    />
             </RelativeLayout>
 
         </RelativeLayout>
