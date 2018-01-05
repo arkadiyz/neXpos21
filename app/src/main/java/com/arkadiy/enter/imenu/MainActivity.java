@@ -153,9 +153,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 break;
             case R.id.buttonEnter:
-                p = new Product(general,"1",calcString);
-                listViewSummary.setAdapter(adapter);
-                productList.add(p);
+                addProductToListView(general);
                 calcString="";
                 textViewScreenCalc.setText(calcString);
                 ifHaveDot = false;
@@ -218,6 +216,14 @@ public class MainActivity extends AppCompatActivity {
             Button tempBut = new Button(MainActivity.this);
             tempBut.setLayoutParams(new ViewGroup.LayoutParams(150, 80));
             tempBut.setText(name);
+            tempBut.setOnClickListener(new View.OnClickListener(){
+
+                public void onClick(View view){
+                    Button b=(Button)view;
+                    String name=b.getText().toString();
+                    addProductToListView(name);
+                }
+            });
             layout = (GridLayout) findViewById(R.id.gridLayoutItem);
             layout.addView(tempBut);
 
@@ -236,6 +242,13 @@ public class MainActivity extends AppCompatActivity {
 //        button.setLayoutParams(params);
 //    }
 
+
+
+    public void addProductToListView(String name){
+        p = new Product(name,"1",calcString);
+        listViewSummary.setAdapter(adapter);
+        productList.add(p);
+    }
 
 }
 

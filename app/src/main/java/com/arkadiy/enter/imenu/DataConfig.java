@@ -22,7 +22,8 @@ public class DataConfig  extends SQLiteOpenHelper {
 
     private String create_products= create_products ="CREATE TABLE "+ table_name+ "(_id INTEGER NOT NULL PRIMARY KEY, "+
             "drinkName TEXT NOT NULL, "+
-            "price REAL NOT NULL)";;
+            "price REAL NOT NULL)"+
+            "barcode REAL NOT NULL";
 
     private String insert_query ="";
 
