@@ -8,5 +8,7 @@
     <string name="price">מחיר</string>
     <string name="amount">כמות</string>
     <string name="total">סה"כ</string>
+    <string name="general">כללי</string>
+
 
 </resources>

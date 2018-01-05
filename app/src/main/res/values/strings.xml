@@ -6,4 +6,7 @@
     <string name="productName">Product Name</string>
     <string name="price">Price</string>
     <string name="amount">amount</string>
+    <string name="total">total</string>
+    <string name="general">general</string>
+
 </resources>
