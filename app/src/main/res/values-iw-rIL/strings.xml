@@ -7,4 +7,6 @@
     <string name="productName">שם מוצר</string>
     <string name="price">מחיר</string>
     <string name="amount">כמות</string>
+    <string name="total">סה"כ</string>
+
 </resources>

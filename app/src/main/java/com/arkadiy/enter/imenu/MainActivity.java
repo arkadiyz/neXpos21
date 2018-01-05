@@ -4,6 +4,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -23,19 +24,20 @@ public class MainActivity extends AppCompatActivity {
     private ListView listViewSummary;
     private ArrayAdapter<String> listAdapter;
 
-
+    private static final String general="כללי";
     private Button btn_calc;
     private String numCalc;
     private TextView screenCalc;
-
+    private   ArrayList<Product> productList;
     private LinkedList<String> lightDrinks;
     private  LinkedList <String> beers;
     private static boolean flag = false;
     private GridLayout layout;
     private LinearLayout layout2=null;
     private  LinkedList<String> productName;
-
-
+    private static final String TAG = "MainActivity";
+    private ProductListAdapter adapter;
+    private Product p = null;
     private static DataConfig dataConfig=null;
     //    private static SQLiteDatabase productsDB=null;
     private static SimpleCursorAdapter cursorAdapter=null;
@@ -45,14 +47,20 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        Log.d(TAG,"onCreate: Started");
         setContentView(R.layout.activity_main);
         SharedPreferences prefs = null;
 
         textViewScreenCalc = (TextView)findViewById(R.id.textViewScreenCalc);
         listViewSummary = (ListView)findViewById(R.id.listViewSummary);
-        listViewSummary.setAdapter(new ArrayAdapter<String>(this,android.R.layout.simple_selectable_list_item,new ArrayList<String>()));
-        listAdapter = (ArrayAdapter<String>)listViewSummary.getAdapter();
+        productList  = new ArrayList<>();
+
+
+
+        adapter = new ProductListAdapter(this, R.layout.adapter_view_layout,productList);
+        listViewSummary.setAdapter(adapter);
+
+
 
 
 
@@ -145,7 +153,9 @@ public class MainActivity extends AppCompatActivity {
                 }
                 break;
             case R.id.buttonEnter:
-                listAdapter.add(calcString);
+                p = new Product(general,"1",calcString);
+                listViewSummary.setAdapter(adapter);
+                productList.add(p);
                 calcString="";
                 textViewScreenCalc.setText(calcString);
                 ifHaveDot = false;
@@ -216,15 +226,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    public void adjustButtonSize(Button button) {
-        DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
-        int width = displayMetrics.widthPixels;
-        int height = displayMetrics.heightPixels;
-        ViewGroup.LayoutParams params = button.getLayoutParams();
-        params.height = height / 10;         // 10%
-        params.width = ((width * 20) / 100); // 20%
-        button.setLayoutParams(params);
-    }
+//    public void adjustButtonSize(Button button) {
+//        DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
+//        int width = displayMetrics.widthPixels;
+//        int height = displayMetrics.heightPixels;
+//        ViewGroup.LayoutParams params = button.getLayoutParams();
+//        params.height = height / 10;         // 10%
+//        params.width = ((width * 20) / 100); // 20%
+//        button.setLayoutParams(params);
+//    }
 
 
 }
