@@ -71,14 +71,15 @@ public class MainActivity extends AppCompatActivity {
 
         productName = new ArrayList<>();
 
-        dataConfig.openDatabase();
 
         File database = getApplicationContext().getDatabasePath(DataConfig.DBNAME);
 
         if(false == database.exists()) {
             dataConfig.getReadableDatabase();
         }
-            if(copyDatabase(this)) {
+        dataConfig.openDatabase();
+
+        if(copyDatabase(this)) {
                 Toast.makeText(this, "Copy database succes", Toast.LENGTH_SHORT).show();
             } else {
                 Toast.makeText(this, "Copy data error", Toast.LENGTH_SHORT).show();
