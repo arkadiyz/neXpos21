@@ -49,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
     private static SimpleCursorAdapter cursorAdapter=null;
     private static ListView listView=null;
     private SQLiteDatabase productsDB=null;
+    private String BLABLABLA;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
