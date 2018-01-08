@@ -385,27 +385,7 @@
                     android:text="שתייה קלה"
                     android:onClick="loadAll"
                     android:id="@+id/light"/>
-                <Button
-                    android:layout_height="80dp"
-                    android:layout_width="150dp"
-                    android:text="Category"
-                    android:onClick="loadAll"/>
-                <Button
-                    android:layout_height="80dp"
-                    android:layout_width="150dp"
-                    android:text="Category"/>
-                <Button
-                    android:layout_height="80dp"
-                    android:layout_width="150dp"
-                    android:text="Category"/>
-                <Button
-                    android:layout_height="80dp"
-                    android:layout_width="150dp"
-                    android:text="Category"/>
-                <Button
-                    android:layout_height="80dp"
-                    android:layout_width="150dp"
-                    android:text="Category"/>
+
 
 
 

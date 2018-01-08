@@ -1,9 +1,9 @@
 package com.arkadiy.enter.imenu;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +14,12 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
@@ -28,18 +34,18 @@ public class MainActivity extends AppCompatActivity {
     private Button btn_calc;
     private String numCalc;
     private TextView screenCalc;
-    private   ArrayList<Product> productList;
+    private ArrayList<Product> productList;
     private LinkedList<String> lightDrinks;
     private  LinkedList <String> beers;
     private static boolean flag = false;
     private GridLayout layout;
     private LinearLayout layout2=null;
-    private  LinkedList<String> productName;
+    private  ArrayList<String> productName;
     private static final String TAG = "MainActivity";
     private ProductListAdapter adapter;
     private Product p = null;
     private static DataConfig dataConfig=null;
-    //    private static SQLiteDatabase productsDB=null;
+    //    private static SQLiteDatabase productsDB.db=null;
     private static SimpleCursorAdapter cursorAdapter=null;
     private static ListView listView=null;
     private SQLiteDatabase productsDB=null;
@@ -53,7 +59,8 @@ public class MainActivity extends AppCompatActivity {
 
         textViewScreenCalc = (TextView)findViewById(R.id.textViewScreenCalc);
         listViewSummary = (ListView)findViewById(R.id.listViewSummary);
-        productList  = new ArrayList<>();
+        productList  = new ArrayList<Product>();
+        dataConfig=new DataConfig(MainActivity.this);
 
 
 
@@ -61,42 +68,49 @@ public class MainActivity extends AppCompatActivity {
         listViewSummary.setAdapter(adapter);
 
 
+        productName = new ArrayList<>();
 
+        dataConfig.openDatabase();
 
+        File database = getApplicationContext().getDatabasePath(DataConfig.DBNAME);
 
-
-
-        productName = new LinkedList<String>();
-
-
-        dataConfig=new DataConfig(this);
-        productsDB=dataConfig.getWritableDatabase();
-        dataConfig.setDb(productsDB);
-        prefs = getSharedPreferences("com.arkadiy.enter.imenu", MODE_PRIVATE);
-
-
-        if(prefs.getBoolean("firstrun", true)) //checks if app runs first time
-        {
-            dataConfig.setInsertQuery2("beers", "גולדסטאר", (float) 10.90);
-            dataConfig.setInsertQuery2("beers", "היניקן", (float) 9.90);
-            dataConfig.setInsertQuery2("beers", "קורונה", (float) 11.90);
-            dataConfig.setInsertQuery2("beers", "קארלסברג", (float) 12.90);
-            dataConfig.setInsertQuery2("beers", "מכאבי", (float) 15.93);
-
-            dataConfig.createNewProductsTable("light_drinks");
-            dataConfig.setInsertQuery2("light_drinks", "קולה", (float) 10.90);
-            dataConfig.setInsertQuery2("light_drinks", "ספרייט", (float) 9.90);
-            dataConfig.setInsertQuery2("light_drinks", "סודה", (float) 11.90);
-            dataConfig.setInsertQuery2("light_drinks", "אינגדי", (float) 12.90);
-            dataConfig.setInsertQuery2("light_drinks", "תפוחים", (float) 15.93);
-
-            prefs.edit().putBoolean("firstrun", false).commit();
-
+        if(false == database.exists()) {
+            dataConfig.getReadableDatabase();
         }
+            if(copyDatabase(this)) {
+                Toast.makeText(this, "Copy database succes", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, "Copy data error", Toast.LENGTH_SHORT).show();
+                return;
+            }
 
 
 
-    }
+        prefs = getSharedPreferences("com.arkadiy.enter.imenu", MODE_PRIVATE);
+        }
+        //Get product list in db when db exists
+//        productList = dataConfig.getDataFromDataBase("beers");
+
+
+
+
+
+
+
+
+
+//
+//        if(prefs.getBoolean("firstrun", true)) //checks if app runs first time
+//        {
+//        }
+
+
+
+//            prefs.edit().putBoolean("firstrun", false).commit();
+
+
+
+
 
     public void calc_onClick(View view) {
         switch (view.getId())
@@ -202,7 +216,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-    public void fillInMenue(LinkedList <String> products) {   //adds products to menue from database
+    public void fillInMenue(ArrayList <String> products) {   //adds productsDB.db to menue from database
 
         if (flag)
         {
@@ -249,6 +263,39 @@ public class MainActivity extends AppCompatActivity {
         listViewSummary.setAdapter(adapter);
         productList.add(p);
     }
+
+
+
+    private boolean copyDatabase(Context context) {
+
+
+        try {
+
+        String DB_PATH;
+
+            InputStream inputStream = context.getAssets().open(DataConfig.DBNAME);
+//            String outFileName = DataConfig.DBLOCATION + DataConfig.DBNAME;
+            if(android.os.Build.VERSION.SDK_INT >= 17) {
+                DB_PATH = context.getApplicationInfo().dataDir + "/databases/"+DataConfig.DBNAME;
+            } else {
+                DB_PATH = "/data/data/" + context.getPackageName() + "/databases/";
+            }
+            OutputStream outputStream = new FileOutputStream(DB_PATH);
+            byte[]buff = new byte[1024];
+            int length = 0;
+            while ((length = inputStream.read(buff)) > 0) {
+                outputStream.write(buff, 0, length);
+            }
+            outputStream.flush();
+            outputStream.close();
+            Log.w("MainActivity","DB copied");
+            return true;
+        }catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
 
 }
 
