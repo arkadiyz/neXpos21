@@ -1,6 +1,7 @@
 package com.arkadiy.enter.imenu;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.res.AssetManager;
 import android.content.res.Resources;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -20,6 +21,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -54,7 +56,6 @@ public class MainActivity extends AppCompatActivity {
     private static SimpleCursorAdapter cursorAdapter=null;
     private static ListView listView=null;
     private SQLiteDatabase productsDB=null;
-    private String BLABLABLA;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,14 +78,15 @@ public class MainActivity extends AppCompatActivity {
         productName = new ArrayList<>();
         categoryName=new ArrayList<>();
 
-        dataConfig.openDatabase();
 
         File database = getApplicationContext().getDatabasePath(DataConfig.DBNAME);
 
         if(false == database.exists()) {
             dataConfig.getReadableDatabase();
         }
-            if(copyDatabase(this)) {
+        dataConfig.openDatabase();
+
+        if(copyDatabase(this)) {
                 Toast.makeText(this, "Copy database succes", Toast.LENGTH_SHORT).show();
             } else {
                 Toast.makeText(this, "Copy data error", Toast.LENGTH_SHORT).show();
@@ -92,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
             categoryName=dataConfig.getItemsGroup();
-        layout=(GridLayout)findViewById(R.id.gridLayoutCategory) ;
+        layout=(GridLayout)findViewById(R.id.gridLayoutCategory);
         fillInMenue(categoryName,layout);
 
 
@@ -280,20 +282,23 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+
+
+
+
     private boolean copyDatabase(Context context) {
-
-
         try {
 
-        String DB_PATH;
-
-            InputStream inputStream = context.getAssets().open(DataConfig.DBNAME);
-//            String outFileName = DataConfig.DBLOCATION + DataConfig.DBNAME;
+String DB_PATH;
             if(android.os.Build.VERSION.SDK_INT >= 17) {
+//                DB_PATH="/data/data/com.arkadiy.enter.imenu/databases/productsDB.db";
                 DB_PATH = context.getApplicationInfo().dataDir + "/databases/"+DataConfig.DBNAME;
             } else {
                 DB_PATH = "/data/data/" + context.getPackageName() + "/databases/";
             }
+
+            InputStream inputStream = context.getAssets().open(DataConfig.DBNAME);
+//            String outFileName = DataConfig.DBLOCATION + DataConfig.DBNAME;
             OutputStream outputStream = new FileOutputStream(DB_PATH);
             byte[]buff = new byte[1024];
             int length = 0;
@@ -309,6 +314,7 @@ public class MainActivity extends AppCompatActivity {
             return false;
         }
     }
+
 
 
     public float setSizeInButton(int dp){
