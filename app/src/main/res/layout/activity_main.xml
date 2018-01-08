@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_alignParentLeft="true"
@@ -22,26 +21,26 @@
 
     <RelativeLayout
 
-        android:id="@+id/relattiveLayoutR"
+        android:id="@+id/relativeLayoutR"
         android:layout_width="490dp"
         android:layout_height="match_parent"
         android:layout_below="@+id/RelativeHeder"
         android:layout_alignParentBottom="true"
         android:layout_toLeftOf="@+id/relativeLayout"
-        android:background="#8888">
+        >
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/relativeLayoutOrder"
             android:layout_above="@+id/relativeLayoutCalc"
-            android:background="#8888"
 
             >
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="30dp"
                 android:id="@+id/relativeHederUnderHeder"
+                android:background="@color/colorblack"
                 >
 
                     <TextView
@@ -70,21 +69,23 @@
                 android:layout_height="match_parent"
                 android:id="@+id/listViewSummary"
                 android:layout_below="@+id/relativeHederUnderHeder"
-                android:layout_above="@+id/relattiveLayoutSummary"
+                android:layout_above="@+id/relativeLayoutSummary"
+                android:background="@color/colorListView"
 
                 >
 
             </ListView>
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:id="@+id/relattiveLayoutSummary"
+                android:layout_height="55dp"
+                android:id="@+id/relativeLayoutSummary"
 
                 android:layout_alignParentBottom="true">
 
                 <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="20dp">
+                    android:layout_height="20dp"
+                    android:background="@color/colorblack">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -107,7 +108,8 @@
                     android:id="@+id/textViewTotalNumber"
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentBottom="true"
-                    android:textSize="25sp"
+                    android:textSize="30sp"
+                    android:inputType="text"
                     />
             </RelativeLayout>
 
@@ -358,8 +360,7 @@
         android:layout_height="match_parent"
         android:id="@+id/relattiveLayoutL"
         android:layout_below="@+id/RelativeHeder"
-
-        android:layout_toLeftOf="@+id/relattiveLayoutR"
+        android:layout_toLeftOf="@+id/relativeLayoutR"
         >
 
 
@@ -374,7 +375,7 @@
             <GridLayout
                 android:id="@+id/gridLayoutCategory"
                 android:layout_width="match_parent"
-                android:layout_height="170dp"
+                android:layout_height="155dp"
                 android:columnCount="3"
                 >
 
@@ -384,8 +385,35 @@
                     android:layout_width="150dp"
                     android:text="שתייה קלה"
                     android:onClick="loadAll"
-                    android:id="@+id/light"/>
-
+                    android:id="@+id/light"
+                    android:layout_marginTop="-3dp"
+                     />
+                <Button
+                    android:layout_height="80dp"
+                    android:layout_width="150dp"
+                    android:text="Category"
+                    android:onClick="loadAll"
+                    android:layout_marginTop="-3dp" />
+                <Button
+                    android:layout_height="80dp"
+                    android:layout_width="150dp"
+                    android:text="Category"
+                    android:layout_marginTop="-3dp" />
+                <Button
+                    android:layout_height="80dp"
+                    android:layout_width="150dp"
+                    android:text="Category"
+                    android:layout_marginTop="-3dp" />
+                <Button
+                    android:layout_height="80dp"
+                    android:layout_width="150dp"
+                    android:text="Category"
+                    android:layout_marginTop="-3dp" />
+                <Button
+                    android:layout_height="80dp"
+                    android:layout_width="150dp"
+                    android:text="Category"
+                    android:layout_marginTop="-3dp" />
 
 
 
