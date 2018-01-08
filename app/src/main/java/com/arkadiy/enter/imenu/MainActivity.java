@@ -44,6 +44,8 @@ public class MainActivity extends AppCompatActivity {
     private GridLayout layout;
     private LinearLayout layout2=null;
     private  ArrayList<String> productName;
+    private  ArrayList<String> categoryName;
+
     private static final String TAG = "MainActivity";
     private ProductListAdapter adapter;
     private Product p = null;
@@ -73,6 +75,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         productName = new ArrayList<>();
+        categoryName=new ArrayList<>();
 
         dataConfig.openDatabase();
 
@@ -85,9 +88,12 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(this, "Copy database succes", Toast.LENGTH_SHORT).show();
             } else {
                 Toast.makeText(this, "Copy data error", Toast.LENGTH_SHORT).show();
-                return;
+
             }
 
+            categoryName=dataConfig.getItemsGroup();
+        layout=(GridLayout)findViewById(R.id.gridLayoutCategory) ;
+        fillInMenue(categoryName,layout);
 
 
         prefs = getSharedPreferences("com.arkadiy.enter.imenu", MODE_PRIVATE);
@@ -215,12 +221,13 @@ public class MainActivity extends AppCompatActivity {
 
     public void changeProduct(String product){
         productName=dataConfig.getDataFromDataBase(product);
-        fillInMenue(productName);
+        layout = (GridLayout) findViewById(R.id.gridLayoutItem);
+        fillInMenue(productName,layout);
     }
 
 
 
-    public void fillInMenue(ArrayList <String> products) {   //adds productsDB.db to menue from database
+    public void fillInMenue(ArrayList <String> products,GridLayout l) {   //adds productsDB.db to menue from database
 
 
         int width = 150;
@@ -230,6 +237,7 @@ public class MainActivity extends AppCompatActivity {
             layout.removeAllViews();
             flag=false;
         }
+        layout = l;
 
 
         for (int i = 0; i < products.size(); i++) {
@@ -245,7 +253,6 @@ public class MainActivity extends AppCompatActivity {
                     addProductToListView(name);
                 }
             });
-            layout = (GridLayout) findViewById(R.id.gridLayoutItem);
             layout.addView(tempBut);
 
 

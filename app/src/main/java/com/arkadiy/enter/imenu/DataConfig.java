@@ -79,7 +79,7 @@ public class DataConfig extends SQLiteOpenHelper {
         return list;
     }
 
-}
+
 
 
 
@@ -101,3 +101,25 @@ public class DataConfig extends SQLiteOpenHelper {
 //        closeDatabase();
 //        return productList;
 //    }
+
+public ArrayList <String> getItemsGroup(){
+    ArrayList<String> list=new ArrayList<>();
+
+    String bla=getDatabaseName();
+    String s= mDatabase.toString();
+    Cursor cursor=mDatabase.rawQuery(  "select * from itemsGroup ",null);
+
+    if(cursor.moveToFirst())
+    {
+        String record="";
+        do{
+            record=String.format("%s",cursor.getString(1));
+            list.add(record);
+            record="";
+
+        }while(cursor.moveToNext());
+    }
+
+    return list;
+}
+}
