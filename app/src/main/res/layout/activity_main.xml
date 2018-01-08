@@ -5,6 +5,7 @@
     android:layout_height="match_parent"
     android:layout_alignParentLeft="true"
     android:layout_alignParentStart="true"
+    android:id="@+id/relativeLayoutParent"
 >
 
 
@@ -360,6 +361,7 @@
         android:layout_height="match_parent"
         android:id="@+id/relattiveLayoutL"
         android:layout_below="@+id/RelativeHeder"
+        android:layout_alignParentLeft="true"
         android:layout_toLeftOf="@+id/relativeLayoutR"
         >
 

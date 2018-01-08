@@ -1,10 +1,13 @@
 package com.arkadiy.enter.imenu;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -71,15 +74,14 @@ public class MainActivity extends AppCompatActivity {
 
         productName = new ArrayList<>();
 
+        dataConfig.openDatabase();
 
         File database = getApplicationContext().getDatabasePath(DataConfig.DBNAME);
 
         if(false == database.exists()) {
             dataConfig.getReadableDatabase();
         }
-        dataConfig.openDatabase();
-
-        if(copyDatabase(this)) {
+            if(copyDatabase(this)) {
                 Toast.makeText(this, "Copy database succes", Toast.LENGTH_SHORT).show();
             } else {
                 Toast.makeText(this, "Copy data error", Toast.LENGTH_SHORT).show();
@@ -220,6 +222,9 @@ public class MainActivity extends AppCompatActivity {
 
     public void fillInMenue(ArrayList <String> products) {   //adds productsDB.db to menue from database
 
+
+        int width = 150;
+        int height = 80;
         if (flag)
         {
             layout.removeAllViews();
@@ -230,7 +235,7 @@ public class MainActivity extends AppCompatActivity {
         for (int i = 0; i < products.size(); i++) {
             String name = products.get(i);
             Button tempBut = new Button(MainActivity.this);
-            tempBut.setLayoutParams(new ViewGroup.LayoutParams(150, 80));
+            tempBut.setLayoutParams(new ViewGroup.LayoutParams((int)setSizeInButton(width), (int)setSizeInButton(height)));
             tempBut.setText(name);
             tempBut.setOnClickListener(new View.OnClickListener(){
 
@@ -299,8 +304,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-}
+    public float setSizeInButton(int dp){
+        Resources resources = getResources();
+        DisplayMetrics displayMetrics = resources.getDisplayMetrics();
+        float pixels = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,dp , displayMetrics);
 
+
+        return pixels;
+    }
+}
 
 
 
