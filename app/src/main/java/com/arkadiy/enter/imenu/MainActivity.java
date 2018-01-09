@@ -9,8 +9,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputConnection;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.GridLayout;
@@ -56,6 +59,8 @@ public class MainActivity extends AppCompatActivity {
     private static SimpleCursorAdapter cursorAdapter=null;
     private static ListView listView=null;
     private SQLiteDatabase productsDB=null;
+    private TextView textViewBarCod;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,6 +73,8 @@ public class MainActivity extends AppCompatActivity {
         listViewSummary = (ListView)findViewById(R.id.listViewSummary);
         productList  = new ArrayList<Product>();
         dataConfig=new DataConfig(MainActivity.this);
+
+
 
 
 
@@ -93,10 +100,21 @@ public class MainActivity extends AppCompatActivity {
 
             }
 
-            categoryName=dataConfig.getItemsGroup();
+        categoryName=dataConfig.getItemsGroup();
         layout=(GridLayout)findViewById(R.id.gridLayoutCategory);
         setColumCount();
         fillInMenue(categoryName,layout);
+
+
+        textViewBarCod = (TextView)findViewById(R.id.textViewBarCod);
+        textViewBarCod.setOnKeyListener(new View.OnKeyListener(){
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event)
+            {
+                String str = textViewBarCod.getText().toString();
+                return true;
+            }
+        });
         prefs = getSharedPreferences("com.arkadiy.enter.imenu", MODE_PRIVATE);
         }
         //Get product list in db when db exists
@@ -199,6 +217,7 @@ public class MainActivity extends AppCompatActivity {
         for (int i = 0; i < products.size(); i++) {
             String name = products.get(i);
             Button tempBut = new Button(MainActivity.this);
+            setColumCount();
             tempBut.setLayoutParams(new ViewGroup.LayoutParams((int)setSizeInButton(width), (int)setSizeInButton(height)));
             tempBut.setText(name);
 

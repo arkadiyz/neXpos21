@@ -90,7 +90,10 @@
                 android:layout_marginTop="4dp"
                 android:layout_marginBottom="4dp"
                 android:layout_alignParentBottom="true">
-
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/textViewBarCod"/>
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="20dp"
@@ -403,7 +406,7 @@
                 android:id="@+id/gridLayoutCategory"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_alignParentRight="true"
+
                 android:columnCount="3"
                 android:background="@color/colorListView"
                 android:orientation="horizontal"
