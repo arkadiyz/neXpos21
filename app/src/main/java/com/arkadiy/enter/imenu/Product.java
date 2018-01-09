@@ -5,20 +5,36 @@ package com.arkadiy.enter.imenu;
  */
 
 public class Product {
-    private String productName;
-    private String amount;
-    private String price;
-    private String barcode;
-    private String picPath;
-    private int ig_id;
+    private String productName=null;
+    private String amount=null;
+    private String price=null;
+    private String barcode=null;
+    private String picPath=null;
+    private int ig_id=0;
 
 
+    public Product(String productName, String amount, String price,String barcode,String path,int id) {
+        this.productName = productName;
+        this.amount = amount;
+        this.price = price;
+        this.barcode=barcode;
+        this.picPath=path;
+        this.ig_id=id;
+
+    }
+
+    public Product(String productName, String price,String barcode,String path,int id) {
+        this.productName = productName;
+        this.price = price;
+        this.barcode=barcode;
+        this.picPath=path;
+        this.ig_id=id;
+
+    }
     public Product(String productName, String amount, String price) {
         this.productName = productName;
         this.amount = amount;
         this.price = price;
-
-
     }
 
     public String getProductName() {

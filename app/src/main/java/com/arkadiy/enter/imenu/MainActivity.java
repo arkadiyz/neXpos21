@@ -40,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
     private String numCalc;
     private TextView screenCalc;
     private ArrayList<Product> productList;
+    private ArrayList<Product> itemsList;
     private LinkedList<String> lightDrinks;
     private  LinkedList <String> beers;
     private static boolean flag = false;
@@ -56,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
     private static SimpleCursorAdapter cursorAdapter=null;
     private static ListView listView=null;
     private SQLiteDatabase productsDB=null;
+    private ArrayList<Product> categoryProductsList=null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +69,7 @@ public class MainActivity extends AppCompatActivity {
         textViewScreenCalc = (TextView)findViewById(R.id.textViewScreenCalc);
         listViewSummary = (ListView)findViewById(R.id.listViewSummary);
         productList  = new ArrayList<Product>();
+        itemsList=new ArrayList<>();
         dataConfig=new DataConfig(MainActivity.this);
 
 
@@ -98,6 +101,7 @@ public class MainActivity extends AppCompatActivity {
         setColumCount();
         fillInMenue(categoryName,layout);
         prefs = getSharedPreferences("com.arkadiy.enter.imenu", MODE_PRIVATE);
+
         }
         //Get product list in db when db exists
 //        productList = dataConfig.getDataFromDataBase("beers");
@@ -173,12 +177,16 @@ public class MainActivity extends AppCompatActivity {
     public void loadAll(View v) {
 
         Button b=(Button)v;
+
+     if(layout.getId()==R.id.gridLayoutItem)
+            layout.removeAllViews();
+
+
         changeProduct(b.getText().toString());
-                flag = true;
     }
 //=======================================================
     public void changeProduct(String product){
-        productName=dataConfig.getDataFromDataBase(product);
+        getCategoryProductsList(product);
         layout = (GridLayout) findViewById(R.id.gridLayoutItem);
         fillInMenue(productName,layout);
     }
@@ -188,12 +196,14 @@ public class MainActivity extends AppCompatActivity {
 
         int width = 150;// db convert to pixel
         int height = 80;// db convert to pixel
-        if (flag)
-        {
-            layout.removeAllViews();
-            flag=false;
-        }
         layout = l;
+
+//        if (flag)
+//        {
+//            layout.removeAllViews();
+//            flag=false;
+//        }
+
 
 
         for (int i = 0; i < products.size(); i++) {
@@ -213,6 +223,7 @@ public class MainActivity extends AppCompatActivity {
             });
 
             if(layout.getId()==R.id.gridLayoutCategory){
+
                 tempBut.setOnClickListener(new View.OnClickListener() {
 
                     public void onClick(View view) {
@@ -227,18 +238,9 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 //========================================================
-//    public void adjustButtonSize(Button button) {
-//        DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
-//        int width = displayMetrics.widthPixels;
-//        int height = displayMetrics.heightPixels;
-//        ViewGroup.LayoutParams params = button.getLayoutParams();
-//        params.height = height / 10;         // 10%
-//        params.width = ((width * 20) / 100); // 20%
-//        button.setLayoutParams(params);
-//    }
-//=======================================================
+
     public void addProductToListView(String name){
-        p = new Product(name,"1",calcString);
+        p = new Product(name,"1","23");
         listViewSummary.setAdapter(adapter);
         productList.add(p);
         listViewSummary.setSelection(adapter.getCount()-1);
@@ -287,7 +289,26 @@ String DB_PATH;
         int colums = (int) (((float)number)/(float)scalefactor/2);
         layout.setColumnCount(colums);
     }
-}
+
+
+    public void getCategoryProductsList(String name){
+        itemsList=dataConfig.getProductsList(name);
+        setItemsNames();
+    }
+
+
+
+    public void setItemsNames(){
+        int length=itemsList.size();
+        productName.clear();
+        for(int i=0;i<length;i++)
+        {
+           productName.add(itemsList.get(i).getProductName());
+
+        }
+        }
+    }
+
 
 
 
