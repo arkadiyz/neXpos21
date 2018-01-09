@@ -240,7 +240,8 @@ public class MainActivity extends AppCompatActivity {
 //========================================================
 
     public void addProductToListView(String name){
-        p = new Product(name,"1","23");
+        String price=getPrice(name);
+        p = new Product(name,"1",price);
         listViewSummary.setAdapter(adapter);
         productList.add(p);
         listViewSummary.setSelection(adapter.getCount()-1);
@@ -307,6 +308,40 @@ String DB_PATH;
 
         }
         }
+
+
+        public String getPrice(String itemName){
+        String p=null;
+
+            for(int i=0;i<itemsList.size();i++){
+                if(itemsList.get(i).getProductName()==itemName)
+                {
+                    p=itemsList.get(i).getPrice();
+                    break;
+                }
+            }
+
+        return p;
+        }
+
+        public String getBarcode(String itemName) {
+            String b = null;
+
+            for (int i = 0; i < itemsList.size(); i++) {
+                if (itemsList.get(i).getProductName() == itemName) {
+                    b = itemsList.get(i).getBarcode();
+                    break;
+                }
+
+            }
+            return b;
+
+        }
+
+
+
+
+
     }
 
 

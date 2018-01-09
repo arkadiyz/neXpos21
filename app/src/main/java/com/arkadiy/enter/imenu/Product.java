@@ -60,4 +60,22 @@ public class Product {
     public void setPrice(String price) {
         this.price = price;
     }
+
+    public String getBarcode()
+    {
+        return this.barcode;
+    }
+
+    public void setBarcode(String b)
+    {
+        this.barcode=b;
+    }
+
+    public String getPicPath(){
+        return this.picPath;
+    }
+
+    public void setPicPath(String path){
+        this.picPath=path;
+    }
 }
