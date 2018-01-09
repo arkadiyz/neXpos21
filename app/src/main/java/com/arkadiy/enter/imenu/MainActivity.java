@@ -95,6 +95,7 @@ public class MainActivity extends AppCompatActivity {
 
             categoryName=dataConfig.getItemsGroup();
         layout=(GridLayout)findViewById(R.id.gridLayoutCategory);
+        setColumCount();
         fillInMenue(categoryName,layout);
         prefs = getSharedPreferences("com.arkadiy.enter.imenu", MODE_PRIVATE);
         }
@@ -292,6 +293,13 @@ String DB_PATH;
 
 
         return pixels;
+    }
+
+    public void setColumCount(){
+        float scalefactor = getResources().getDisplayMetrics().density *150;
+        int number = getWindowManager().getDefaultDisplay().getWidth();
+        int colums = (int) (((float)number)/(float)scalefactor/2);
+        layout.setColumnCount(colums);
     }
 }
 

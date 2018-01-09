@@ -16,6 +16,8 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="4dp"
         android:background="@color/colorHederFooter"
         >
 
@@ -43,6 +45,7 @@
                 android:layout_height="30dp"
                 android:id="@+id/relativeHederUnderHeder"
                 android:background="@color/colorHederFooter"
+                android:layout_marginBottom="4dp"
 
                 >
 
@@ -78,18 +81,22 @@
                 >
 
             </ListView>
+
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="55dp"
                 android:id="@+id/relativeLayoutSummary"
                 android:background="@color/colorListView"
-
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="4dp"
                 android:layout_alignParentBottom="true">
 
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="20dp"
                     android:background="@color/colorHederFooter"
+                    android:layout_marginBottom="4dp"
+
                     >
 
                     <TextView
@@ -359,7 +366,11 @@
             android:layout_width="match_parent"
             android:layout_height="70dp"
             android:layout_alignParentBottom="true"
-            android:id="@+id/relattiveLayoutLFastManPayment">
+            android:id="@+id/relattiveLayoutLFastManPayment"
+            android:background="@color/colorListView"
+            android:layout_marginBottom="4dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginRight="4dp">
         </RelativeLayout>
     </RelativeLayout>
 
@@ -370,6 +381,9 @@
         android:layout_below="@+id/RelativeHeder"
         android:layout_alignParentLeft="true"
         android:layout_toLeftOf="@+id/relativeLayoutR"
+        android:layout_marginBottom="4dp"
+        android:layout_marginLeft="4dp"
+        android:layout_marginRight="4dp"
         >
 
 
@@ -380,13 +394,19 @@
             android:layout_alignParentLeft="true"
 
             >
-
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/colorListView"
+            >
             <GridLayout
                 android:id="@+id/gridLayoutCategory"
                 android:layout_width="match_parent"
-                android:layout_height="155dp"
+                android:layout_height="match_parent"
                 android:layout_alignParentRight="true"
                 android:columnCount="3"
+                android:background="@color/colorListView"
+                android:orientation="horizontal"
                 >
 
 
@@ -396,15 +416,14 @@
                     android:text="שתייה קלה"
                     android:onClick="loadAll"
                     android:id="@+id/light"
-
-                    android:layout_marginTop="-3dp"
-                     />
+                                         />
 
 
 
 
 
             </GridLayout>
+        </ScrollView>
         </RelativeLayout>
 
         <RelativeLayout
@@ -418,9 +437,10 @@
                 android:id="@+id/gridLayoutItem"
                 android:layout_width="match_parent"
                 android:layout_height="465dp"
-                android:layout_alignParentBottom="true"
-                android:columnCount="3"
-                >
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
+                android:background="@color/colorListView"
+                android:columnCount="3">
 
 
             </GridLayout>
@@ -431,7 +451,10 @@
             android:layout_height="match_parent"
             android:layout_above="@+id/relativeLayoutItem"
             android:layout_below="@+id/relativeLayoutCategory"
+            android:id="@+id/relativeLayoutItemsHeader"
             android:background="#8888"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="3dp"
             >
 
         </RelativeLayout>
@@ -440,13 +463,10 @@
     <RelativeLayout
         android:layout_width="80dp"
         android:layout_height="match_parent"
-
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         android:layout_below="@+id/RelativeHeder"
         android:id="@+id/relativeLayout">
-
-
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -570,11 +590,6 @@
                     android:layout_marginTop="-1dip"
                     android:layout_marginBottom="-10dip"/>
             </LinearLayout>
-
-
-
         </ScrollView>
-
     </RelativeLayout>
-
 </RelativeLayout>

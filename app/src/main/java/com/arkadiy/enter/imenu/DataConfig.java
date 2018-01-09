@@ -107,7 +107,7 @@ public ArrayList <String> getItemsGroup(){
 
     String bla=getDatabaseName();
     String s= mDatabase.toString();
-    Cursor cursor=mDatabase.rawQuery(  "select * from items",null);
+    Cursor cursor=mDatabase.rawQuery(  "select * from itemsGroup",null);
 
 
     if(cursor.moveToFirst())

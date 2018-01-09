@@ -6,6 +6,7 @@
     <color name="colorblack">#000000</color>
     <color name="colorListView">#d4d6d6</color>
     <color name="colorHederFooter">#817f7f</color>
+    <color name="colorButton">#e9ecf1</color>
 
 
 </resources>
