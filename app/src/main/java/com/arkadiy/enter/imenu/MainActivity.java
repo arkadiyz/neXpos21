@@ -172,33 +172,9 @@ public class MainActivity extends AppCompatActivity {
 //=======================================================
     public void loadAll(View v) {
 
-
-        switch (v.getId()) {
-//            case R.id.beers:
-//                changeProduct("beers");
-//                flag = true;
-//                break;
-
-
-            case R.id.light:
-                changeProduct("light_drinks");
+        Button b=(Button)v;
+        changeProduct(b.getText().toString());
                 flag = true;
-                break;
-
-
-            default:
-                if (flag)
-                {
-                    layout.removeAllViews();
-                    flag=false;
-                }
-
-                break;
-
-
-        }
-
-
     }
 //=======================================================
     public void changeProduct(String product){
@@ -225,6 +201,8 @@ public class MainActivity extends AppCompatActivity {
             Button tempBut = new Button(MainActivity.this);
             tempBut.setLayoutParams(new ViewGroup.LayoutParams((int)setSizeInButton(width), (int)setSizeInButton(height)));
             tempBut.setText(name);
+
+            if(layout.getId()==R.id.gridLayoutItem)
             tempBut.setOnClickListener(new View.OnClickListener(){
 
                 public void onClick(View view){
@@ -233,6 +211,16 @@ public class MainActivity extends AppCompatActivity {
                     addProductToListView(name);
                 }
             });
+
+            if(layout.getId()==R.id.gridLayoutCategory){
+                tempBut.setOnClickListener(new View.OnClickListener() {
+
+                    public void onClick(View view) {
+                        loadAll(view);
+                    }
+                });
+            }
+
             layout.addView(tempBut);
 
 
@@ -262,14 +250,12 @@ public class MainActivity extends AppCompatActivity {
 
 String DB_PATH;
             if(android.os.Build.VERSION.SDK_INT >= 17) {
-//                DB_PATH="/data/data/com.arkadiy.enter.imenu/databases/productsDB.db";
                 DB_PATH = context.getApplicationInfo().dataDir + "/databases/"+DataConfig.DBNAME;
             } else {
                 DB_PATH = "/data/data/" + context.getPackageName() + "/databases/";
             }
 
             InputStream inputStream = context.getAssets().open(DataConfig.DBNAME);
-//            String outFileName = DataConfig.DBLOCATION + DataConfig.DBNAME;
             OutputStream outputStream = new FileOutputStream(DB_PATH);
             byte[]buff = new byte[1024];
             int length = 0;

@@ -409,19 +409,6 @@
                 android:orientation="horizontal"
                 >
 
-
-                <Button
-                    android:layout_height="80dp"
-                    android:layout_width="150dp"
-                    android:text="שתייה קלה"
-                    android:onClick="loadAll"
-                    android:id="@+id/light"
-                                         />
-
-
-
-
-
             </GridLayout>
         </ScrollView>
         </RelativeLayout>

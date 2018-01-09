@@ -8,6 +8,10 @@ public class Product {
     private String productName;
     private String amount;
     private String price;
+    private String barcode;
+    private String picPath;
+    private int ig_id;
+
 
     public Product(String productName, String amount, String price) {
         this.productName = productName;
