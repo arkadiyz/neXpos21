@@ -96,34 +96,16 @@ public class MainActivity extends AppCompatActivity {
             categoryName=dataConfig.getItemsGroup();
         layout=(GridLayout)findViewById(R.id.gridLayoutCategory);
         fillInMenue(categoryName,layout);
-
-
         prefs = getSharedPreferences("com.arkadiy.enter.imenu", MODE_PRIVATE);
         }
         //Get product list in db when db exists
 //        productList = dataConfig.getDataFromDataBase("beers");
-
-
-
-
-
-
-
-
-
 //
 //        if(prefs.getBoolean("firstrun", true)) //checks if app runs first time
 //        {
 //        }
-
-
-
 //            prefs.edit().putBoolean("firstrun", false).commit();
-
-
-
-
-
+//=======================================================
     public void calc_onClick(View view) {
         switch (view.getId())
         {
@@ -186,9 +168,7 @@ public class MainActivity extends AppCompatActivity {
                 break;
         }
     }
-
-
-
+//=======================================================
     public void loadAll(View v) {
 
 
@@ -219,21 +199,18 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
-
-
+//=======================================================
     public void changeProduct(String product){
         productName=dataConfig.getDataFromDataBase(product);
         layout = (GridLayout) findViewById(R.id.gridLayoutItem);
         fillInMenue(productName,layout);
     }
-
-
-
+//=========================================================
     public void fillInMenue(ArrayList <String> products,GridLayout l) {   //adds productsDB.db to menue from database
 
 
-        int width = 150;
-        int height = 80;
+        int width = 150;// db convert to pixel
+        int height = 80;// db convert to pixel
         if (flag)
         {
             layout.removeAllViews();
@@ -260,8 +237,7 @@ public class MainActivity extends AppCompatActivity {
 
         }
     }
-
-
+//========================================================
 //    public void adjustButtonSize(Button button) {
 //        DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
 //        int width = displayMetrics.widthPixels;
@@ -271,21 +247,15 @@ public class MainActivity extends AppCompatActivity {
 //        params.width = ((width * 20) / 100); // 20%
 //        button.setLayoutParams(params);
 //    }
-
-
-
+//=======================================================
     public void addProductToListView(String name){
         p = new Product(name,"1",calcString);
         listViewSummary.setAdapter(adapter);
         productList.add(p);
+        listViewSummary.setSelection(adapter.getCount()-1);
+
     }
-
-
-
-
-
-
-
+//=======================================================
     private boolean copyDatabase(Context context) {
         try {
 
@@ -314,9 +284,7 @@ String DB_PATH;
             return false;
         }
     }
-
-
-
+//=======================================================
     public float setSizeInButton(int dp){
         Resources resources = getResources();
         DisplayMetrics displayMetrics = resources.getDisplayMetrics();
