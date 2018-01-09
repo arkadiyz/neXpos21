@@ -16,7 +16,7 @@
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:text="TextView1"
-
+            android:textColor="@color/colorblack"
             android:id="@+id/textViewProductName"/>
 
     </LinearLayout>
@@ -30,6 +30,7 @@
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:text="TextView2"
+            android:textColor="@color/colorblack"
             android:id="@+id/textViewProductAmount"/>
 
     </LinearLayout>
@@ -43,6 +44,7 @@
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:text="TextView3"
+            android:textColor="@color/colorblack"
             android:id="@+id/textViewProductPrice"/>
     </LinearLayout>
 
