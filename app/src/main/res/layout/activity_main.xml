@@ -409,7 +409,7 @@
 
                 android:columnCount="3"
                 android:background="@color/colorListView"
-                android:orientation="horizontal"
+
                 >
 
             </GridLayout>
@@ -430,7 +430,8 @@
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentTop="true"
                 android:background="@color/colorListView"
-                android:columnCount="3">
+                android:columnCount="3"
+                >
 
 
             </GridLayout>

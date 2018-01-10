@@ -2,6 +2,7 @@ package com.arkadiy.enter.imenu;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.AssetManager;
+import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -43,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<Product> itemsList;
     private LinkedList<String> lightDrinks;
     private  LinkedList <String> beers;
-    private static boolean flag = false;
+    private boolean flag = true;
     private GridLayout layout;
     private LinearLayout layout2=null;
     private  ArrayList<String> productName;
@@ -58,7 +59,13 @@ public class MainActivity extends AppCompatActivity {
     private static ListView listView=null;
     private SQLiteDatabase productsDB=null;
     private ArrayList<Product> categoryProductsList=null;
-
+    private static int width = 150;// db convert to pixel
+    private static int height = 80;// db convert to pixel
+    private static boolean flagGridLayout = false;
+    private int colums=0;
+    private int butWidth=0;
+    private int butHeight=0;
+    private double sizeScreen;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -96,20 +103,22 @@ public class MainActivity extends AppCompatActivity {
 
             }
 
-            categoryName=dataConfig.getItemsGroup();
+
+
+
+
+
+
+
+        categoryName=dataConfig.getItemsGroup();
         layout=(GridLayout)findViewById(R.id.gridLayoutCategory);
-        setColumCount();
+        getSize();
+
         fillInMenue(categoryName,layout);
         prefs = getSharedPreferences("com.arkadiy.enter.imenu", MODE_PRIVATE);
 
         }
-        //Get product list in db when db exists
-//        productList = dataConfig.getDataFromDataBase("beers");
-//
-//        if(prefs.getBoolean("firstrun", true)) //checks if app runs first time
-//        {
-//        }
-//            prefs.edit().putBoolean("firstrun", false).commit();
+
 //=======================================================
     public void calc_onClick(View view) {
         switch (view.getId())
@@ -194,35 +203,41 @@ public class MainActivity extends AppCompatActivity {
     public void fillInMenue(ArrayList <String> products,GridLayout l) {   //adds productsDB.db to menue from database
 
 
-        int width = 150;// db convert to pixel
-        int height = 80;// db convert to pixel
         layout = l;
-
-//        if (flag)
-//        {
-//            layout.removeAllViews();
-//            flag=false;
-//        }
 
 
 
         for (int i = 0; i < products.size(); i++) {
             String name = products.get(i);
             Button tempBut = new Button(MainActivity.this);
-            tempBut.setLayoutParams(new ViewGroup.LayoutParams((int)setSizeInButton(width), (int)setSizeInButton(height)));
             tempBut.setText(name);
+            tempBut.setLayoutParams(new ViewGroup.LayoutParams(butWidth, butHeight));
 
-            if(layout.getId()==R.id.gridLayoutItem)
-            tempBut.setOnClickListener(new View.OnClickListener(){
-
-                public void onClick(View view){
-                    Button b=(Button)view;
-                    String name=b.getText().toString();
-                    addProductToListView(name);
+            if(layout.getId()==R.id.gridLayoutItem) {
+                if(flag){
+                    getSize();
+                    flag=false;
                 }
-            });
+
+
+
+                tempBut.setOnClickListener(new View.OnClickListener() {
+
+
+
+                    public void onClick(View view) {
+                        Button b = (Button) view;
+
+                        String name = b.getText().toString();
+                        addProductToListView(name);
+                    }
+                });
+
+            }
 
             if(layout.getId()==R.id.gridLayoutCategory){
+
+
 
                 tempBut.setOnClickListener(new View.OnClickListener() {
 
@@ -251,7 +266,7 @@ public class MainActivity extends AppCompatActivity {
     private boolean copyDatabase(Context context) {
         try {
 
-String DB_PATH;
+            String DB_PATH;
             if(android.os.Build.VERSION.SDK_INT >= 17) {
                 DB_PATH = context.getApplicationInfo().dataDir + "/databases/"+DataConfig.DBNAME;
             } else {
@@ -284,13 +299,6 @@ String DB_PATH;
         return pixels;
     }
 
-    public void setColumCount(){
-        float scalefactor = getResources().getDisplayMetrics().density *150;
-        int number = getWindowManager().getDefaultDisplay().getWidth();
-        int colums = (int) (((float)number)/(float)scalefactor/2);
-        layout.setColumnCount(colums);
-    }
-
 
     public void getCategoryProductsList(String name){
         itemsList=dataConfig.getProductsList(name);
@@ -310,7 +318,7 @@ String DB_PATH;
         }
 
 
-        public String getPrice(String itemName){
+    public String getPrice(String itemName){
         String p=null;
 
             for(int i=0;i<itemsList.size();i++){
@@ -324,7 +332,7 @@ String DB_PATH;
         return p;
         }
 
-        public String getBarcode(String itemName) {
+    public String getBarcode(String itemName) {
             String b = null;
 
             for (int i = 0; i < itemsList.size(); i++) {
@@ -338,9 +346,40 @@ String DB_PATH;
 
         }
 
+    private void getSize(){
 
+            DisplayMetrics dm = new DisplayMetrics();
+            getWindowManager().getDefaultDisplay().getMetrics(dm);
+            double x = Math.pow(dm.widthPixels/dm.xdpi, 2);
+            double y = Math.pow(dm.heightPixels/dm.ydpi, 2);
+            double screenInches = Math.sqrt(x+y);
+            Log.d("debug", "Screen Inches:"+screenInches);
+            sizeScreen = screenInches;
+            adjustSize();
 
+        }
 
+    private void adjustSize(){
+
+            if(sizeScreen > 10)
+            {
+                butWidth= (int)setSizeInButton(width+7);
+                butHeight=(int)setSizeInButton(height);
+                layout.setColumnCount(5);
+            }
+            else if (sizeScreen <= 9)
+            {
+                butWidth= (int)setSizeInButton(width-2);
+                butHeight=(int)setSizeInButton(height);
+                layout.setColumnCount(3);
+            }
+            else if(sizeScreen<=10&& sizeScreen >=9.1){
+                butWidth= (int)setSizeInButton(width +25);
+                butHeight=(int)setSizeInButton(height);
+                layout.setColumnCount(4);
+            }
+
+        }
 
     }
 
