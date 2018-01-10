@@ -27,10 +27,12 @@ public class DataConfig extends SQLiteOpenHelper {
     public static final String DBLOCATION = "/data/data/com/arkadiy/enter/imenu/";
     private Context mContext;
     private SQLiteDatabase mDatabase;
-
+    private Product item;
+    private ArrayList<Product> itemsList=null;
     public DataConfig(Context context) {
         super(context, DBNAME, null, 1);
         this.mContext = context;
+
     }
 
     @Override
@@ -123,4 +125,37 @@ public ArrayList <String> getItemsGroup(){
 
     return list;
 }
+
+
+
+
+    public ArrayList <Product> getProductsList(String category){
+
+        String bla=getDatabaseName();
+        itemsList=new ArrayList<>();
+        Cursor cursor=mDatabase.rawQuery(  "select * from items left join itemsGroup ON items.ig_id=itemsGroup._id where itemsGroup.name like '%"+category+"%'",null);
+
+
+        if(cursor.moveToFirst())
+        {
+            do{
+                 String productName=cursor.getString(1);
+                 float p=cursor.getFloat(2);
+                 String price=Float.toString(p);
+                String picPath=cursor.getString(3);
+                String barcode=cursor.getString(4);
+                 String ig_id=cursor.getString(5);
+                 int id=Integer.parseInt(ig_id);
+
+                item=new Product(productName,price,barcode,picPath,id);
+                itemsList.add(item);
+
+            }while(cursor.moveToNext());
+        }
+
+        return itemsList;
+    }
+
+
+
 }
