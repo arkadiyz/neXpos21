@@ -1,19 +1,28 @@
 package com.arkadiy.enter.imenu;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.AssetManager;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.database.sqlite.SQLiteDatabase;
+import android.hardware.usb.UsbDevice;
+import android.hardware.usb.UsbManager;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.GridLayout;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -21,13 +30,18 @@ import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.Scanner;
+import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends AppCompatActivity {
     private String calcString="";
@@ -60,66 +74,90 @@ public class MainActivity extends AppCompatActivity {
     private SQLiteDatabase productsDB=null;
     private ArrayList<Product> categoryProductsList=null;
     private static int width = 150;// db convert to pixel
-    private static int height = 80;// db convert to pixel
-    private static boolean flagGridLayout = false;
-    private int colums=0;
+    private static int height = 80;// db convert to pixelh
+    private TextView textViewBarCode;
+    private TextView textViewTotalNumber;
     private int butWidth=0;
     private int butHeight=0;
     private double sizeScreen;
+    private int counter = 0;
+    private Scanner input;
+    private String str = "";
+    char ch;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d(TAG,"onCreate: Started");
+        Log.d(TAG, "onCreate: Started");
         setContentView(R.layout.activity_main);
         SharedPreferences prefs = null;
 
-        textViewScreenCalc = (TextView)findViewById(R.id.textViewScreenCalc);
-        listViewSummary = (ListView)findViewById(R.id.listViewSummary);
-        productList  = new ArrayList<Product>();
-        itemsList=new ArrayList<>();
-        dataConfig=new DataConfig(MainActivity.this);
+        textViewScreenCalc = (TextView) findViewById(R.id.textViewScreenCalc);
+        listViewSummary = (ListView) findViewById(R.id.listViewSummary);
+        productList = new ArrayList<Product>();
+        itemsList = new ArrayList<>();
+        dataConfig = new DataConfig(MainActivity.this);
 
 
-
-        adapter = new ProductListAdapter(this, R.layout.adapter_view_layout,productList);
+        adapter = new ProductListAdapter(this, R.layout.adapter_view_layout, productList);
         listViewSummary.setAdapter(adapter);
 
-
         productName = new ArrayList<>();
-        categoryName=new ArrayList<>();
-
+        categoryName = new ArrayList<>();
 
         File database = getApplicationContext().getDatabasePath(DataConfig.DBNAME);
-
-        if(false == database.exists()) {
+        if (false == database.exists()) {
             dataConfig.getReadableDatabase();
         }
+
         dataConfig.openDatabase();
 
-        if(copyDatabase(this)) {
-                Toast.makeText(this, "Copy database succes", Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(this, "Copy data error", Toast.LENGTH_SHORT).show();
-
-            }
-
-
-
-
-
-
-
-
-        categoryName=dataConfig.getItemsGroup();
-        layout=(GridLayout)findViewById(R.id.gridLayoutCategory);
-        getSize();
-
-        fillInMenue(categoryName,layout);
-        prefs = getSharedPreferences("com.arkadiy.enter.imenu", MODE_PRIVATE);
+        if (copyDatabase(this)) {
+            Toast.makeText(this, "Copy database succes", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, "Copy data error", Toast.LENGTH_SHORT).show();
 
         }
 
-//=======================================================
+
+        categoryName = dataConfig.getItemsGroup();
+        layout = (GridLayout) findViewById(R.id.gridLayoutCategory);
+        getSize();
+
+        fillInMenue(categoryName, layout);
+        prefs = getSharedPreferences("com.arkadiy.enter.imenu", MODE_PRIVATE);
+        textViewTotalNumber = (TextView)findViewById(R.id.textViewTotalNumber);
+
+
+        textViewTotalNumber.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                str=textViewTotalNumber.getText().toString();
+                textViewTotalNumber.setText("");
+                textViewScreenCalc.setFocusable(false);
+                textViewScreenCalc.setFocusableInTouchMode(false);
+                addProductToListView(str);
+                str="";
+                return false;
+            }
+        });
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+
+       input = new Scanner(System.in);
+
+
+
+
+
+
+    }
+//    public void fucos(){
+//
+//        textViewScreenCalc.setFocusable(false);
+//        layout.setFocusable(false);
+//        listViewSummary.setFocusable(false);
+//    }
+    //=======================================================
     public void calc_onClick(View view) {
         switch (view.getId())
         {
@@ -158,10 +196,12 @@ public class MainActivity extends AppCompatActivity {
             case R.id.button8:
                 calcString+="8";
                 textViewScreenCalc.setText(calcString);
+
                 break;
             case R.id.button9:
                 calcString+="9";
                 textViewScreenCalc.setText(calcString);
+
                 break;
             case R.id.buttonC:
                 calcString="";
@@ -182,7 +222,7 @@ public class MainActivity extends AppCompatActivity {
                 break;
         }
     }
-//=======================================================
+    //=======================================================
     public void loadAll(View v) {
 
         Button b=(Button)v;
@@ -192,14 +232,16 @@ public class MainActivity extends AppCompatActivity {
 
 
         changeProduct(b.getText().toString());
+
     }
-//=======================================================
+    //=======================================================
     public void changeProduct(String product){
         getCategoryProductsList(product);
         layout = (GridLayout) findViewById(R.id.gridLayoutItem);
         fillInMenue(productName,layout);
+
     }
-//=========================================================
+    //=========================================================
     public void fillInMenue(ArrayList <String> products,GridLayout l) {   //adds productsDB.db to menue from database
 
 
@@ -251,18 +293,17 @@ public class MainActivity extends AppCompatActivity {
 
 
         }
-    }
-//========================================================
 
+    }
+    //========================================================
     public void addProductToListView(String name){
         String price=getPrice(name);
         p = new Product(name,"1",price);
         listViewSummary.setAdapter(adapter);
         productList.add(p);
         listViewSummary.setSelection(adapter.getCount()-1);
-
     }
-//=======================================================
+    //=======================================================
     private boolean copyDatabase(Context context) {
         try {
 
@@ -283,13 +324,14 @@ public class MainActivity extends AppCompatActivity {
             outputStream.flush();
             outputStream.close();
             Log.w("MainActivity","DB copied");
+
             return true;
         }catch (Exception e) {
             e.printStackTrace();
             return false;
         }
     }
-//=======================================================
+    //=======================================================
     public float setSizeInButton(int dp){
         Resources resources = getResources();
         DisplayMetrics displayMetrics = resources.getDisplayMetrics();
@@ -298,15 +340,12 @@ public class MainActivity extends AppCompatActivity {
 
         return pixels;
     }
-
-
+    //=======================================================
     public void getCategoryProductsList(String name){
         itemsList=dataConfig.getProductsList(name);
         setItemsNames();
     }
-
-
-
+    //=======================================================
     public void setItemsNames(){
         int length=itemsList.size();
         productName.clear();
@@ -316,8 +355,7 @@ public class MainActivity extends AppCompatActivity {
 
         }
         }
-
-
+    //=======================================================
     public String getPrice(String itemName){
         String p=null;
 
@@ -331,7 +369,7 @@ public class MainActivity extends AppCompatActivity {
 
         return p;
         }
-
+    //=======================================================
     public String getBarcode(String itemName) {
             String b = null;
 
@@ -345,7 +383,7 @@ public class MainActivity extends AppCompatActivity {
             return b;
 
         }
-
+    //=======================================================
     private void getSize(){
 
             DisplayMetrics dm = new DisplayMetrics();
@@ -358,7 +396,7 @@ public class MainActivity extends AppCompatActivity {
             adjustSize();
 
         }
-
+    //=======================================================
     private void adjustSize(){
 
             if(sizeScreen > 10)
@@ -380,8 +418,45 @@ public class MainActivity extends AppCompatActivity {
             }
 
         }
+    //=======================================================
+    @Override
+    public boolean onKeyUp(int keyCode, KeyEvent event) {
+
+
+
+                textViewTotalNumber.requestFocus();
+                return super.onKeyUp(keyCode, event);
+
+
+
+
+//            switch (keyCode) {
+//
+//                case 13:
+//                    try {
+//                        TimeUnit.SECONDS.sleep(2);
+//                    } catch (InterruptedException e) {
+//                        e.printStackTrace();
+//                    }
+//                    Toast.makeText(this,"VAdim",Toast.LENGTH_SHORT).show();
+//                    addProductToListView(str);
+//                    str="";
+//                    textViewTotalNumber.setText("");
+//                    textViewScreenCalc.setFocusable(false);
+//                    textViewScreenCalc.setFocusableInTouchMode(false);
+//                    textViewTotalNumber.requestFocus();
+//                    return true;
+//
+//                default:
+//                    textViewTotalNumber.requestFocus();
+//                    str +=  (char)event.getUnicodeChar();
+//
+//                    return super.onKeyUp(keyCode, event);
+//            }
 
     }
+
+}
 
 
 
