@@ -83,27 +83,6 @@ public class DataConfig extends SQLiteOpenHelper {
 
 
 
-
-
-
-
-
-//    public List<Product> getListProduct() {
-//        Product product = null;
-//        List<Product> productList = new ArrayList<>();
-//        openDatabase();
-//        Cursor cursor = mDatabase.rawQuery("SELECT * FROM PRODUCT", null);
-//        cursor.moveToFirst();
-//        while (!cursor.isAfterLast()) {
-//            product = new Product(cursor.getInt(0), cursor.getString(1), cursor.getInt(2), cursor.getString(3));
-//            productList.add(product);
-//            cursor.moveToNext();
-//        }
-//        cursor.close();
-//        closeDatabase();
-//        return productList;
-//    }
-
 public ArrayList <String> getItemsGroup(){
     ArrayList<String> list=new ArrayList<>();
 
@@ -155,6 +134,27 @@ public ArrayList <String> getItemsGroup(){
 
         return itemsList;
     }
+
+
+
+
+    public void createItemIfNotExists(int id,String name, float price, String path, String barcode, int ig_id){
+        String item="INSERT OR REPLACE INTO items (_id, name, price, picture_path, barcode, ig_id) VALUES("+id+", '"
+                +name+"', "
+                +price+", '"
+                +path+"', '"
+                +barcode+"', "
+                +ig_id+")";
+
+        mDatabase.execSQL(item);
+    }
+
+//
+//    public void createItemIfNotExists(int id){
+//        String item="INSERT OR REPLACE INTO items (_id, name, price, picture_path, barcode, ig_id) VALUES(239, 'shurik', 21.00, 'sdsdww', '3939393993', 2)";
+//
+//        mDatabase.execSQL(item);
+//    }
 
 
 

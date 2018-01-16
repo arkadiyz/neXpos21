@@ -1,32 +1,43 @@
 package com.arkadiy.enter.imenu;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.res.AssetManager;
 import android.content.res.Resources;
 import android.database.sqlite.SQLiteDatabase;
+import android.hardware.usb.UsbDevice;
+import android.hardware.usb.UsbDeviceConnection;
+import android.hardware.usb.UsbEndpoint;
+import android.hardware.usb.UsbManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.GridLayout;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.Scanner;
+import android.app.NotificationManager;
+
 
 public class MainActivity extends AppCompatActivity {
     private String calcString="";
@@ -48,69 +59,163 @@ public class MainActivity extends AppCompatActivity {
     private LinearLayout layout2=null;
     private  ArrayList<String> productName;
     private  ArrayList<String> categoryName;
+    private static Context context;
 
     private static final String TAG = "MainActivity";
     private ProductListAdapter adapter;
     private Product p = null;
     private static DataConfig dataConfig=null;
-    //    private static SQLiteDatabase productsDB.db=null;
     private static SimpleCursorAdapter cursorAdapter=null;
     private static ListView listView=null;
     private SQLiteDatabase productsDB=null;
     private ArrayList<Product> categoryProductsList=null;
+    private Scanner input;
+    private TextView textViewTotalNumber;
+    private UsbManager mUsbManager;
+    private UsbDevice mDevice;
+    private UsbDeviceConnection mConnection;
+    private UsbEndpoint mEndpointIntr;
+    private RelativeLayout relativeLayoutParent;
+    private BufferedReader in;
+    private Handler mHandler;
+    private TextView textV;
+private         Scanner scan;
+    private static final String USB_STATE_MATCH =      "DEVPATH=/devices/virtual/android_usb/android0";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d(TAG,"onCreate: Started");
+        Log.d(TAG, "onCreate: Started");
         setContentView(R.layout.activity_main);
         SharedPreferences prefs = null;
-
-        textViewScreenCalc = (TextView)findViewById(R.id.textViewScreenCalc);
-        listViewSummary = (ListView)findViewById(R.id.listViewSummary);
-        productList  = new ArrayList<Product>();
-        itemsList=new ArrayList<>();
-        dataConfig=new DataConfig(MainActivity.this);
+        MainActivity.context = getApplicationContext();
+        relativeLayoutParent = (RelativeLayout) findViewById(R.id.relativeLayoutParent);
 
 
+        textViewScreenCalc = (TextView) findViewById(R.id.textViewScreenCalc);
+        listViewSummary = (ListView) findViewById(R.id.listViewSummary);
+        productList = new ArrayList<Product>();
+        itemsList = new ArrayList<>();
+        dataConfig = new DataConfig(MainActivity.this);
 
-        adapter = new ProductListAdapter(this, R.layout.adapter_view_layout,productList);
+
+        adapter = new ProductListAdapter(this, R.layout.adapter_view_layout, productList);
         listViewSummary.setAdapter(adapter);
 
 
         productName = new ArrayList<>();
-        categoryName=new ArrayList<>();
+        categoryName = new ArrayList<>();
 
 
         File database = getApplicationContext().getDatabasePath(DataConfig.DBNAME);
 
-        if(false == database.exists()) {
+        if (false == database.exists()) {
             dataConfig.getReadableDatabase();
         }
         dataConfig.openDatabase();
 
-        if(copyDatabase(this)) {
+        prefs = getSharedPreferences("com.arkadiy.enter.imenu", MODE_PRIVATE);
+        if (prefs.getBoolean("firstrun", true)) //checks if app runs first time
+        {
+            if (copyDatabase(this)) {
                 Toast.makeText(this, "Copy database succes", Toast.LENGTH_SHORT).show();
             } else {
                 Toast.makeText(this, "Copy data error", Toast.LENGTH_SHORT).show();
 
             }
-
-            categoryName=dataConfig.getItemsGroup();
-        layout=(GridLayout)findViewById(R.id.gridLayoutCategory);
-        setColumCount();
-        fillInMenue(categoryName,layout);
-        prefs = getSharedPreferences("com.arkadiy.enter.imenu", MODE_PRIVATE);
+            prefs.edit().putBoolean("firstrun", false).commit();
 
         }
-        //Get product list in db when db exists
-//        productList = dataConfig.getDataFromDataBase("beers");
+
+        categoryName = dataConfig.getItemsGroup();
+        layout = (GridLayout) findViewById(R.id.gridLayoutCategory);
+//        setColumCount();
+        fillInMenue(categoryName, layout);
+//        prefs = getSharedPreferences("com.arkadiy.enter.imenu", MODE_PRIVATE);
+
+        float x = 13;
+
+        dataConfig.createItemIfNotExists(1234, "blabla", x, "sdsdd", "2333", 1);
+
+
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+
+
+        in = new BufferedReader(new InputStreamReader(System.in));
+
+
+//        mUsbManager = (UsbManager)getSystemService(Context.USB_SERVICE);
+//        UsbAccessory[] device=mUsbManager.getAccessoryList();
+
+        scan = new Scanner(System.in);
+
+
+        textViewTotalNumber = (TextView) findViewById(R.id.textViewTotalNumber);
+        textViewTotalNumber.requestFocus();
+
+//        textViewTotalNumber.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+//    @Override
+//    public void onFocusChange(View v, boolean hasFocus) {
+//        String str=textViewTotalNumber.getText().toString();
 //
-//        if(prefs.getBoolean("firstrun", true)) //checks if app runs first time
-//        {
+//
+//    }
+//
+//
+//});
+
+
+    }
+
+
+
+
+//    public void onResume() {
+//        super.onResume();
+//        textV=(TextView)findViewById(R.id.textViewProductName);
+//        //заполняем контейнер списком устройств
+//        HashMap<String, UsbDevice> deviceList = mUsbManager.getDeviceList();
+//        Iterator<UsbDevice> deviceIterator = deviceList.values().iterator();
+//
+////        textV.setText( "Devices Count:" + deviceList.size() );
+//
+//        while (deviceIterator.hasNext()) {
+//            UsbDevice device = (UsbDevice) deviceIterator.next();
+//
+//            //пример определения ProductID устройства
+//            textV.setText( textV.getText() + "\n" + "Device ProductID: " + device.getProductId() );
 //        }
-//            prefs.edit().putBoolean("firstrun", false).commit();
-//=======================================================
+//        //определяем намерение, описанное в фильтре
+//        // намерений AndroidManifest.xml
+//        Intent intent = getIntent();
+//        textV.setText( textV.getText() + "\n" + "intent: " + intent);
+//        String action = intent.getAction();
+//
+//        //если устройство подключено, передаем ссылку в
+//        //в функцию setDevice()
+//        UsbDevice device = (UsbDevice)intent.getParcelableExtra(UsbManager.EXTRA_DEVICE);
+////        if (UsbManager.ACTION_USB_DEVICE_ATTACHED.equals(action)) {
+////            setDevice(device);
+////            lgView.setText( lgView.getText() + "\n" + "UsbManager.ACTION_USB_DEVICE_ATTACHED.equals(action) is TRUE");
+////        } else if (UsbManager.ACTION_USB_DEVICE_DETACHED.equals(action)) {
+////            if (mDevice != null && mDevice.equals(device)) {
+////                setDevice(null);
+////                lgView.setText( lgView.getText() + "\n" + "UsbManager.ACTION_USB_DEVICE_DETACHED.equals(action) is TRUE");
+////            }
+////        }
+//
+//    }
+
+
+
+
+
+
+
+
+
+
+
     public void calc_onClick(View view) {
         switch (view.getId())
         {
@@ -339,10 +444,36 @@ String DB_PATH;
         }
 
 
-
-
-
+    public static Context getAppContext() {
+        return MainActivity.context;
     }
+
+
+
+
+    @Override
+    public boolean onKeyUp(int keyCode, KeyEvent event) {
+        switch (keyCode) {
+            case 160:
+                Toast.makeText(this,"VAdim",Toast.LENGTH_SHORT).show();
+                textViewScreenCalc.setFocusable(false);
+                textViewScreenCalc.setFocusableInTouchMode(false);
+                textViewTotalNumber.requestFocus();
+
+                textViewTotalNumber.setText("");
+
+                return true;
+
+            default:
+                textViewTotalNumber.requestFocus();
+
+
+                return super.onKeyUp(keyCode, event);
+        }
+    }
+
+
+}
 
 
 

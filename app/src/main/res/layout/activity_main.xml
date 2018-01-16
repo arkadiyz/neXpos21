@@ -106,7 +106,9 @@
                         android:layout_alignParentRight="true"
                         android:layout_alignParentEnd="true"
                         android:paddingLeft="70dp"
-                        android:text="@string/total"/>
+                        android:text="@string/total"
+
+                        />
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -122,6 +124,8 @@
                     android:layout_alignParentBottom="true"
                     android:textSize="30sp"
                     android:inputType="text"
+
+
                     />
             </RelativeLayout>
 
@@ -147,6 +151,8 @@
                 android:textColor="@color/colorblack"
                 android:background="@color/colorListView"
                 android:layout_marginTop="5dp"
+                android:focusableInTouchMode="true"
+                android:focusable="true"
                 />
             <ImageButton
                 android:layout_width="match_parent"
@@ -245,7 +251,8 @@
                 android:layout_marginBottom="3dp"
                 android:layout_marginRight="3dp"
                 android:onClick="calc_onClick"
-                android:textSize="25sp" />
+                android:textSize="25sp"
+               />
 
             <ImageButton
                 android:id="@+id/button2"
