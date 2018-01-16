@@ -1,32 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:vendor="http://schemas.android.com/apk/res-auto"
+    xmlns:product="http://schemas.android.com/tools"
     package="com.arkadiy.enter.imenu">
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
-        android:minSdkVersion="12" />
+        android:maxSdkVersion="18"
+        android:minSdkVersion="12"/>
+    <uses-feature android:name="android.hardware.usb.accessory" />
 
-    <uses-feature android:name="android.hardware.usb.host" />
-    <uses-permission android:name="android.permission.INTERNET"/>
+
+
     <application
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <uses-library android:name="com.android.future.usb.accessory" />
+
         <activity
             android:name=".MainActivity"
             android:screenOrientation="landscape">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
-                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
 
-            <intent-filter>
-                <action android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED" />
-            </intent-filter>
 
-            <meta-data android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED"
-                android:resource="@xml/device_filter" />
+
+
+
+
         </activity>
+
 
     </application>
 
