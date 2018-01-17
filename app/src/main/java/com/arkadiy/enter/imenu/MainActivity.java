@@ -37,6 +37,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -80,10 +81,8 @@ public class MainActivity extends AppCompatActivity {
     private int butWidth=0;
     private int butHeight=0;
     private double sizeScreen;
-    private int counter = 0;
-    private Scanner input;
     private String str = "";
-    char ch;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,13 +91,12 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         SharedPreferences prefs = null;
 
+
         textViewScreenCalc = (TextView) findViewById(R.id.textViewScreenCalc);
         listViewSummary = (ListView) findViewById(R.id.listViewSummary);
         productList = new ArrayList<Product>();
         itemsList = new ArrayList<>();
         dataConfig = new DataConfig(MainActivity.this);
-
-
         adapter = new ProductListAdapter(this, R.layout.adapter_view_layout, productList);
         listViewSummary.setAdapter(adapter);
 
@@ -129,22 +127,30 @@ public class MainActivity extends AppCompatActivity {
         textViewTotalNumber = (TextView)findViewById(R.id.textViewTotalNumber);
 
 
-        textViewTotalNumber.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+
+        textViewBarCode = (TextView)findViewById(R.id.textViewBarCode);
+        textViewScreenCalc.setFocusable(true);
+        textViewBarCode.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                str=textViewTotalNumber.getText().toString();
-                textViewTotalNumber.setText("");
+                str=textViewBarCode.getText().toString();
+                textViewBarCode.setText("");
+                if(!str.isEmpty()) addProductToListView(str);
+
                 textViewScreenCalc.setFocusable(false);
                 textViewScreenCalc.setFocusableInTouchMode(false);
-                addProductToListView(str);
-                str="";
-                return false;
+                textViewBarCode.requestFocus();
+
+                onKeyUp(0, event);
+                return true;
+
+
+
+
+
             }
         });
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
-
-       input = new Scanner(System.in);
-
 
 
 
@@ -154,8 +160,12 @@ public class MainActivity extends AppCompatActivity {
 //    public void fucos(){
 //
 //        textViewScreenCalc.setFocusable(false);
+//        textViewScreenCalc.setFocusableInTouchMode(false);
 //        layout.setFocusable(false);
+//        layout.setFocusableInTouchMode(false);
 //        listViewSummary.setFocusable(false);
+//        listViewSummary.setFocusableInTouchMode(false);
+//        textViewTotalNumber.requestFocus();
 //    }
     //=======================================================
     public void calc_onClick(View view) {
@@ -221,6 +231,7 @@ public class MainActivity extends AppCompatActivity {
                 ifHaveDot = false;
                 break;
         }
+
     }
     //=======================================================
     public void loadAll(View v) {
@@ -297,11 +308,16 @@ public class MainActivity extends AppCompatActivity {
     }
     //========================================================
     public void addProductToListView(String name){
-        String price=getPrice(name);
-        p = new Product(name,"1",price);
-        listViewSummary.setAdapter(adapter);
-        productList.add(p);
-        listViewSummary.setSelection(adapter.getCount()-1);
+
+
+            String price=getPrice(name);
+
+            p = new Product(name,"1",price);
+            listViewSummary.setAdapter(adapter);
+
+            productList.add(p);
+            listViewSummary.setSelection(adapter.getCount()-1);
+
     }
     //=======================================================
     private boolean copyDatabase(Context context) {
@@ -358,6 +374,8 @@ public class MainActivity extends AppCompatActivity {
     //=======================================================
     public String getPrice(String itemName){
         String p=null;
+        if(itemName.equals(general))
+            return calcString;
 
             for(int i=0;i<itemsList.size();i++){
                 if(itemsList.get(i).getProductName()==itemName)
@@ -419,42 +437,46 @@ public class MainActivity extends AppCompatActivity {
 
         }
     //=======================================================
-    @Override
-    public boolean onKeyUp(int keyCode, KeyEvent event) {
 
 
-
-                textViewTotalNumber.requestFocus();
-                return super.onKeyUp(keyCode, event);
-
-
-
-
+//    @Override
+//    public boolean onKeyUp(int keyCode, KeyEvent event) {
+//
+//
+//
+////                textViewTotalNumber.requestFocus();
+////
+////                return super.onKeyUp(keyCode, event);
+//
+//
+//
+//
 //            switch (keyCode) {
 //
-//                case 13:
+//                case 2:
 //                    try {
 //                        TimeUnit.SECONDS.sleep(2);
 //                    } catch (InterruptedException e) {
 //                        e.printStackTrace();
 //                    }
 //                    Toast.makeText(this,"VAdim",Toast.LENGTH_SHORT).show();
+//                    str+=textViewBarCode.getText().toString();
 //                    addProductToListView(str);
 //                    str="";
-//                    textViewTotalNumber.setText("");
+//                    textViewBarCode.setText("");
 //                    textViewScreenCalc.setFocusable(false);
 //                    textViewScreenCalc.setFocusableInTouchMode(false);
-//                    textViewTotalNumber.requestFocus();
-//                    return true;
+//                    textViewBarCode.requestFocus();
+//                    return super.onKeyUp(keyCode, event);
 //
 //                default:
-//                    textViewTotalNumber.requestFocus();
-//                    str +=  (char)event.getUnicodeChar();
+//                    textViewBarCode.requestFocus();
+//
 //
 //                    return super.onKeyUp(keyCode, event);
 //            }
-
-    }
+//
+//    }
 
 }
 
