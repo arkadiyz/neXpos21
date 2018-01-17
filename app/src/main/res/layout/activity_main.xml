@@ -102,6 +102,9 @@
                         android:layout_width="200dp"
                         android:layout_height="20dp"
                         android:id="@+id/textViewBarCode"
+                        android:focusable="true"
+                        android:focusableInTouchMode="true"
+                        android:inputType="text"
                         android:textSize="15sp"/>
 
                     <TextView
@@ -129,7 +132,7 @@
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentBottom="true"
                     android:textSize="30sp"
-                    android:inputType="text"
+
                     />
             </RelativeLayout>
 
@@ -145,12 +148,13 @@
 
             <TextView
                 android:id="@+id/textViewScreenCalc"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
                 android:layout_alignParentLeft="true"
                 android:layout_above="@+id/buttonBarCode"
                 android:layout_alignParentTop="true"
-                android:inputType="text"
                 android:textSize="25sp"
                 android:textColor="@color/colorblack"
                 android:background="@color/colorListView"
