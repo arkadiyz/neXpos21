@@ -135,17 +135,17 @@ public class MainActivity extends AppCompatActivity {
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 str=textViewBarCode.getText().toString();
                 textViewBarCode.setText("");
-                if(!str.isEmpty()) addProductToListView(str);
 
+                if(!str.isEmpty()){
+                    Product p=dataConfig.getProductByBarcode(str);
+                    addProductToListView2(p);
+                }
                 textViewScreenCalc.setFocusable(false);
                 textViewScreenCalc.setFocusableInTouchMode(false);
                 textViewBarCode.requestFocus();
 
                 onKeyUp(0, event);
                 return true;
-
-
-
 
 
             }
@@ -155,18 +155,8 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-
     }
-//    public void fucos(){
-//
-//        textViewScreenCalc.setFocusable(false);
-//        textViewScreenCalc.setFocusableInTouchMode(false);
-//        layout.setFocusable(false);
-//        layout.setFocusableInTouchMode(false);
-//        listViewSummary.setFocusable(false);
-//        listViewSummary.setFocusableInTouchMode(false);
-//        textViewTotalNumber.requestFocus();
-//    }
+
     //=======================================================
     public void calc_onClick(View view) {
         switch (view.getId())
@@ -272,8 +262,6 @@ public class MainActivity extends AppCompatActivity {
                     flag=false;
                 }
 
-
-
                 tempBut.setOnClickListener(new View.OnClickListener() {
 
 
@@ -317,6 +305,16 @@ public class MainActivity extends AppCompatActivity {
 
             productList.add(p);
             listViewSummary.setSelection(adapter.getCount()-1);
+
+    }
+
+    public void addProductToListView2(Product prod){
+
+
+        String price=prod.getPrice();
+        listViewSummary.setAdapter(adapter);
+        productList.add(prod);
+        listViewSummary.setSelection(adapter.getCount()-1);
 
     }
     //=======================================================
@@ -439,44 +437,6 @@ public class MainActivity extends AppCompatActivity {
     //=======================================================
 
 
-//    @Override
-//    public boolean onKeyUp(int keyCode, KeyEvent event) {
-//
-//
-//
-////                textViewTotalNumber.requestFocus();
-////
-////                return super.onKeyUp(keyCode, event);
-//
-//
-//
-//
-//            switch (keyCode) {
-//
-//                case 2:
-//                    try {
-//                        TimeUnit.SECONDS.sleep(2);
-//                    } catch (InterruptedException e) {
-//                        e.printStackTrace();
-//                    }
-//                    Toast.makeText(this,"VAdim",Toast.LENGTH_SHORT).show();
-//                    str+=textViewBarCode.getText().toString();
-//                    addProductToListView(str);
-//                    str="";
-//                    textViewBarCode.setText("");
-//                    textViewScreenCalc.setFocusable(false);
-//                    textViewScreenCalc.setFocusableInTouchMode(false);
-//                    textViewBarCode.requestFocus();
-//                    return super.onKeyUp(keyCode, event);
-//
-//                default:
-//                    textViewBarCode.requestFocus();
-//
-//
-//                    return super.onKeyUp(keyCode, event);
-//            }
-//
-//    }
 
 }
 

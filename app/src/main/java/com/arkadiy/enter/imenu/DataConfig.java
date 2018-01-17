@@ -83,27 +83,6 @@ public class DataConfig extends SQLiteOpenHelper {
 
 
 
-
-
-
-
-
-//    public List<Product> getListProduct() {
-//        Product product = null;
-//        List<Product> productList = new ArrayList<>();
-//        openDatabase();
-//        Cursor cursor = mDatabase.rawQuery("SELECT * FROM PRODUCT", null);
-//        cursor.moveToFirst();
-//        while (!cursor.isAfterLast()) {
-//            product = new Product(cursor.getInt(0), cursor.getString(1), cursor.getInt(2), cursor.getString(3));
-//            productList.add(product);
-//            cursor.moveToNext();
-//        }
-//        cursor.close();
-//        closeDatabase();
-//        return productList;
-//    }
-
 public ArrayList <String> getItemsGroup(){
     ArrayList<String> list=new ArrayList<>();
 
@@ -155,6 +134,46 @@ public ArrayList <String> getItemsGroup(){
 
         return itemsList;
     }
+
+
+
+
+    public void createItemIfNotExists(int id,String name, float price, String path, String barcode, int ig_id){
+        String item="INSERT OR REPLACE INTO items (_id, name, price, picture_path, barcode, ig_id) VALUES("+id+", '"
+                +name+"', "
+                +price+", '"
+                +path+"', '"
+                +barcode+"', "
+                +ig_id+")";
+
+        mDatabase.execSQL(item);
+    }
+
+    public Product getProductByBarcode(String barcode) {
+        Product p=null;
+        String str = "SELECT * FROM items " +
+                "WHERE barcode='" + barcode + "'";
+        Cursor cursor = mDatabase.rawQuery(str, null);
+        if (cursor.moveToFirst()) {
+            do {
+                String productName = cursor.getString(1);
+                float pr = cursor.getFloat(2);
+                String price = Float.toString(pr);
+                String picPath = cursor.getString(3);
+                String bar = cursor.getString(4);
+                String ig_id = cursor.getString(5);
+                int id = Integer.parseInt(ig_id);
+
+                p = new Product(productName, price, barcode, picPath, id);
+
+
+            } while (cursor.moveToNext());
+
+        }
+        return p;
+
+    }
+
 
 
 
