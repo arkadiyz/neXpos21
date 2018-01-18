@@ -1,14 +1,8 @@
 package com.arkadiy.enter.imenu;
-import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.AssetManager;
-import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.database.sqlite.SQLiteDatabase;
-import android.hardware.usb.UsbDevice;
-import android.hardware.usb.UsbManager;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
@@ -18,43 +12,27 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.GridLayout;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
-
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.Scanner;
-import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends AppCompatActivity {
     private String calcString="";
     private TextView textViewScreenCalc;
     private boolean ifHaveDot=false;
     private ListView listViewSummary;
-    private ArrayAdapter<String> listAdapter;
-
     private static final String general="כללי";
-    private Button btn_calc;
-    private String numCalc;
-    private TextView screenCalc;
     private ArrayList<Product> productList;
     private ArrayList<Product> itemsList;
     private LinkedList<String> lightDrinks;
@@ -64,16 +42,10 @@ public class MainActivity extends AppCompatActivity {
     private LinearLayout layout2=null;
     private  ArrayList<String> productName;
     private  ArrayList<String> categoryName;
-
     private static final String TAG = "MainActivity";
     private ProductListAdapter adapter;
     private Product p = null;
     private static DataConfig dataConfig=null;
-    //    private static SQLiteDatabase productsDB.db=null;
-    private static SimpleCursorAdapter cursorAdapter=null;
-    private static ListView listView=null;
-    private SQLiteDatabase productsDB=null;
-    private ArrayList<Product> categoryProductsList=null;
     private static int width = 150;// db convert to pixel
     private static int height = 80;// db convert to pixelh
     private TextView textViewBarCode;
@@ -151,8 +123,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
-
-
 
 
     }
@@ -296,16 +266,11 @@ public class MainActivity extends AppCompatActivity {
     }
     //========================================================
     public void addProductToListView(String name){
-
-
             String price=getPrice(name);
-
             p = new Product(name,"1",price);
             listViewSummary.setAdapter(adapter);
-
             productList.add(p);
             listViewSummary.setSelection(adapter.getCount()-1);
-
     }
 
     public void addProductToListView2(Product prod){

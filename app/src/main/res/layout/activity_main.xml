@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
 
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_alignParentLeft="true"
@@ -38,11 +39,11 @@
             android:layout_height="match_parent"
             android:id="@+id/relativeLayoutOrder"
             android:layout_above="@+id/relativeLayoutCalc"
-
             >
+
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="30dp"
+                android:layout_height="20dp"
                 android:id="@+id/relativeHederUnderHeder"
                 android:background="@color/colorHederFooter"
                 android:layout_marginBottom="4dp"
@@ -59,7 +60,8 @@
                         android:layout_height="wrap_content"
                         android:id="@+id/textViewAmount"
                         android:text="@string/amount"
-                        android:layout_centerHorizontal="true"/>
+                        android:layout_centerHorizontal="true"
+                        android:paddingRight="110dp"/>
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -70,7 +72,9 @@
                         android:paddingLeft="70dp"/>
 
             </RelativeLayout>
+
             <ListView
+
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:id="@+id/listViewSummary"
@@ -80,11 +84,12 @@
 
                 >
 
+
             </ListView>
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="55dp"
+                android:layout_height="45dp"
                 android:id="@+id/relativeLayoutSummary"
                 android:background="@color/colorListView"
                 android:layout_marginTop="4dp"
@@ -118,7 +123,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-
+                        android:paddingRight="110dp"
                         android:layout_centerHorizontal="true"
                         android:text="test"
                         android:id="@+id/textView" />
@@ -134,8 +139,24 @@
                     android:textSize="30sp"
 
                     />
-            </RelativeLayout>
 
+            </RelativeLayout>
+            <View
+                android:layout_width="5dp"
+                android:layout_height="match_parent"
+                android:layout_marginRight="270dp"
+                android:background="@color/colorHederFooter"
+                tools:ignore="UnknownId"
+                android:paddingTop="10dp"
+                android:layout_marginBottom="4dp"/>
+            <View
+                android:layout_width="5dp"
+                android:layout_height="match_parent"
+                android:layout_marginRight="380dp"
+                android:background="@color/colorHederFooter"
+                tools:ignore="UnknownId"
+                android:paddingTop="5dp"
+                android:layout_marginBottom="4dp"/>
         </RelativeLayout>
         <RelativeLayout
             android:layout_width="match_parent"
@@ -146,69 +167,85 @@
             android:layout_above="@+id/relattiveLayoutLFastManPayment"
             >
 
+
             <TextView
                 android:id="@+id/textViewScreenCalc"
                 android:focusable="false"
                 android:focusableInTouchMode="false"
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
+                android:layout_height="match_parent"
                 android:layout_alignParentLeft="true"
                 android:layout_above="@+id/buttonBarCode"
                 android:layout_alignParentTop="true"
                 android:textSize="25sp"
                 android:textColor="@color/colorblack"
                 android:background="@color/colorListView"
-                android:layout_marginTop="5dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginTop="2dp"
                 />
             <ImageButton
                 android:layout_width="match_parent"
-                android:layout_height="32dp"
+                android:layout_height="22dp"
                 android:id="@+id/buttonBarCode"
                 android:layout_above="@+id/buttonPromotional"
                 android:layout_marginBottom="5dip"
+                android:layout_marginLeft="2dp"
+                android:layout_marginRight="-2dip"
                 android:layout_marginTop="5dp"
                 android:src="@drawable/barcode"/>
             <ImageButton
                 android:layout_width="90dp"
-                android:layout_height="64dp"
+                android:layout_height="54dp"
                 android:id="@+id/buttonPromotional"
                 android:layout_alignParentLeft="true"
                 android:layout_above="@+id/buttonCash"
+                android:layout_marginLeft="2dp"
+                android:layout_marginRight="2.5dp"
                 android:src="@drawable/promo"/>
             <ImageButton
                 android:layout_width="96dp"
-                android:layout_height="64dp"
+                android:layout_height="54dp"
                 android:id="@+id/buttonAssumption"
 
                 android:layout_above="@+id/buttonCash"
                 android:layout_toRightOf="@+id/buttonPromotional"
-                android:src="@drawable/assum"/>
+                android:src="@drawable/assum"
+                android:layout_marginLeft="2.5dp"
+                android:layout_marginRight="1dp"
+                />
 
             <Button
                 android:layout_width="match_parent"
-                android:layout_height="64dp"
+                android:layout_height="54dp"
                 android:id="@+id/buttonCash"
                 android:text="מזומן"
                 android:textSize="25sp"
 
                 android:layout_above="@+id/buttonCredit"
+                android:layout_marginLeft="2dp"
+                android:layout_marginRight="-3dip"
                 android:layout_marginBottom="-10dip"
                 />
             <Button
                 android:layout_width="match_parent"
-                android:layout_height="64dp"
+                android:layout_height="54dp"
                 android:id="@+id/buttonCredit"
                 android:layout_marginBottom="-3dip"
                 android:layout_alignParentBottom="true"
                 android:textSize="25sp"
                 android:text="אשראי"
+                android:layout_marginLeft="2dp"
+                android:layout_marginRight="-3dip"
+
+
+
                 />
 
         </RelativeLayout>
         <RelativeLayout
             android:id="@+id/relativeLayoutCalc"
             android:layout_width="300dp"
-            android:layout_height="265dp"
+            android:layout_height="230dp"
             android:layout_above="@+id/relattiveLayoutLFastManPayment"
             android:layout_alignParentLeft="true"
             >
@@ -216,7 +253,7 @@
             <ImageButton
                 android:id="@+id/button0"
                 android:layout_width="147dp"
-                android:layout_height="64dp"
+                android:layout_height="54dp"
                 android:layout_alignParentBottom="true"
                 android:layout_alignParentLeft="true"
                 android:src="@drawable/calc_0"
@@ -228,18 +265,19 @@
             <ImageButton
                 android:id="@+id/buttonDot"
                 android:layout_width="72dp"
-                android:layout_height="64dp"
+                android:layout_height="54dp"
                 android:layout_alignLeft="@+id/button3"
                 android:layout_alignParentBottom="true"
                 android:src="@drawable/calc_dot"
                 android:layout_marginBottom="3dp"
                 android:onClick="calc_onClick"
+                android:paddingBottom="30dp"
                 android:textSize="25sp" />
 
             <ImageButton
                 android:id="@+id/buttonEnter"
                 android:layout_width="72dp"
-                android:layout_height="131dp"
+                android:layout_height="111dp"
                 android:layout_alignLeft="@+id/buttonX"
                 android:layout_alignParentBottom="true"
                 android:src="@drawable/calc_ok"
@@ -250,7 +288,7 @@
             <ImageButton
                 android:id="@+id/button1"
                 android:layout_width="72dp"
-                android:layout_height="64dp"
+                android:layout_height="54dp"
                 android:layout_above="@+id/button0"
                 android:layout_alignParentLeft="true"
                 android:src="@drawable/calc_1"
@@ -262,7 +300,7 @@
             <ImageButton
                 android:id="@+id/button2"
                 android:layout_width="72dp"
-                android:layout_height="64dp"
+                android:layout_height="54dp"
                 android:layout_above="@+id/button0"
                 android:layout_toRightOf="@+id/button1"
                 android:src="@drawable/calc_2"
@@ -274,7 +312,7 @@
             <ImageButton
                 android:id="@+id/button3"
                 android:layout_width="72dp"
-                android:layout_height="64dp"
+                android:layout_height="54dp"
                 android:layout_above="@+id/button0"
                 android:layout_toRightOf="@+id/button2"
                 android:src="@drawable/calc_3"
@@ -285,7 +323,7 @@
             <ImageButton
                 android:id="@+id/button4"
                 android:layout_width="72dp"
-                android:layout_height="64dp"
+                android:layout_height="54dp"
                 android:layout_above="@+id/button1"
                 android:layout_alignParentLeft="true"
                 android:layout_marginBottom="3dp"
@@ -296,7 +334,7 @@
             <ImageButton
                 android:id="@+id/button5"
                 android:layout_width="72dp"
-                android:layout_height="64dp"
+                android:layout_height="54dp"
                 android:layout_above="@+id/button2"
                 android:layout_toRightOf="@+id/button1"
                 android:src="@drawable/calc_5"
@@ -307,7 +345,7 @@
             <ImageButton
                 android:id="@+id/button6"
                 android:layout_width="72dp"
-                android:layout_height="64dp"
+                android:layout_height="54dp"
                 android:layout_above="@+id/button3"
                 android:layout_toRightOf="@+id/button5"
                 android:src="@drawable/calc_6"
@@ -318,7 +356,7 @@
             <ImageButton
                 android:id="@+id/button7"
                 android:layout_width="72dp"
-                android:layout_height="64dp"
+                android:layout_height="54dp"
                 android:layout_above="@+id/button4"
                 android:layout_alignParentLeft="true"
                 android:src="@drawable/calc_7"
@@ -330,7 +368,7 @@
             <ImageButton
                 android:id="@+id/button8"
                 android:layout_width="72dp"
-                android:layout_height="64dp"
+                android:layout_height="54dp"
                 android:layout_above="@+id/button5"
                 android:layout_toRightOf="@+id/button7"
                 android:src="@drawable/calc_8"
@@ -342,7 +380,7 @@
             <ImageButton
                 android:id="@+id/button9"
                 android:layout_width="72dp"
-                android:layout_height="64dp"
+                android:layout_height="54dp"
                 android:layout_above="@+id/button6"
                 android:layout_toRightOf="@+id/button8"
                 android:src="@drawable/calc_9"
@@ -353,7 +391,7 @@
             <ImageButton
                 android:id="@+id/buttonC"
                 android:layout_width="72dp"
-                android:layout_height="64dp"
+                android:layout_height="54dp"
                 android:layout_alignLeft="@+id/buttonX"
                 android:layout_alignTop="@+id/button9"
                 android:layout_above="@+id/buttonX"
@@ -365,7 +403,7 @@
             <ImageButton
                 android:id="@+id/buttonX"
                 android:layout_width="72dp"
-                android:layout_height="64dp"
+                android:layout_height="54dp"
                 android:layout_below="@+id/button9"
                 android:layout_toRightOf="@+id/button3"
                 android:src="@drawable/cac_x"
@@ -375,7 +413,7 @@
         </RelativeLayout>
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="70dp"
+            android:layout_height="40dp"
             android:layout_alignParentBottom="true"
             android:id="@+id/relattiveLayoutLFastManPayment"
             android:background="@color/colorListView"
@@ -409,12 +447,13 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@color/colorListView"
+            android:orientation="vertical"
+
             >
             <GridLayout
                 android:id="@+id/gridLayoutCategory"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-
                 android:columnCount="3"
                 android:background="@color/colorListView"
 
