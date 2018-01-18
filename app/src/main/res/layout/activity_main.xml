@@ -468,7 +468,12 @@
             android:layout_height="465dp"
             android:layout_alignParentBottom="true"
             android:id="@+id/relativeLayoutItem"
+            android:background="@color/colorListView"
             >
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
 
             <GridLayout
                 android:id="@+id/gridLayoutItem"
@@ -476,13 +481,12 @@
                 android:layout_height="465dp"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentTop="true"
-                android:background="@color/colorListView"
                 android:columnCount="3"
                 >
 
 
             </GridLayout>
-
+    </ScrollView>
         </RelativeLayout>
         <RelativeLayout
             android:layout_width="match_parent"

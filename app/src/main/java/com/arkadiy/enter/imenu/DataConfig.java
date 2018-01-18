@@ -147,7 +147,13 @@ public ArrayList <String> getItemsGroup(){
                 +barcode+"', "
                 +ig_id+")";
 
-        mDatabase.execSQL(item);
+        try {
+            mDatabase.execSQL(item);
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        }
     }
     public void createCategoryIfNotExists(int id , String name , String picturePath , int active)
     {
@@ -155,7 +161,14 @@ public ArrayList <String> getItemsGroup(){
                 +name+"', '"
                 +picturePath+"', "
                 +active+")";
-        mDatabase.execSQL(group);
+        try {
+            mDatabase.execSQL(group);
+        }
+            catch(Exception e)
+            {
+                e.printStackTrace();
+            }
+
     }
 
     public Product getProductByBarcode(String barcode) {

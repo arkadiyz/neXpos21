@@ -455,38 +455,40 @@ public class MainActivity extends AppCompatActivity implements Callbacks
     //=======================================================
     public void updateServer()
     {
-//        serverWork=new ServerWork(this);
-//
-//
-//        String userName = "admin";
-//        String pasword = "admin";
-        String link = "http://81.218.206.83:12985/datasnap/rest/tservermethods1/syncserver/0/admin/admin/1/";
-//        serverWork.execute(link);
         PostSender postSender = new PostSender(this);
-        postSender.execute(link);
+        postSender.execute();
     }
 
 
     @Override
     public void onAboutToStart() {
-        progressDialog=new ProgressDialog(this);
-        progressDialog.setTitle("Downloading...");
-        progressDialog.setMessage("Please Wait...");
-        progressDialog.show();
+//        progressDialog=new ProgressDialog(this);
+//        progressDialog.setTitle("Downloading...");
+//        progressDialog.setMessage("Please Wait...");
+//        progressDialog.show();
     }
 
-    @Override
+
+        @Override
     public void onSuccess(String downloadedText) {
 
-        try{
-            JSONObject jsonObject;
+        if(downloadedText.equals("yes"))
+            return;
+        else{
+            DataBaseFiller dataBaseFiller=new DataBaseFiller(this,this);
+            dataBaseFiller.execute(downloadedText);
+        }
+        return;
 
-            jsonObject =new JSONObject(downloadedText);
-            JSONObject result=jsonObject.getJSONArray("result").getJSONObject(0);
-            JSONArray zones=result.getJSONArray("itemgroups");
-            JSONArray itemGroups = null;
-
-
+//        try{
+//            JSONObject jsonObject;
+//
+//            jsonObject =new JSONObject(downloadedText);
+//            JSONObject result=jsonObject.getJSONArray("result").getJSONObject(0);
+//            JSONArray zones=result.getJSONArray("itemgroups");
+//            JSONArray itemGroups = null;
+//
+//
 //            for (int i = 1; i < zones.length(); i++) {
 //                itemGroups=zones.getJSONArray(i);
 //                int id = Integer.parseInt( itemGroups.getString(0));
@@ -498,31 +500,29 @@ public class MainActivity extends AppCompatActivity implements Callbacks
 //
 //
 //            }
-
-            JSONArray itemsArray=result.getJSONArray("items");
-            JSONArray item = null;
-
-            for (int i = 1; i < itemsArray.length(); i++) {
-                item=itemsArray.getJSONArray(i);
-                int id = Integer.parseInt( item.getString(0));//id
-                String name = item.getString(1);//name
-                String itemsGroupId = item.getString(2);
-                int ig_id=Integer.parseInt(itemsGroupId);//ig_id
-                String pr=item.getString(3);
-                float price=Float.parseFloat(pr);//price
-
-
-                dataConfig.createItemIfNotExists(id,name,price,null,null,ig_id);
-
-
-            }
-
-        }catch(JSONException ex){
-            ex.fillInStackTrace();
-        }
-        progressDialog.dismiss();
-
-
+//
+//            JSONArray itemsArray=result.getJSONArray("items");
+//            JSONArray item = null;
+//
+//            for (int j = 1; j < itemsArray.length(); j++) {
+//                item=itemsArray.getJSONArray(j);
+//                int id = Integer.parseInt( item.getString(0));//id
+//                String name = item.getString(1);//name
+//                String itemsGroupId = item.getString(2);
+//                int ig_id=Integer.parseInt(itemsGroupId);//ig_id
+//                String pr=item.getString(3);
+//                float price=Float.parseFloat(pr);//price
+//
+//
+//                dataConfig.createItemIfNotExists(id,name,price,null,null,ig_id);
+//
+//
+//            }
+//
+//        }catch(JSONException ex){
+//            ex.fillInStackTrace();
+//        }
+//        progressDialog.dismiss();
 
     }
 
