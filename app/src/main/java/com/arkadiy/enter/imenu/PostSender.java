@@ -1,6 +1,7 @@
 package com.arkadiy.enter.imenu;
 
 import android.annotation.TargetApi;
+import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
@@ -12,6 +13,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.net.Authenticator;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -30,6 +32,7 @@ public class PostSender extends AsyncTask<String,Void,String> {
 
 
     public PostSender(Callbacks listener) {
+
         this.listener = listener;
     }
 
@@ -63,12 +66,12 @@ public class PostSender extends AsyncTask<String,Void,String> {
 
             String authString = name + ":" + password;
             System.out.println("auth string: " + authString);
-            String authStringEnc = Base64.getEncoder().encodeToString((name + ":" + password).getBytes(StandardCharsets.UTF_8));
-            System.out.println("Base64 encoded auth string: " + authStringEnc);
+//            String authStringEnc = Base64.getEncoder().encodeToString((name + ":" + password).getBytes(StandardCharsets.UTF_8));
+            System.out.println("Base64 encoded auth string: " + "YWRtaW46YWRtaW4=");
 
             URL url = new URL(webPage);
             URLConnection urlConnection = url.openConnection();
-            urlConnection.setRequestProperty("Authorization", "Basic " + authStringEnc);
+            urlConnection.setRequestProperty("Authorization", "Basic " + "YWRtaW46YWRtaW4=");
             InputStream is = urlConnection.getInputStream();
             InputStreamReader isr = new InputStreamReader(is);
 
@@ -81,12 +84,15 @@ public class PostSender extends AsyncTask<String,Void,String> {
             result = sb.toString();
 
 
+
         } catch (MalformedURLException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
+
         return result;
+
     }
 
 
@@ -100,6 +106,4 @@ public class PostSender extends AsyncTask<String,Void,String> {
         }
     }
 }
-
-
 

@@ -35,6 +35,7 @@ public class DataConfig extends SQLiteOpenHelper {
 
     }
 
+
     @Override
     public void onCreate(SQLiteDatabase db) {
 
@@ -147,6 +148,14 @@ public ArrayList <String> getItemsGroup(){
                 +ig_id+")";
 
         mDatabase.execSQL(item);
+    }
+    public void createCategoryIfNotExists(int id , String name , String picturePath , int active)
+    {
+        String group="INSERT OR REPLACE INTO itemsGroup (_id, name, picture_path, active) VALUES("+id+", '"
+                +name+"', '"
+                +picturePath+"', "
+                +active+")";
+        mDatabase.execSQL(group);
     }
 
     public Product getProductByBarcode(String barcode) {

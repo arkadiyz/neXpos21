@@ -1,8 +1,15 @@
 package com.arkadiy.enter.imenu;
+import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.AssetManager;
+import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.database.sqlite.SQLiteDatabase;
+import android.hardware.usb.UsbDevice;
+import android.hardware.usb.UsbManager;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
@@ -12,27 +19,49 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.GridLayout;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
+
 import java.io.OutputStream;
+import java.security.PrivateKey;
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.Scanner;
+import java.util.concurrent.TimeUnit;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements Callbacks
+{
     private String calcString="";
     private TextView textViewScreenCalc;
     private boolean ifHaveDot=false;
     private ListView listViewSummary;
+    private ArrayAdapter<String> listAdapter;
+
     private static final String general="כללי";
+    private Button btn_calc;
+    private String numCalc;
+    private TextView screenCalc;
     private ArrayList<Product> productList;
     private ArrayList<Product> itemsList;
     private LinkedList<String> lightDrinks;
@@ -42,10 +71,16 @@ public class MainActivity extends AppCompatActivity {
     private LinearLayout layout2=null;
     private  ArrayList<String> productName;
     private  ArrayList<String> categoryName;
+
     private static final String TAG = "MainActivity";
     private ProductListAdapter adapter;
     private Product p = null;
     private static DataConfig dataConfig=null;
+    //    private static SQLiteDatabase productsDB.db=null;
+    private static SimpleCursorAdapter cursorAdapter=null;
+    private static ListView listView=null;
+    private SQLiteDatabase productsDB=null;
+    private ArrayList<Product> categoryProductsList=null;
     private static int width = 150;// db convert to pixel
     private static int height = 80;// db convert to pixelh
     private TextView textViewBarCode;
@@ -53,7 +88,10 @@ public class MainActivity extends AppCompatActivity {
     private int butWidth=0;
     private int butHeight=0;
     private double sizeScreen;
+    private ServerWork serverWork=null;
     private String str = "";
+    private Button serverButton=null;
+    private ProgressDialog progressDialog;
 
 
     @Override
@@ -62,8 +100,13 @@ public class MainActivity extends AppCompatActivity {
         Log.d(TAG, "onCreate: Started");
         setContentView(R.layout.activity_main);
         SharedPreferences prefs = null;
-
-
+        serverButton=(Button)findViewById(R.id.btnUpData);
+        serverButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                updateServer();
+            }
+        });
         textViewScreenCalc = (TextView) findViewById(R.id.textViewScreenCalc);
         listViewSummary = (ListView) findViewById(R.id.listViewSummary);
         productList = new ArrayList<Product>();
@@ -71,7 +114,7 @@ public class MainActivity extends AppCompatActivity {
         dataConfig = new DataConfig(MainActivity.this);
         adapter = new ProductListAdapter(this, R.layout.adapter_view_layout, productList);
         listViewSummary.setAdapter(adapter);
-
+        prefs = getSharedPreferences("com.arkadiy.enter.imenu", MODE_PRIVATE);
         productName = new ArrayList<>();
         categoryName = new ArrayList<>();
 
@@ -81,13 +124,16 @@ public class MainActivity extends AppCompatActivity {
         }
 
         dataConfig.openDatabase();
+        if(prefs.getBoolean("firstrun", true)) //checks if app runs first time
+        {
+            if (copyDatabase(this)) {
+                Toast.makeText(this, "Copy database succes", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, "Copy data error", Toast.LENGTH_SHORT).show();
 
-        if (copyDatabase(this)) {
-            Toast.makeText(this, "Copy database succes", Toast.LENGTH_SHORT).show();
-        } else {
-            Toast.makeText(this, "Copy data error", Toast.LENGTH_SHORT).show();
-
+            }
         }
+        prefs.edit().putBoolean("firstrun", false).commit();
 
 
         categoryName = dataConfig.getItemsGroup();
@@ -123,6 +169,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+
+
 
 
     }
@@ -266,11 +314,16 @@ public class MainActivity extends AppCompatActivity {
     }
     //========================================================
     public void addProductToListView(String name){
+
+
             String price=getPrice(name);
+
             p = new Product(name,"1",price);
             listViewSummary.setAdapter(adapter);
+
             productList.add(p);
             listViewSummary.setSelection(adapter.getCount()-1);
+
     }
 
     public void addProductToListView2(Product prod){
@@ -400,9 +453,90 @@ public class MainActivity extends AppCompatActivity {
 
         }
     //=======================================================
+    public void updateServer()
+    {
+//        serverWork=new ServerWork(this);
+//
+//
+//        String userName = "admin";
+//        String pasword = "admin";
+        String link = "http://81.218.206.83:12985/datasnap/rest/tservermethods1/syncserver/0/admin/admin/1/";
+//        serverWork.execute(link);
+        PostSender postSender = new PostSender(this);
+        postSender.execute(link);
+    }
+
+
+    @Override
+    public void onAboutToStart() {
+        progressDialog=new ProgressDialog(this);
+        progressDialog.setTitle("Downloading...");
+        progressDialog.setMessage("Please Wait...");
+        progressDialog.show();
+    }
+
+    @Override
+    public void onSuccess(String downloadedText) {
+
+        try{
+            JSONObject jsonObject;
+
+            jsonObject =new JSONObject(downloadedText);
+            JSONObject result=jsonObject.getJSONArray("result").getJSONObject(0);
+            JSONArray zones=result.getJSONArray("itemgroups");
+            JSONArray itemGroups = null;
+
+
+//            for (int i = 1; i < zones.length(); i++) {
+//                itemGroups=zones.getJSONArray(i);
+//                int id = Integer.parseInt( itemGroups.getString(0));
+//                String name = itemGroups.getString(1);
+//                String picturPath = itemGroups.getString(2);
+//                int active = Integer.parseInt(itemGroups.getString(3));
+//
+//                dataConfig.createCategoryIfNotExists(id,name,picturPath,active);
+//
+//
+//            }
+
+            JSONArray itemsArray=result.getJSONArray("items");
+            JSONArray item = null;
+
+            for (int i = 1; i < itemsArray.length(); i++) {
+                item=itemsArray.getJSONArray(i);
+                int id = Integer.parseInt( item.getString(0));//id
+                String name = item.getString(1);//name
+                String itemsGroupId = item.getString(2);
+                int ig_id=Integer.parseInt(itemsGroupId);//ig_id
+                String pr=item.getString(3);
+                float price=Float.parseFloat(pr);//price
+
+
+                dataConfig.createItemIfNotExists(id,name,price,null,null,ig_id);
+
+
+            }
+
+        }catch(JSONException ex){
+            ex.fillInStackTrace();
+        }
+        progressDialog.dismiss();
 
 
 
+    }
+
+    @Override
+    public void onReportProgress(int progress) {
+
+    }
+
+    @Override
+    public void onError(int httpStatusCode, String errorMessage) {
+        progressDialog.dismiss();
+
+        int x=httpStatusCode;
+    }
 }
 
 
