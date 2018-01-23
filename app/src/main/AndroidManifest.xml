@@ -4,6 +4,7 @@
     xmlns:product="http://schemas.android.com/tools"
     package="com.arkadiy.enter.imenu">
     <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-feature android:name="android.hardware.usb.host"/>
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         android:maxSdkVersion="18"
@@ -23,6 +24,9 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
+                <action android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED" />
+                <action android:name="android.hardware.usb.action.USB_DEVICE_DETACHED" />
+                <!--<meta-data android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED" android:resource="@xml/devices"/>-->
             </intent-filter>
 
 

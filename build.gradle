@@ -8,6 +8,7 @@ buildscript {
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.0.1'
+        classpath 'me.tatarka:gradle-retrolambda:3.2.4'
 
 
 
@@ -20,6 +21,9 @@ allprojects {
     repositories {
         google()
         jcenter()
+        mavenCentral()
+        maven { url 'http://repo.spring.io/milestone' }
+        maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
     }
 }
 

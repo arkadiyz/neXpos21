@@ -1,0 +1,3 @@
+<resources>
+    <usb-device product-id="30016" vendor-id="1155" /> <!-- VID: 0x5011 PID: 0x0416 - Winbond Electronics Corp. -->
+</resources>
