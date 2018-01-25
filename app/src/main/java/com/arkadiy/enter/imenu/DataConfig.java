@@ -36,31 +36,6 @@ public class DataConfig extends SQLiteOpenHelper {
     }
 
 
-    @Override
-    public void onCreate(SQLiteDatabase db) {
-
-    }
-
-    @Override
-    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-
-    }
-
-    public void openDatabase() {
-        String dbPath = mContext.getDatabasePath(DBNAME).getPath();
-        if(mDatabase != null && mDatabase.isOpen()) {
-            return;
-        }
-        mDatabase = SQLiteDatabase.openDatabase(dbPath, null, SQLiteDatabase.OPEN_READWRITE);
-    }
-
-    public void closeDatabase() {
-        if(mDatabase!=null) {
-            mDatabase.close();
-        }
-    }
-
-
 
 
     public ArrayList<String> getDataFromDataBase(String categoryName){
@@ -84,27 +59,27 @@ public class DataConfig extends SQLiteOpenHelper {
 
 
 
-public ArrayList <String> getItemsGroup(){
-    ArrayList<String> list=new ArrayList<>();
+    public ArrayList <String> getItemsGroup(){
+        ArrayList<String> list=new ArrayList<>();
 
-    String bla=getDatabaseName();
-    String s= mDatabase.toString();
-    Cursor cursor=mDatabase.rawQuery(  "select * from itemsGroup",null);
+        String bla=getDatabaseName();
+        String s= mDatabase.toString();
+        Cursor cursor=mDatabase.rawQuery(  "select * from itemsGroup",null);
 
 
-    if(cursor.moveToFirst())
-    {
-        String record="";
-        do{
-            record=String.format("%s",cursor.getString(1));
-            list.add(record);
-            record="";
+        if(cursor.moveToFirst())
+        {
+            String record="";
+            do{
+                record=String.format("%s",cursor.getString(1));
+                list.add(record);
+                record="";
 
-        }while(cursor.moveToNext());
+            }while(cursor.moveToNext());
+        }
+
+        return list;
     }
-
-    return list;
-}
 
 
 
@@ -119,13 +94,13 @@ public ArrayList <String> getItemsGroup(){
         if(cursor.moveToFirst())
         {
             do{
-                 String productName=cursor.getString(1);
-                 float p=cursor.getFloat(2);
-                 String price=Float.toString(p);
+                String productName=cursor.getString(1);
+                float p=cursor.getFloat(2);
+                String price=Float.toString(p);
                 String picPath=cursor.getString(3);
                 String barcode=cursor.getString(4);
-                 String ig_id=cursor.getString(5);
-                 int id=Integer.parseInt(ig_id);
+                String ig_id=cursor.getString(5);
+                int id=Integer.parseInt(ig_id);
 
                 item=new Product(productName,price,barcode,picPath,id);
                 itemsList.add(item);
@@ -164,10 +139,10 @@ public ArrayList <String> getItemsGroup(){
         try {
             mDatabase.execSQL(group);
         }
-            catch(Exception e)
-            {
-                e.printStackTrace();
-            }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        }
 
     }
 
@@ -194,6 +169,31 @@ public ArrayList <String> getItemsGroup(){
         }
         return p;
 
+    }
+
+
+    @Override
+    public void onCreate(SQLiteDatabase db) {
+
+    }
+
+    @Override
+    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+
+    }
+
+    public void openDatabase() {
+        String dbPath = mContext.getDatabasePath(DBNAME).getPath();
+        if(mDatabase != null && mDatabase.isOpen()) {
+            return;
+        }
+        mDatabase = SQLiteDatabase.openDatabase(dbPath, null, SQLiteDatabase.OPEN_READWRITE);
+    }
+
+    public void closeDatabase() {
+        if(mDatabase!=null) {
+            mDatabase.close();
+        }
     }
 
 

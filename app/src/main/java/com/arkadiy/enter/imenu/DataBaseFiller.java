@@ -48,9 +48,9 @@ public class DataBaseFiller extends AsyncTask<String,Void,Boolean> {
                 int active=1;
                 itemGroups = zones.getJSONArray(i);
                 if(!itemGroups.getString(0).equals(""))
-                 id = Integer.parseInt(itemGroups.getString(0));
+                    id = Integer.parseInt(itemGroups.getString(0));
 
-                    String name = itemGroups.getString(1);
+                String name = itemGroups.getString(1);
                 String picturPath = itemGroups.getString(2);
 
                 if(!itemGroups.getString(3).equals(""))
@@ -83,14 +83,9 @@ public class DataBaseFiller extends AsyncTask<String,Void,Boolean> {
                 if(!item.getString(3).equals(""))
                 {
                     String pr = item.getString(3);
-                     price = Float.parseFloat(pr);//price
+                    price = Float.parseFloat(pr);//price
 
                 }
-if(j>=799)
-{
-    int xx=0;
-    int rr=8;
-}
 
 
                 dataConfig.createItemIfNotExists(id, name, price, null, null, ig_id);
@@ -116,9 +111,3 @@ if(j>=799)
     }
 
 }
-
-
-
-
-
-

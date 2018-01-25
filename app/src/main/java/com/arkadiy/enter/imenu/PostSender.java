@@ -42,9 +42,7 @@ public class PostSender extends AsyncTask<String,Void,String> {
 
     }
 
-    //Runs in separate thread and cannot talk to the UI thread
-    @TargetApi(Build.VERSION_CODES.O)
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+
     @Override
     protected String doInBackground(String... params) {
         int lastPercentReported = 0;
@@ -60,7 +58,7 @@ public class PostSender extends AsyncTask<String,Void,String> {
 
 
         try {
-            String webPage = "http://81.218.206.83:12985/datasnap/rest/tservermethods1/syncserver/0/admin/admin/1/";
+            String webPage = "http://81.218.206.83:12985/datasnap/rest/tservermethods1/syncserver/0/admin/admin/1/24%2f01%2f2018 10:00:00";
             String name = "admin";
             String password = "admin";
 
@@ -106,4 +104,3 @@ public class PostSender extends AsyncTask<String,Void,String> {
         }
     }
 }
-

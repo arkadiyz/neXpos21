@@ -105,12 +105,7 @@ public class MainActivity extends AppCompatActivity implements Callbacks {
         setContentView(R.layout.activity_main);
         SharedPreferences prefs = null;
         serverButton = (Button) findViewById(R.id.btnUpData);
-        serverButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                updateServer();
-            }
-        });
+
         textViewScreenCalc = (TextView) findViewById(R.id.textViewScreenCalc);
         listViewSummary = (ListView) findViewById(R.id.listViewSummary);
         productList = new ArrayList<Product>();
@@ -159,6 +154,7 @@ public class MainActivity extends AppCompatActivity implements Callbacks {
 
                 if (!str.isEmpty()) {
                     Product p = dataConfig.getProductByBarcode(str);
+                    if(p!=null)
                     addProductToListView2(p);
                 }
                 textViewScreenCalc.setFocusable(false);
@@ -185,9 +181,10 @@ public class MainActivity extends AppCompatActivity implements Callbacks {
         s = "ארקדי הלך לניורופידבק ויחזור עוד איזה שעה וחצי";
 
         this.printerManager = PrinterManager_.getInstance_(this);
-
+ServerUpdate serverUpdate=new ServerUpdate(this);
 
     }
+
 
     //=======================================================
     public void calc_onClick(View view) {
@@ -253,7 +250,6 @@ public class MainActivity extends AppCompatActivity implements Callbacks {
                 ifHaveDot = false;
 //                printerManager.printJob(new PrinterJob(s));
 //                printerManager.printJob(new PrinterJob("\n"));
-                printReceipt();
                 break;
         }
 
@@ -474,10 +470,7 @@ public class MainActivity extends AppCompatActivity implements Callbacks {
     }
 
     //=======================================================
-    public void updateServer() {
-        PostSender postSender = new PostSender(this);
-        postSender.execute();
-    }
+
 
 
     @Override
@@ -533,22 +526,7 @@ public class MainActivity extends AppCompatActivity implements Callbacks {
         super.onPause();
     }
 
-
-    private void printReceipt() {
-        for (Product product : productList) {
-            {
-                printerManager.printJob(new PrinterJob(product.getProductName()));
-                printerManager.printJob(new PrinterJob("\n"));
-
-            }
-
-        }
-    }
-
 }
-
-
-
 
 
 
