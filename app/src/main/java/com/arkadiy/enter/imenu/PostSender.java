@@ -58,7 +58,7 @@ public class PostSender extends AsyncTask<String,Void,String> {
 
 
         try {
-            String webPage = "http://81.218.206.83:12985/datasnap/rest/tservermethods1/syncserver/0/admin/admin/1/30%2f01%2f2018 08:00:00";
+            String webPage = "http://81.218.206.83:12985/datasnap/rest/tservermethods1/syncserver/0/admin/admin/1/24%2f01%2f2018 10:00:00";
             String name = "admin";
             String password = "admin";
 

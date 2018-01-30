@@ -118,8 +118,7 @@ private  char[]x={0x1D,0x56,0x41,0x10};
                   break;
                 }
               }
-              cut=new String(x);
-              executePrintJob(currentConnection,new PrinterJob(cut));
+
 
 
 
@@ -144,38 +143,34 @@ private  char[]x={0x1D,0x56,0x41,0x10};
 
     byte[]b=new byte[job.text.length()];
 
-    if(cut==""){
-
     b=hebrewString(job.text,b);
 
-
-   }else{
-      b=cut.getBytes();
-    }
-
-cut="";
     return printerConnection.active && printerConnection.connection.bulkTransfer(
             printerConnection.endPoint, b, b.length, bulkModeTimeout) >= 0;
   }
 
   private byte[] hebrewString(String s, byte[] bytes){
 
-    for (int i = s.length()-1,j=0; i>=0; i--,j++) {
+    for (int i = 0 ; i <= s.length()-1; i++) {
       int x=(int)s.charAt(i);
-      if(x!=32 && x!=10)
+      if(checkingLetters((char)x))
       {
-        bytes[j]=(byte)x;
-        bytes[j]-=1360;
+        bytes[i]=(byte)x;
+        bytes[i]-=1360;
       }
       else
       {
-        bytes[j]=(byte)x;
+        bytes[i]=(byte)x;
       }
 
     }
     return bytes;
   }
-
+  private boolean checkingLetters(char ch){
+    if(ch >= 1488 && ch <= 1514) // if char in hebrew
+      return true;
+    return false;
+  }
   private PrinterConnection getAndOpenPrinterConnection() {
     PrinterConnection printerConnection = null;
     if (usbManager.hasPermission(usbDevice)) {

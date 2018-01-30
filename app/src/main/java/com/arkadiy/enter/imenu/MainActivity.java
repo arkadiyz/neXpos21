@@ -19,6 +19,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 
+import android.print.PrintManager;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
@@ -123,7 +124,7 @@ public class MainActivity extends AppCompatActivity implements Callbacks {
     public Handler handler2;
     public int butWidthOrders;
     public int butHeightOrders;
-
+    private PrintReceipt printReceipt;
     private Handler handler;
 
     private Button plus;
@@ -242,7 +243,7 @@ public class MainActivity extends AppCompatActivity implements Callbacks {
         s = "ארקדי הלך לניורופידבק ויחזור עוד איזה שעה וחצי";
 
         this.printerManager = PrinterManager_.getInstance_(this);
-ServerUpdate serverUpdate=new ServerUpdate(this);
+        ServerUpdate serverUpdate=new ServerUpdate(this);
 
 
         orderUpdater=new Thread(new Runnable() {
@@ -356,13 +357,16 @@ ServerUpdate serverUpdate=new ServerUpdate(this);
                 calcString = "";
                 textViewScreenCalc.setText(calcString);
                 ifHaveDot = false;
+                printReceipt();
 //                printerManager.printJob(new PrinterJob(s));
 //                printerManager.printJob(new PrinterJob("\n"));
                 break;
         }
 
     }
-
+    private void printReceipt(){
+        printReceipt = new PrintReceipt(productList,this);
+    }
     //=======================================================
     public void loadAll(View v) {
 
