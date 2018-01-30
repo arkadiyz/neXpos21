@@ -9,10 +9,17 @@ import android.content.res.AssetManager;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Color;
 import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbInterface;
 import android.hardware.usb.UsbManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
+
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -47,11 +54,18 @@ import java.io.InputStream;
 
 import java.io.OutputStream;
 import java.security.PrivateKey;
+import java.sql.Time;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Scanner;
+import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends AppCompatActivity implements Callbacks {
@@ -70,6 +84,7 @@ public class MainActivity extends AppCompatActivity implements Callbacks {
     private LinkedList<String> lightDrinks;
     private LinkedList<String> beers;
     private boolean flag = true;
+    private boolean flag2=true;
     private GridLayout layout;
     private LinearLayout layout2 = null;
     private ArrayList<String> productName;
@@ -96,7 +111,22 @@ public class MainActivity extends AppCompatActivity implements Callbacks {
     private Button serverButton = null;
     private ProgressDialog progressDialog;
     private String s = "";
+    private ArrayList<Order>orders;
+    private LinearLayout linearLayoutOrders;
+    private static int[] colors={Color.RED,Color.GREEN,Color.BLUE,Color.WHITE,Color.YELLOW};
+    private static int COLORCOUNT=0;
+    private int index=-1;
+    private    int indexData=-1;
+    private ArrayList<Product> products2;
+    private Thread orderUpdater;
+    private Thread orderItemsUpdater;
+    public Handler handler2;
+    public int butWidthOrders;
+    public int butHeightOrders;
 
+    private Handler handler;
+
+    private Button plus;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,10 +135,17 @@ public class MainActivity extends AppCompatActivity implements Callbacks {
         setContentView(R.layout.activity_main);
         SharedPreferences prefs = null;
         serverButton = (Button) findViewById(R.id.btnUpData);
-
+         handler=new Handler(){
+            @Override
+             public void handleMessage(Message msg){
+                indexData=msg.arg1;
+                orders.get(index).setIndex(indexData);
+            }
+        };
         textViewScreenCalc = (TextView) findViewById(R.id.textViewScreenCalc);
         listViewSummary = (ListView) findViewById(R.id.listViewSummary);
         productList = new ArrayList<Product>();
+        products2 = new ArrayList<Product>();
         itemsList = new ArrayList<>();
         dataConfig = new DataConfig(MainActivity.this);
         adapter = new ProductListAdapter(this, R.layout.adapter_view_layout, productList);
@@ -116,7 +153,9 @@ public class MainActivity extends AppCompatActivity implements Callbacks {
         prefs = getSharedPreferences("com.arkadiy.enter.imenu", MODE_PRIVATE);
         productName = new ArrayList<>();
         categoryName = new ArrayList<>();
+        orders=new ArrayList<>();
 
+        linearLayoutOrders=(LinearLayout) findViewById(R.id.linearLayoutOpenOrders);
         File database = getApplicationContext().getDatabasePath(DataConfig.DBNAME);
         if (false == database.exists()) {
             dataConfig.getReadableDatabase();
@@ -138,6 +177,7 @@ public class MainActivity extends AppCompatActivity implements Callbacks {
         categoryName = dataConfig.getItemsGroup();
         layout = (GridLayout) findViewById(R.id.gridLayoutCategory);
         getSize();
+        adjustSizeButtonOrders();
 
         fillInMenue(categoryName, layout);
         prefs = getSharedPreferences("com.arkadiy.enter.imenu", MODE_PRIVATE);
@@ -167,6 +207,27 @@ public class MainActivity extends AppCompatActivity implements Callbacks {
 
             }
         });
+        plus=new Button(this);
+
+        index=COLORCOUNT;
+
+
+        plus.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
+            @Override
+            public void onClick(View v) {
+                linearLayoutOrders.removeView(plus);
+                if(COLORCOUNT<5){
+                    openNewButtonOrders();
+                    orderUpdater.run();
+                }
+                index=COLORCOUNT-1;
+                adapter.clear();
+                adapter.notifyDataSetChanged();
+            }
+        });
+
+
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 
         UsbManager manager = (UsbManager) getSystemService(Context.USB_SERVICE);
@@ -183,10 +244,57 @@ public class MainActivity extends AppCompatActivity implements Callbacks {
         this.printerManager = PrinterManager_.getInstance_(this);
 ServerUpdate serverUpdate=new ServerUpdate(this);
 
+
+        orderUpdater=new Thread(new Runnable() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
+            @Override
+            public void run() {
+                Message msg=Message.obtain();
+                msg.arg1=addOrderToOrders();
+                handler.sendMessage(msg);
+            }
+
+        });
+
+
+
+        orderItemsUpdater=new Thread(new Runnable() {
+
+            @RequiresApi(api = Build.VERSION_CODES.O)
+            @Override
+            public void run() {
+                Looper.prepare();
+
+
+
+
+                handler2 = new Handler() {
+                    @Override
+                    public void handleMessage(Message msg) {
+                        Product product=new Product();
+                       product=(Product)msg.obj;
+                       while(indexData==-1){
+
+                       }
+                       try{
+
+                           dataConfig.insertIntoOrderItems(indexData, 1, 0, product.getPrice(), product.getProductName());
+                       }catch(Exception ex){
+                           ex.printStackTrace();
+                       }
+                    }
+                };
+                Looper.loop();
+            }
+
+        });
+        orderItemsUpdater.start();
+
     }
 
 
     //=======================================================
+    @RequiresApi(api = Build.VERSION_CODES.O)
     public void calc_onClick(View view) {
 
         switch (view.getId()) {
@@ -298,6 +406,7 @@ ServerUpdate serverUpdate=new ServerUpdate(this);
                 tempBut.setOnClickListener(new View.OnClickListener() {
 
 
+                    @RequiresApi(api = Build.VERSION_CODES.O)
                     public void onClick(View view) {
                         Button b = (Button) view;
 
@@ -326,17 +435,97 @@ ServerUpdate serverUpdate=new ServerUpdate(this);
 
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private int addOrderToOrders(){
+        int ind=-1;
+        DateFormat timeFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
+        timeFormat.setTimeZone(TimeZone.getTimeZone("Asia/Jerusalem"));
+        String curTime = timeFormat.format(new Date());
+        ind=dataConfig.insertIntoOrders(curTime);
+        return ind;
+    }
+
+    private void openNewButtonOrders(){
+        Button temp=new Button(this);
+        temp.setText(Integer.toString(COLORCOUNT));
+        temp.setLayoutParams(new ViewGroup.LayoutParams(butWidthOrders,linearLayoutOrders.getHeight()));
+
+        temp.setId(COLORCOUNT);
+        Order order=new Order(indexData,COLORCOUNT);
+        orders.add(order);
+
+        temp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int num=((Button)v).getId();
+                products2.clear();
+                int size= orders.get(num).getProducts().size();
+                ArrayList<Product> prod=orders.get(num).getProducts();
+                for (int i = 0; i <size; i++) {
+                    products2.add(prod.get(i));
+                }
+                adapter.clear();
+                adapter.notifyDataSetChanged();
+                index=v.getId();
+
+                if(!products2.isEmpty()){
+                    for (int i = 0; i < products2.size(); i++) {
+                        adapter.insert(products2.get(i),i);
+                    }
+                    adapter.notifyDataSetChanged();
+                }
+            }
+        });
+        temp.setBackgroundColor(colors[COLORCOUNT++]);
+        linearLayoutOrders.addView(temp);
+        plus.setText("+");
+        plus.setLayoutParams(new ViewGroup.LayoutParams(90, linearLayoutOrders.getHeight()));
+        linearLayoutOrders.addView(plus);
+    }
+
+
+
     //========================================================
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
     public void addProductToListView(String name) {
 
 
         String price = getPrice(name);
+        Message msg=Message.obtain();
+        Message msg2=Message.obtain();
 
         p = new Product(name, "1", price);
         listViewSummary.setAdapter(adapter);
 
-        productList.add(p);
-        listViewSummary.setSelection(adapter.getCount() - 1);
+
+        try{
+          if(flag2){
+              flag2=false;
+              openNewButtonOrders();
+               orderUpdater.run();
+          }
+            productList.add(p);
+            products2.add(p);
+            orders.get(index).addToProducts(p);
+            listViewSummary.setSelection(adapter.getCount() - 1);
+            indexData=orders.get(index).getIndex();
+            msg2.obj=p;
+            handler2.sendMessage(msg2);
+        }catch(Exception ex)
+        {
+            ex.printStackTrace();
+        }
+
+
+
+//            if(indexData!=-1)
+//
+
+//
+//        productList.add(p);
+////        this.orders.get(index).addToProducts(p);
+//        listViewSummary.setSelection(adapter.getCount() - 1);
 
     }
 
@@ -465,6 +654,21 @@ ServerUpdate serverUpdate=new ServerUpdate(this);
             butWidth = (int) setSizeInButton(width + 25);
             butHeight = (int) setSizeInButton(height);
             layout.setColumnCount(4);
+        }
+
+    }
+
+    private void adjustSizeButtonOrders() {
+
+        if (sizeScreen > 10) {
+            butWidthOrders = (int) setSizeInButton(115);
+            butHeightOrders = (int) setSizeInButton(height);
+        } else if (sizeScreen <= 9) {
+            butWidthOrders = (int) setSizeInButton(115);
+            butHeightOrders = (int) setSizeInButton(height);
+        } else if (sizeScreen <= 10 && sizeScreen >= 9.1) {
+            butWidthOrders = (int) setSizeInButton(115);
+            butHeightOrders = (int) setSizeInButton(height);
         }
 
     }

@@ -22,6 +22,17 @@
         android:background="@color/colorHederFooter"
         >
 
+        <LinearLayout
+            android:layout_width="575dp"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:id="@+id/linearLayoutOpenOrders"
+            android:orientation="horizontal">
+
+
+
+        </LinearLayout>
+
     </RelativeLayout>
 
     <RelativeLayout
@@ -33,6 +44,8 @@
         android:layout_alignParentBottom="true"
         android:layout_toLeftOf="@+id/relativeLayout"
         >
+
+
 
         <RelativeLayout
             android:layout_width="match_parent"
