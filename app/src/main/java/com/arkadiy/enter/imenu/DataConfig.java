@@ -217,6 +217,27 @@ import java.util.List;
     }
 
 
+    public void createNewPayment(float summ,String dateTime,int orderId){
+        String str = "INSERT INTO Payment (Payment_type, Date_Time, Summ, Order_id) Values ('Cash', '"+dateTime+"', "+summ+", "+orderId+")";
+        mDatabase.execSQL(str);
 
+    }
+
+    public void updateTotalOrder(int orderId,float total){
+        String str="Update Orders set Total="+total+" WHERE Order_id = "+orderId+";";
+        mDatabase.execSQL(str);
+
+    }
+
+    public void updateStatusOrder(int orderId){
+        String str="Update Orders set Status="+1+" WHERE Order_id = "+orderId+";";
+        mDatabase.execSQL(str);
+
+    }
+
+    public void insertPaymentIntoOrder(int indexOrder)
+    {
+
+    }
 
     }

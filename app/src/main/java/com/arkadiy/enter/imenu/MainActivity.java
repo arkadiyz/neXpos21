@@ -283,6 +283,7 @@ public class MainActivity extends AppCompatActivity implements Callbacks {
                        try{
 
                            dataConfig.insertIntoOrderItems(indexData, 1, 0, product.getPrice(), product.getProductName());
+                           dataConfig.updateTotalOrder(indexData,orders.get(index).getTotal());
                        }catch(Exception ex){
                            ex.printStackTrace();
                        }
@@ -354,6 +355,10 @@ public class MainActivity extends AppCompatActivity implements Callbacks {
                     calcString += ".";
                     ifHaveDot = true;
                 }
+                break;
+            case R.id.buttonCash:
+               payCash(120);
+
                 break;
             case R.id.buttonEnter:
                 addProductToListView(general);
@@ -445,11 +450,16 @@ public class MainActivity extends AppCompatActivity implements Callbacks {
     @RequiresApi(api = Build.VERSION_CODES.O)
     private int addOrderToOrders(){
         int ind=-1;
+    String curTime=getDateTime();
+        ind=dataConfig.insertIntoOrders(curTime);
+        return ind;
+    }
+
+    public String getDateTime(){
         DateFormat timeFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
         timeFormat.setTimeZone(TimeZone.getTimeZone("Asia/Jerusalem"));
         String curTime = timeFormat.format(new Date());
-        ind=dataConfig.insertIntoOrders(curTime);
-        return ind;
+        return curTime;
     }
 
     private void openNewButtonOrders(){
@@ -459,7 +469,7 @@ public class MainActivity extends AppCompatActivity implements Callbacks {
         temp.setLayoutParams(new ViewGroup.LayoutParams(butWidthOrders,linearLayoutOrders.getHeight()));
 
         temp.setId(COLORCOUNT);
-        Order order=new Order(indexData,COLORCOUNT);
+        Order order=new Order(indexData,COLORCOUNT,getDateTime());
         orders.add(order);
 
         temp.setOnClickListener(new View.OnClickListener() {
@@ -529,15 +539,6 @@ public class MainActivity extends AppCompatActivity implements Callbacks {
             ex.printStackTrace();
         }
 
-
-
-//            if(indexData!=-1)
-//
-
-//
-//        productList.add(p);
-////        this.orders.get(index).addToProducts(p);
-//        listViewSummary.setSelection(adapter.getCount() - 1);
 
     }
 
@@ -697,7 +698,6 @@ public class MainActivity extends AppCompatActivity implements Callbacks {
 //        progressDialog.show();
     }
 
-
     @Override
     public void onSuccess(String downloadedText) {
 
@@ -740,6 +740,36 @@ public class MainActivity extends AppCompatActivity implements Callbacks {
     protected void onPause() {
         printerManager.unRegisterReceivers();
         super.onPause();
+    }
+
+
+    public void payCash(float summ){
+
+        try{
+
+            Order current =orders.get(index);
+            float total=current.getTotal();
+            int indexInData=current.getIndex();
+            DateFormat timeFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
+            timeFormat.setTimeZone(TimeZone.getTimeZone("Asia/Jerusalem"));
+            String curTime = timeFormat.format(new Date());
+            dataConfig.createNewPayment(summ,curTime,indexInData);
+            if(summ==total){
+                dataConfig.updateStatusOrder(indexInData);
+            }
+
+
+
+
+        }catch(Exception ex){
+            ex.printStackTrace();
+        }
+
+
+
+
+
+
     }
 
 }

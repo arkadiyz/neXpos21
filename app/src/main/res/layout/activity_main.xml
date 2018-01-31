@@ -230,17 +230,17 @@
                 />
 
             <Button
+                android:id="@+id/buttonCash"
                 android:layout_width="match_parent"
                 android:layout_height="54dp"
-                android:id="@+id/buttonCash"
-                android:text="מזומן"
-                android:textSize="25sp"
+                android:layout_alignLeft="@+id/textViewScreenCalc"
+                android:layout_alignParentBottom="true"
+                android:layout_alignStart="@+id/textViewScreenCalc"
 
-                android:layout_above="@+id/buttonCredit"
-                android:layout_marginLeft="2dp"
-                android:layout_marginRight="-3dip"
-                android:layout_marginBottom="-10dip"
-                />
+                android:layout_marginBottom="40dp"
+                android:onClick="calc_onClick"
+                android:text="מזומן"
+                android:textSize="25sp" />
             <Button
                 android:layout_width="match_parent"
                 android:layout_height="54dp"

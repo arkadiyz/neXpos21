@@ -10,6 +10,7 @@ public class Order {
     private int index;
     private int indexInButtons;
     private float total;
+    private String dateAndTime;
     private ArrayList<Product>products;
 
     public Order(int index,float total){
@@ -18,12 +19,18 @@ public class Order {
         this.products=new ArrayList<>();
     }
 
-    public Order(int index,int indexInButtons){
+    public Order(int index,int indexInButtons,String dateAndTime){
         this.index=index;
         this.total=0;
         this.indexInButtons=indexInButtons;
         this.products=new ArrayList<>();
+        this.dateAndTime=dateAndTime;
 
+    }
+
+    public String getDateAndTime()
+    {
+        return this.dateAndTime;
     }
 
     public void addToProducts(Product product){
