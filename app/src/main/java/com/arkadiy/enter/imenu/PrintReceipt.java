@@ -30,35 +30,42 @@ public class PrintReceipt  {
     private char[]boldStart = {0x1B,0x45,0x31};
     private char[]boldFinish = {0x1B,0x45,0x30};
     private char[]cutChar={0x1D,0x56,0x41,0x10};
+    private char[] setFontSize={0x1B,0x21};
+    private char[] removeFontSize={0x1B,0x21,0x00};
+    private char[] song = {7};
+    private String stringFontSize="";
     private String cutString;
     private String boldStringStart;
     private String boldStringEnd;
+    private int numberSize;
 
     public PrintReceipt(ArrayList<Product> product, Context ctx)
     {
         this.printerManager = PrinterManager_.getInstance_(ctx);
         this.product = product;
+        this.numberSize = 0;
 
         setBold();
         string = hebrewString(title);
-        centerLine(string);
-
-        this.string=endOfLine(this.string);
+        this.string = centerLine(string);
+        this.string = endOfLine(this.string);
         printerManager.printJob(new PrinterJob(this.string));
         removeBold();
+
+
         this.address = hebrewString(this.address);
         this.address = endOfLine(this.address);
         printerManager.printJob(new PrinterJob(this.address));
         this.address2 = hebrewString(this.address2);
         this.hP = hebrewString(this.hP);
         printerManager.printJob(new PrinterJob(endOfLine(printCompanyInformation())));
+        printerManager.printJob(new PrinterJob(endOfLine("")));
         // start print product
         this.name = hebrewString(this.name);
         this.amount = hebrewString(this.amount);
         this.price = hebrewString(this.price);
         arrangeARow(this.name,this.amount,this.price);
-        printerManager.printJob(new PrinterJob("\n"));
-        printerManager.printJob(new PrinterJob("\n"));
+
         printerManager.printJob(new PrinterJob(endOfLine(this.price+this.amount+this.name)));
 
 
@@ -69,11 +76,20 @@ public class PrintReceipt  {
             printerManager.printJob(new PrinterJob(endOfLine(this.price+this.amount+this.name)));
         }
 
-        printerManager.printJob(new PrinterJob("\n"));
+        printerManager.printJob(new PrinterJob(centerLine("")));
+        SetDoubleStrike();
+
+        printerManager.printJob(new PrinterJob(centerLine(totalPrice)));
+        removeDoubleStrike();
+
         printerManager.printJob(new PrinterJob("\n"));
 
         cutFunction();
 
+    }
+    private void song(){
+        String str = new String(song);
+        printerManager.printJob(new PrinterJob(str));
     }
     private void arrangeARow(String name,String amount,String price){
         int num1  = name.length();
@@ -117,7 +133,17 @@ public class PrintReceipt  {
         this.price+=price;
 
     }
-
+    private void SetDoubleStrike()
+    {
+        numberSize = 2;
+        this.stringFontSize = new String(this.setFontSize);
+        printerManager.printJob(new PrinterJob(stringFontSize+numberSize));
+    }
+    private void removeDoubleStrike(){
+        numberSize=0;
+        stringFontSize = new String(removeFontSize);
+        printerManager.printJob(new PrinterJob(stringFontSize));
+    }
     private String printCompanyInformation(){
         int sumString1 = this.address2.length();
         int sumString2 = this.hP.length();
@@ -140,7 +166,11 @@ public class PrintReceipt  {
         String str2="";
         if(str.length() != STANDART_LENGTH)
         {
-            int num = STANDART_LENGTH-str.length();
+            int num = (STANDART_LENGTH-str.length());
+            if(numberSize>0)
+            {
+                num = num/numberSize/2;
+            }
             for(int i = 0 ; i < num;i++)
             {
                 str2 +="!";
@@ -189,26 +219,35 @@ public class PrintReceipt  {
         return false;
     }
 
-    private void centerLine (String str){
+    private String centerLine (String str){
         int sumSpace = str.length()/2;
         int sumCharInLine = STANDART_LENGTH /2;
-        sumSpace = sumCharInLine - sumSpace;
+        sumSpace = (sumCharInLine - sumSpace);
+        if(numberSize>0)
+        {
+            sumSpace=sumSpace/numberSize/2;
+        }
         String str2 = "";
         for(int i =0 ; i < sumSpace+1 ; i++)
         {
             str2 +="+";
         }
         str2+= str;
+        int num = (STANDART_LENGTH-str2.length());
+        if (numberSize>0)
+        {
+            num=num/numberSize/2;
+        }
         if(str2.length() != STANDART_LENGTH)
         {
-            int num = STANDART_LENGTH-str2.length();
+
             for(int i = 0 ; i < num;i++)
             {
                 str2 +="!";
             }
 
         }
-        this.string = str2;
+        return str2;
 
 
     }
