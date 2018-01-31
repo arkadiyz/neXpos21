@@ -245,7 +245,6 @@ public class MainActivity extends AppCompatActivity implements Callbacks {
         s = "ארקדי הלך לניורופידבק ויחזור עוד איזה שעה וחצי";
 
         this.printerManager = PrinterManager_.getInstance_(this);
-ServerUpdate serverUpdate=new ServerUpdate(this);
 
 
         orderUpdater=new Thread(new Runnable() {
@@ -292,6 +291,9 @@ ServerUpdate serverUpdate=new ServerUpdate(this);
 
         });
         orderItemsUpdater.start();
+
+        ServerUpdate serverUpdate=new ServerUpdate(this);
+
 
     }
 
@@ -390,10 +392,7 @@ ServerUpdate serverUpdate=new ServerUpdate(this);
     //=========================================================
     public void fillInMenue(ArrayList<String> products, GridLayout l) {   //adds productsDB.db to menue from database
 
-
         layout = l;
-
-
         for (int i = 0; i < products.size(); i++) {
             String name = products.get(i);
             Button tempBut = new Button(MainActivity.this);
@@ -478,7 +477,6 @@ ServerUpdate serverUpdate=new ServerUpdate(this);
                         adapter.insert(products2.get(i),i);
                     }
                     textViewTotalNumber.setText(new DecimalFormat("##.##").format(orders.get(index).getTotal()));
-
                     adapter.notifyDataSetChanged();
                 }
             }

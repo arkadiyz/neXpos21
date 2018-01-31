@@ -31,7 +31,7 @@ import java.util.List;
  * Created by vadnu on 04/01/2018.
  */
 
-public class DataConfig extends SQLiteOpenHelper {
+ public class DataConfig extends SQLiteOpenHelper {
     public static final String DBNAME = "productsDB.db";
     public static final String DBLOCATION = "/data/data/com/arkadiy/enter/imenu/";
     private Context mContext;
@@ -46,7 +46,7 @@ public class DataConfig extends SQLiteOpenHelper {
     }
 
 
-    public ArrayList<String> getDataFromDataBase(String categoryName) {
+      public ArrayList<String> getDataFromDataBase(String categoryName) {
         ArrayList<String> list = new ArrayList<>();
         String bla = getDatabaseName();
         String s = mDatabase.toString();
@@ -65,7 +65,7 @@ public class DataConfig extends SQLiteOpenHelper {
     }
 
 
-    public ArrayList<String> getItemsGroup() {
+     public ArrayList<String> getItemsGroup() {
         ArrayList<String> list = new ArrayList<>();
 
         String bla = getDatabaseName();
@@ -87,7 +87,7 @@ public class DataConfig extends SQLiteOpenHelper {
     }
 
 
-    public ArrayList<Product> getProductsList(String category) {
+     public ArrayList<Product> getProductsList(String category) {
 
         String bla = getDatabaseName();
         itemsList = new ArrayList<>();
@@ -114,7 +114,7 @@ public class DataConfig extends SQLiteOpenHelper {
     }
 
 
-    public void createItemIfNotExists(int id, String name, float price, String path, String barcode, int ig_id) {
+    synchronized public void createItemIfNotExists(int id, String name, float price, String path, String barcode, int ig_id) {
         String item = "INSERT OR REPLACE INTO items (_id, name, price, picture_path, barcode, ig_id) VALUES(" + id + ", '"
                 + name + "', "
                 + price + ", '"
@@ -129,7 +129,7 @@ public class DataConfig extends SQLiteOpenHelper {
         }
     }
 
-    public void createCategoryIfNotExists(int id, String name, String picturePath, int active) {
+    synchronized public void createCategoryIfNotExists(int id, String name, String picturePath, int active) {
         String group = "INSERT OR REPLACE INTO itemsGroup (_id, name, picture_path, active) VALUES(" + id + ", '"
                 + name + "', '"
                 + picturePath + "', "
@@ -142,7 +142,7 @@ public class DataConfig extends SQLiteOpenHelper {
 
     }
 
-    public Product getProductByBarcode(String barcode) {
+     public Product getProductByBarcode(String barcode) {
         Product p = null;
         String str = "SELECT * FROM items " +
                 "WHERE barcode='" + barcode + "'";
@@ -178,7 +178,7 @@ public class DataConfig extends SQLiteOpenHelper {
 
     }
 
-    public void openDatabase() {
+     public void openDatabase() {
         String dbPath = mContext.getDatabasePath(DBNAME).getPath();
         if (mDatabase != null && mDatabase.isOpen()) {
             return;
@@ -186,20 +186,20 @@ public class DataConfig extends SQLiteOpenHelper {
         mDatabase = SQLiteDatabase.openDatabase(dbPath, null, SQLiteDatabase.OPEN_READWRITE);
     }
 
-    public void closeDatabase() {
+     public void closeDatabase() {
         if (mDatabase != null) {
             mDatabase.close();
         }
     }
 
-    public void insertIntoOrderItems(int id, int quantity, int status, String price,String name) {
+    synchronized public void insertIntoOrderItems(int id, int quantity, int status, String price,String name) {
         float pr = Float.parseFloat(price);
         String str = "INSERT INTO Order_items (Order_id, Quantity, Price, Status, Name) Values (" + id + ", " + quantity + ", " + pr + ", " + status +", '"+name+"')";
         mDatabase.execSQL(str);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    public int insertIntoOrders(String date) {
+    synchronized public int insertIntoOrders(String date) {
 
         String str = "INSERT INTO Orders (Date_Time, Status, Total) Values ('" + date + "', 0, 0)";
         mDatabase.execSQL(str);

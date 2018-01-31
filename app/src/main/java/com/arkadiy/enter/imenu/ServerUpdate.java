@@ -1,6 +1,9 @@
 package com.arkadiy.enter.imenu;
 
 import android.content.Context;
+import android.os.Handler;
+
+import java.util.logging.LogRecord;
 
 /**
  * Created by vadnu on 24/01/2018.
@@ -8,11 +11,13 @@ import android.content.Context;
 
 public class ServerUpdate implements Callbacks, Runnable{
    private PostSender postSender ;
+   Handler handler;
 private Context ctx;
         public ServerUpdate(Context context){
             postSender= new PostSender(this);
             ctx=context;
             postSender.execute();
+            handler=new Handler();
 
 
 
@@ -36,16 +41,21 @@ private Context ctx;
     public void onSuccess(String downloadedText) {
         if (downloadedText.equals("Yes")){
             try {
-                Thread.sleep(300000);//every 5 minutes
-                this.run();
-            } catch (InterruptedException e) {
+
+                handler.postDelayed(this,30000);
+            } catch (Exception e) {
                 e.printStackTrace();
             }
 
         }
         else {
-            DataBaseFiller dataBaseFiller = new DataBaseFiller(this,ctx );
-            dataBaseFiller.execute(downloadedText);
+            try {
+                DataBaseFiller dataBaseFiller = new DataBaseFiller(this,ctx );
+                dataBaseFiller.execute(downloadedText);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
         }
 
 
