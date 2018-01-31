@@ -19,6 +19,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 
+import android.print.PrintManager;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
@@ -125,7 +126,7 @@ public class MainActivity extends AppCompatActivity implements Callbacks {
     public Handler handler2;
     public int butWidthOrders;
     public int butHeightOrders;
-
+    private PrintReceipt printReceipt;
     private Handler handler;
 
     private Button plus;
@@ -245,6 +246,7 @@ public class MainActivity extends AppCompatActivity implements Callbacks {
         s = "ארקדי הלך לניורופידבק ויחזור עוד איזה שעה וחצי";
 
         this.printerManager = PrinterManager_.getInstance_(this);
+        ServerUpdate serverUpdate=new ServerUpdate(this);
 
 
         orderUpdater=new Thread(new Runnable() {
@@ -291,9 +293,6 @@ public class MainActivity extends AppCompatActivity implements Callbacks {
 
         });
         orderItemsUpdater.start();
-
-        ServerUpdate serverUpdate=new ServerUpdate(this);
-
 
     }
 
@@ -361,13 +360,16 @@ public class MainActivity extends AppCompatActivity implements Callbacks {
                 calcString = "";
                 textViewScreenCalc.setText(calcString);
                 ifHaveDot = false;
+                printReceipt();
 //                printerManager.printJob(new PrinterJob(s));
 //                printerManager.printJob(new PrinterJob("\n"));
                 break;
         }
 
     }
-
+    private void printReceipt(){
+        printReceipt = new PrintReceipt(productList,this,textViewTotalNumber.getText().toString());
+    }
     //=======================================================
     public void loadAll(View v) {
 
@@ -392,7 +394,10 @@ public class MainActivity extends AppCompatActivity implements Callbacks {
     //=========================================================
     public void fillInMenue(ArrayList<String> products, GridLayout l) {   //adds productsDB.db to menue from database
 
+
         layout = l;
+
+
         for (int i = 0; i < products.size(); i++) {
             String name = products.get(i);
             Button tempBut = new Button(MainActivity.this);
@@ -477,6 +482,7 @@ public class MainActivity extends AppCompatActivity implements Callbacks {
                         adapter.insert(products2.get(i),i);
                     }
                     textViewTotalNumber.setText(new DecimalFormat("##.##").format(orders.get(index).getTotal()));
+
                     adapter.notifyDataSetChanged();
                 }
             }
