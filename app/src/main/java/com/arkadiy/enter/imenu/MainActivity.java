@@ -368,7 +368,7 @@ public class MainActivity extends AppCompatActivity implements Callbacks {
 
     }
     private void printReceipt(){
-        printReceipt = new PrintReceipt(productList,this);
+        printReceipt = new PrintReceipt(productList,this,textViewTotalNumber.getText().toString());
     }
     //=======================================================
     public void loadAll(View v) {

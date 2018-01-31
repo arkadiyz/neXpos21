@@ -22,7 +22,9 @@ public class PrintReceipt  {
     private String address2 = "האילנות ";
     private String numberAddress = "19";
     private String hP = "03.32244242";
-    private String totalPrice="10.00";
+    private String totalPrice="";
+    private String totalStringName="שולם ";
+    private String coinString = " ש'ח ";
     private final int STANDART_LENGTH = 48;
     private String string = "";
     private ArrayList<Product> product;
@@ -39,12 +41,12 @@ public class PrintReceipt  {
     private String boldStringEnd;
     private int numberSize;
 
-    public PrintReceipt(ArrayList<Product> product, Context ctx)
+    public PrintReceipt(ArrayList<Product> product, Context ctx,String total)
     {
         this.printerManager = PrinterManager_.getInstance_(ctx);
         this.product = product;
         this.numberSize = 0;
-
+        this.totalPrice = total;
         setBold();
         string = hebrewString(title);
         this.string = centerLine(string);
@@ -55,18 +57,18 @@ public class PrintReceipt  {
 
         this.address = hebrewString(this.address);
         this.address = endOfLine(this.address);
-        printerManager.printJob(new PrinterJob(this.address));
+        this.printerManager.printJob(new PrinterJob(this.address));
         this.address2 = hebrewString(this.address2);
         this.hP = hebrewString(this.hP);
-        printerManager.printJob(new PrinterJob(endOfLine(printCompanyInformation())));
-        printerManager.printJob(new PrinterJob(endOfLine("")));
+        this.printerManager.printJob(new PrinterJob(endOfLine(printCompanyInformation())));
+        this.printerManager.printJob(new PrinterJob(endOfLine("")));
         // start print product
         this.name = hebrewString(this.name);
         this.amount = hebrewString(this.amount);
         this.price = hebrewString(this.price);
         arrangeARow(this.name,this.amount,this.price);
 
-        printerManager.printJob(new PrinterJob(endOfLine(this.price+this.amount+this.name)));
+        this.printerManager.printJob(new PrinterJob(endOfLine(this.price+this.amount+this.name)));
 
 
         this.product = product;
@@ -76,17 +78,22 @@ public class PrintReceipt  {
             printerManager.printJob(new PrinterJob(endOfLine(this.price+this.amount+this.name)));
         }
 
-        printerManager.printJob(new PrinterJob(centerLine("")));
         SetDoubleStrike();
-
-        printerManager.printJob(new PrinterJob(centerLine(totalPrice)));
+        // ~~~~~~~~~~~~~~print total price~~~~~~~~~~~~~~~~~~~~~
+        this.totalStringName = hebrewString(this.totalStringName);
+        this.coinString = hebrewString(this.coinString);
+        this.totalPrice = centerLine(this.coinString+this.totalPrice+this.totalStringName);
+        printerManager.printJob(new PrinterJob(this.totalPrice));
         removeDoubleStrike();
 
-        printerManager.printJob(new PrinterJob("\n"));
+        this.printerManager.printJob(new PrinterJob("\n"));
 
         cutFunction();
 
     }
+
+
+
     private void song(){
         String str = new String(song);
         printerManager.printJob(new PrinterJob(str));
@@ -135,7 +142,7 @@ public class PrintReceipt  {
     }
     private void SetDoubleStrike()
     {
-        numberSize = 2;
+        numberSize = 1;
         this.stringFontSize = new String(this.setFontSize);
         printerManager.printJob(new PrinterJob(stringFontSize+numberSize));
     }
@@ -169,7 +176,7 @@ public class PrintReceipt  {
             int num = (STANDART_LENGTH-str.length());
             if(numberSize>0)
             {
-                num = num/numberSize/2;
+                num = num/4;
             }
             for(int i = 0 ; i < num;i++)
             {
@@ -225,7 +232,7 @@ public class PrintReceipt  {
         sumSpace = (sumCharInLine - sumSpace);
         if(numberSize>0)
         {
-            sumSpace=sumSpace/numberSize/2;
+            sumSpace=sumSpace/2;
         }
         String str2 = "";
         for(int i =0 ; i < sumSpace+1 ; i++)
@@ -236,7 +243,7 @@ public class PrintReceipt  {
         int num = (STANDART_LENGTH-str2.length());
         if (numberSize>0)
         {
-            num=num/numberSize/2;
+            num=num/2;
         }
         if(str2.length() != STANDART_LENGTH)
         {
