@@ -145,11 +145,13 @@
                 </RelativeLayout>
                 <TextView
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:id="@+id/textViewTotalNumber"
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentBottom="true"
-                    android:textSize="30sp"
+                    android:textSize="25sp"
+                    android:paddingTop="15dp"
+                    android:textColor="@color/colorblack"
 
                     />
 

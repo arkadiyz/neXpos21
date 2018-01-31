@@ -35,6 +35,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridLayout;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
@@ -57,6 +58,7 @@ import java.io.OutputStream;
 import java.security.PrivateKey;
 import java.sql.Time;
 import java.text.DateFormat;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -225,6 +227,7 @@ public class MainActivity extends AppCompatActivity implements Callbacks {
                 index=COLORCOUNT-1;
                 adapter.clear();
                 adapter.notifyDataSetChanged();
+                textViewTotalNumber.setText("");
             }
         });
 
@@ -451,6 +454,7 @@ public class MainActivity extends AppCompatActivity implements Callbacks {
 
     private void openNewButtonOrders(){
         Button temp=new Button(this);
+
         temp.setText(Integer.toString(COLORCOUNT));
         temp.setLayoutParams(new ViewGroup.LayoutParams(butWidthOrders,linearLayoutOrders.getHeight()));
 
@@ -471,11 +475,14 @@ public class MainActivity extends AppCompatActivity implements Callbacks {
                 adapter.clear();
                 adapter.notifyDataSetChanged();
                 index=v.getId();
+                textViewTotalNumber.setText("");
 
                 if(!products2.isEmpty()){
                     for (int i = 0; i < products2.size(); i++) {
                         adapter.insert(products2.get(i),i);
                     }
+                    textViewTotalNumber.setText(new DecimalFormat("##.##").format(orders.get(index).getTotal()));
+
                     adapter.notifyDataSetChanged();
                 }
             }
@@ -512,6 +519,7 @@ public class MainActivity extends AppCompatActivity implements Callbacks {
             productList.add(p);
             products2.add(p);
             orders.get(index).addToProducts(p);
+            textViewTotalNumber.setText(new DecimalFormat("##.##").format(orders.get(index).getTotal()));
             listViewSummary.setSelection(adapter.getCount() - 1);
             indexData=orders.get(index).getIndex();
             msg2.obj=p;
