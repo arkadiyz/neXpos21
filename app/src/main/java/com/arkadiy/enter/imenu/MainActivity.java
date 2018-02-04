@@ -142,6 +142,7 @@ public class MainActivity extends AppCompatActivity implements Callbacks,CashFra
 
     private Button plus;
 
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -414,6 +415,7 @@ public class MainActivity extends AppCompatActivity implements Callbacks,CashFra
         printReceipt = new PrintReceipt(productList,this,textViewTotalNumber.getText().toString());
     }
     //=======================================================
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     public void loadAll(View v) {
 
         Button b = (Button) v;
@@ -427,6 +429,7 @@ public class MainActivity extends AppCompatActivity implements Callbacks,CashFra
     }
 
     //=======================================================
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     public void changeProduct(String product) {
         getCategoryProductsList(product);
         layout = (GridLayout) findViewById(R.id.gridLayoutItem);
