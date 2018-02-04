@@ -234,6 +234,11 @@ import java.util.List;
         mDatabase.execSQL(str);
 
     }
+    public void updateStatusItem(int orderId){
+        String str="Update Order_items set Status="+1+" WHERE Order_id = "+orderId+";";
+        mDatabase.execSQL(str);
+
+    }
 
     public void insertPaymentIntoOrder(int indexOrder)
     {

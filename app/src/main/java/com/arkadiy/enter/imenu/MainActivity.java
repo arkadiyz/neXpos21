@@ -1,5 +1,5 @@
 package com.arkadiy.enter.imenu;
-import android.app.Fragment;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -13,6 +13,7 @@ import android.graphics.Color;
 import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbInterface;
 import android.hardware.usb.UsbManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -21,10 +22,14 @@ import android.os.Message;
 
 import android.print.PrintManager;
 import android.support.annotation.RequiresApi;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,9 +43,12 @@ import android.widget.GridLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ScrollView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.arkadiy.enter.imenu.Fragments.CashFragment;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -71,7 +79,9 @@ import java.util.Scanner;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
-public class MainActivity extends AppCompatActivity implements Callbacks {
+
+
+public class MainActivity extends AppCompatActivity implements Callbacks,CashFragment.CashFragmentInteractionListener {
     private String calcString = "";
     private TextView textViewScreenCalc;
     private boolean ifHaveDot = false;
@@ -104,7 +114,7 @@ public class MainActivity extends AppCompatActivity implements Callbacks {
     private SQLiteDatabase productsDB = null;
     private ArrayList<Product> categoryProductsList = null;
     private static int width = 150;// db convert to pixel
-    private static int height = 80;// db convert to pixelh
+    private static int height = 73;// db convert to pixelh
     private TextView textViewBarCode;
     private TextView textViewTotalNumber;
     private int butWidth = 0;
@@ -128,6 +138,7 @@ public class MainActivity extends AppCompatActivity implements Callbacks {
     public int butHeightOrders;
     private PrintReceipt printReceipt;
     private Handler handler;
+    private Bundle bundleTotal;
 
     private Button plus;
 
@@ -157,6 +168,7 @@ public class MainActivity extends AppCompatActivity implements Callbacks {
         productName = new ArrayList<>();
         categoryName = new ArrayList<>();
         orders=new ArrayList<>();
+        bundleTotal=new Bundle();
 
         linearLayoutOrders=(LinearLayout) findViewById(R.id.linearLayoutOpenOrders);
         File database = getApplicationContext().getDatabasePath(DataConfig.DBNAME);
@@ -295,6 +307,31 @@ public class MainActivity extends AppCompatActivity implements Callbacks {
         });
         orderItemsUpdater.start();
 
+//
+//        Fragment fragment=manager1.findFragmentById(R.id.fragment_cash);
+//        ScrollView scrollView=(ScrollView)findViewById(R.id.scrollViewItems);
+//
+//
+//        if(fragment==null){
+//            fragment=new CashFragment();
+//            scrollView.removeAllViews();
+
+//        }
+
+
+
+
+
+
+
+    }
+
+    public void showCashDialog(){
+        FragmentManager manager1=getSupportFragmentManager();
+        CashDialog cashDialog=new CashDialog();
+        cashDialog.show(manager1,"cashDialog");
+        cashDialog.setArguments(bundleTotal);
+
     }
 
 
@@ -357,8 +394,9 @@ public class MainActivity extends AppCompatActivity implements Callbacks {
                 }
                 break;
             case R.id.buttonCash:
-               payCash(120);
-
+//               payCash(380);
+                bundleTotal.putString("total",textViewTotalNumber.getText().toString());
+                showCashDialog();
                 break;
             case R.id.buttonEnter:
                 addProductToListView(general);
@@ -397,6 +435,7 @@ public class MainActivity extends AppCompatActivity implements Callbacks {
     }
 
     //=========================================================
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     public void fillInMenue(ArrayList<String> products, GridLayout l) {   //adds productsDB.db to menue from database
 
 
@@ -407,6 +446,9 @@ public class MainActivity extends AppCompatActivity implements Callbacks {
             String name = products.get(i);
             Button tempBut = new Button(MainActivity.this);
             tempBut.setText(name);
+            tempBut.setTextAlignment(View.TEXT_ALIGNMENT_GRAVITY);
+
+            tempBut.setGravity(1);
             tempBut.setLayoutParams(new ViewGroup.LayoutParams(butWidth, butHeight));
 
             if (layout.getId() == R.id.gridLayoutItem) {
@@ -746,7 +788,7 @@ public class MainActivity extends AppCompatActivity implements Callbacks {
     public void payCash(float summ){
 
         try{
-
+            float change;
             Order current =orders.get(index);
             float total=current.getTotal();
             int indexInData=current.getIndex();
@@ -754,8 +796,18 @@ public class MainActivity extends AppCompatActivity implements Callbacks {
             timeFormat.setTimeZone(TimeZone.getTimeZone("Asia/Jerusalem"));
             String curTime = timeFormat.format(new Date());
             dataConfig.createNewPayment(summ,curTime,indexInData);
-            if(summ==total){
+            if(summ>=total){
+                dataConfig.updateStatusItem(indexInData);
                 dataConfig.updateStatusOrder(indexInData);
+                //open draw!!!!!!!!!!!
+                if(summ>total)
+                {
+                     change=summ-total;
+                    //send change to UI
+                }
+            }
+            else{
+                   //do not close order
             }
 
 
@@ -772,6 +824,11 @@ public class MainActivity extends AppCompatActivity implements Callbacks {
 
     }
 
+    @Override
+    public void onCashFragmentInteraction(Uri uri) {
+
+
+    }
 }
 
 
