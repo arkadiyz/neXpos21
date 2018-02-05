@@ -26,7 +26,6 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.KeyEvent;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -71,7 +70,6 @@ import java.util.LinkedList;
 import java.util.Scanner;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
-import java.util.zip.Inflater;
 
 public class MainActivity extends AppCompatActivity implements Callbacks {
     private String calcString = "";
@@ -375,7 +373,7 @@ public class MainActivity extends AppCompatActivity implements Callbacks {
 
     }
     private void printReceipt(){
-        printReceipt = new PrintReceipt(productList,this,textViewTotalNumber.getText().toString(),orders.get(index),getDateTime());
+        printReceipt = new PrintReceipt(productList,this,textViewTotalNumber.getText().toString());
     }
     //=======================================================
     public void loadAll(View v) {
@@ -407,12 +405,8 @@ public class MainActivity extends AppCompatActivity implements Callbacks {
 
         for (int i = 0; i < products.size(); i++) {
             String name = products.get(i);
-
             Button tempBut = new Button(MainActivity.this);
-            MenuInflater inflater = getMenuInflater();
-
             tempBut.setText(name);
-
             tempBut.setLayoutParams(new ViewGroup.LayoutParams(butWidth, butHeight));
 
             if (layout.getId() == R.id.gridLayoutItem) {

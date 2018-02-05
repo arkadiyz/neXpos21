@@ -16,5 +16,8 @@
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
+    <style name="AppTheme.popUpDesplay">
+        <item name="android:windowIsTranslucent">true</item>
+    </style>
 
 </resources>
