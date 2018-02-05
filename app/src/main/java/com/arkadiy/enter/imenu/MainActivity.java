@@ -366,14 +366,12 @@ public class MainActivity extends AppCompatActivity implements Callbacks {
                 textViewScreenCalc.setText(calcString);
                 ifHaveDot = false;
                 printReceipt();
-//                printerManager.printJob(new PrinterJob(s));
-//                printerManager.printJob(new PrinterJob("\n"));
                 break;
         }
 
     }
     private void printReceipt(){
-        printReceipt = new PrintReceipt(productList,this,textViewTotalNumber.getText().toString());
+        printReceipt = new PrintReceipt(this,orders.get(index),getDateTime());
     }
     //=======================================================
     public void loadAll(View v) {

@@ -49,14 +49,13 @@ public class PrintReceipt  {
     private Order order;
     private boolean englishL = false;
 
-    public PrintReceipt(ArrayList<Product> product, Context ctx,String total,Order order,String data) {
+    public PrintReceipt(Context ctx,Order order,String data) {
         this.printerManager = PrinterManager_.getInstance_(ctx);
-        this.product = product;
-        this.numberSize = 0;
-        this.totalPrice = total;
         this.order = order;
+        this.product = order.getProducts();
+        this.numberSize = 0;
+        this.totalPrice = String.valueOf(order.getTotal());
         this.printData = data;
-
 
         printTitel();
         printDate();
