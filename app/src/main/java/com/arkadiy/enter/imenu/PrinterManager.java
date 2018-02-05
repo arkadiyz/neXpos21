@@ -43,8 +43,7 @@ public class PrinterManager {
   private boolean printerReady = false;
   private List<PrinterJob> printerJobList = new LinkedList<>();
   private final PrinterConnection currentConnection = new PrinterConnection();
-private String cut="";
-private  char[]x={0x1D,0x56,0x41,0x10};
+
 
   public PrinterManager() {
 
@@ -143,34 +142,35 @@ private  char[]x={0x1D,0x56,0x41,0x10};
 
     byte[]b=new byte[job.text.length()];
 
+
     b=hebrewString(job.text,b);
 
     return printerConnection.active && printerConnection.connection.bulkTransfer(
             printerConnection.endPoint, b, b.length, bulkModeTimeout) >= 0;
   }
 
-  private byte[] hebrewString(String s, byte[] bytes){
+    private byte[] hebrewString(String s, byte[] bytes){
 
-    for (int i = 0 ; i <= s.length()-1; i++) {
-      int x=(int)s.charAt(i);
-      if(checkingLetters((char)x))
-      {
-        bytes[i]=(byte)x;
-        bytes[i]-=1360;
-      }
-      else
-      {
-        bytes[i]=(byte)x;
-      }
+        for (int i = 0 ; i <= s.length()-1; i++) {
+            int x=(int)s.charAt(i);
+            if(checkingLetters((char)x))
+            {
+                bytes[i]=(byte)x;
+                bytes[i]-=1360;
+            }
+            else
+            {
+                bytes[i]=(byte)x;
+            }
 
+        }
+        return bytes;
     }
-    return bytes;
-  }
-  private boolean checkingLetters(char ch){
-    if(ch >= 1488 && ch <= 1514) // if char in hebrew
-      return true;
-    return false;
-  }
+    private boolean checkingLetters(char ch){
+        if(ch >= 1488 && ch <= 1514) // if char in hebrew
+            return true;
+        return false;
+    }
   private PrinterConnection getAndOpenPrinterConnection() {
     PrinterConnection printerConnection = null;
     if (usbManager.hasPermission(usbDevice)) {

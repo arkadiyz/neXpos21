@@ -3,7 +3,7 @@ package com.arkadiy.enter.imenu;
 
 
 import android.content.Context;
-import android.os.AsyncTask;
+import android.util.StringBuilderPrinter;
 
 import java.util.ArrayList;
 
@@ -13,19 +13,25 @@ import java.util.ArrayList;
 
 public class PrintReceipt  {
 
-    private final String title = "אנליזה";
-
+    private final String title = "אנליזה" ;
     private String name = "שם";
     private String amount = "כמות";
     private String price = "מחיר";
     private String address = "גט רימון";
-    private String address2 = "האילנות ";
-    private String numberAddress = "19";
+    private String address2 = "האילנות 19";
+    private String numberAddress = "";
     private String hP = "03.32244242";
     private String totalPrice="";
-    private String totalStringName="שולם ";
-    private String coinString = " ש'ח ";
+    private String totalStringName="סה\"כ";
+    private String coinString = "ש\"ח";
+    private String StringOrderId = "";
+    private String stringDateOpen = "נפתח ב ";
+    private String stringDatePrint = "הודפס ב ";
+    private String printData =  "";
+    private String numberOrderId = "חשבונית מס/קבלה";
+    private String totalTax = "סה\"כ מע\"ם";
     private final int STANDART_LENGTH = 48;
+    private final int STANDART_LENGTH_BIG_SIZE = 24;
     private String string = "";
     private ArrayList<Product> product;
     private PrinterManager printerManager;
@@ -34,38 +40,78 @@ public class PrintReceipt  {
     private char[]cutChar={0x1D,0x56,0x41,0x10};
     private char[] setFontSize={0x1B,0x21};
     private char[] removeFontSize={0x1B,0x21,0x00};
-    private char[] song = {7};
+    private char[] openDrawer = {0x1B,0x70,0x00,0x32,0xfa};
     private String stringFontSize="";
     private String cutString;
     private String boldStringStart;
     private String boldStringEnd;
     private int numberSize;
+    private Order order;
+    private boolean englishL = false;
 
-    public PrintReceipt(ArrayList<Product> product, Context ctx,String total)
-    {
+    public PrintReceipt(ArrayList<Product> product, Context ctx,String total,Order order,String data) {
         this.printerManager = PrinterManager_.getInstance_(ctx);
         this.product = product;
         this.numberSize = 0;
         this.totalPrice = total;
-        setBold();
-        string = hebrewString(title);
-        this.string = centerLine(string);
-        this.string = endOfLine(this.string);
-        printerManager.printJob(new PrinterJob(this.string));
-        removeBold();
+        this.order = order;
+        this.printData = data;
 
 
-        this.address = hebrewString(this.address);
-        this.address = endOfLine(this.address);
-        this.printerManager.printJob(new PrinterJob(this.address));
-        this.address2 = hebrewString(this.address2);
-        this.hP = hebrewString(this.hP);
-        this.printerManager.printJob(new PrinterJob(endOfLine(printCompanyInformation())));
-        this.printerManager.printJob(new PrinterJob(endOfLine("")));
+        printTitel();
+        printDate();
         // start print product
-        this.name = hebrewString(this.name);
-        this.amount = hebrewString(this.amount);
-        this.price = hebrewString(this.price);
+        // start print product
+        startPrintProducts();
+
+        // ~~~~~~~~~~~~~~print total price~~~~~~~~~~~~~~~~~~~~~
+        // ~~~~~~~~~~~~~~print total price~~~~~~~~~~~~~~~~~~~~~
+        printTotalPrice();
+
+        //~~~~~~~~~~~~~~~~~~~~cut paper~~~~~~~~~~~~~~~~~~~~~~~~
+        openDrawer();
+        this.printerManager.printJob(new PrinterJob("\n"));
+        cutFunction();
+
+    }
+    private void printDate(){
+        String str = hebrewString(this.stringDateOpen);
+
+        this.stringDateOpen = order.getDateAndTime();
+        this.stringDateOpen += str;
+        printerManager.printJob(new PrinterJob(endOfLine(this.stringDateOpen)));
+
+        this.stringDatePrint = hebrewString(this.stringDatePrint);
+        this.printData += this.stringDatePrint;
+        printerManager.printJob(new PrinterJob(endOfLine(this.printData)));
+
+    }
+    private void printTotalPrice(){
+
+        this.totalStringName = checkWord(this.totalStringName);
+        this.coinString = checkWord(this.coinString);
+
+        this.totalTax = checkWord(this.totalTax);
+
+        this.totalTax = twoColumns(totalTax,"17%");
+        printerManager.printJob(new PrinterJob(endOfLine(" ")));
+        printerManager.printJob(new PrinterJob(this.totalTax));
+
+
+        printerManager.printJob(new PrinterJob(this.totalTax));
+
+        printerManager.printJob(new PrinterJob(this.totalTax));
+        SetDoubleStrike();
+        this.totalPrice = centerLine(this.coinString+this.totalPrice+this.totalStringName);
+        printerManager.printJob(new PrinterJob(this.totalPrice));
+        removeDoubleStrike();
+    }
+    private void startPrintProducts(){
+
+        this.name = checkWord(this.name);
+        this.amount = checkWord(this.amount);
+        this.price = checkWord(this.price);
+
         arrangeARow(this.name,this.amount,this.price);
 
         this.printerManager.printJob(new PrinterJob(endOfLine(this.price+this.amount+this.name)));
@@ -73,29 +119,34 @@ public class PrintReceipt  {
 
         this.product = product;
         for ( Product p : this.product) {
-            this.name=hebrewString(p.getProductName());
+            this.name=checkWord(p.getProductName());
             arrangeARow(this.name,p.getAmount(),p.getPrice());
             printerManager.printJob(new PrinterJob(endOfLine(this.price+this.amount+this.name)));
         }
-
-        SetDoubleStrike();
-        // ~~~~~~~~~~~~~~print total price~~~~~~~~~~~~~~~~~~~~~
-        this.totalStringName = hebrewString(this.totalStringName);
-        this.coinString = hebrewString(this.coinString);
-        this.totalPrice = centerLine(this.coinString+this.totalPrice+this.totalStringName);
-        printerManager.printJob(new PrinterJob(this.totalPrice));
-        removeDoubleStrike();
-
-        this.printerManager.printJob(new PrinterJob("\n"));
-
-        cutFunction();
-
     }
+    private void printTitel() {
+        setBold();
+        this.string = checkWord(title);
+        this.string = centerLine(string);
+        this.string = endOfLine(this.string);
+        printerManager.printJob(new PrinterJob(this.string));
+        removeBold();
+        openDrawer();
 
+        this.address = checkWord(this.address);
+        this.address = endOfLine(this.address);
+        this.printerManager.printJob(new PrinterJob(this.address));
+        this.address2 = checkWord(this.address2);
+        this.hP = checkWord(this.hP);
+        this.printerManager.printJob(new PrinterJob(endOfLine(twoColumns(this.address2,this.hP))));
 
-
-    private void song(){
-        String str = new String(song);
+        this.numberOrderId += String.valueOf(order.getIndex());
+        this.numberOrderId = checkWord(this.numberOrderId);
+        this.numberOrderId = centerLine(this.numberOrderId);
+        this.printerManager.printJob(new PrinterJob(this.numberOrderId));
+    }
+    private void openDrawer(){
+        String str = new String(openDrawer);
         printerManager.printJob(new PrinterJob(str));
     }
     private void arrangeARow(String name,String amount,String price){
@@ -121,7 +172,13 @@ public class PrintReceipt  {
         {
             num1+=15;
         }
+        if(num1 > 6)
+        {
+            num1 = num1-price.length()+6;
+
+        }
         else num1+=10;
+
         this.amount="";
         for(int i = 0 ;i <num1;i++)
         {
@@ -131,17 +188,17 @@ public class PrintReceipt  {
         num1=price.length();
 
         if(num1 > 3) num1-=1;
+
         else num1+=4;
         this.price="";
-        for (int i = 0;i < num1;i++)
-        {
-            this.price="_";
-        }
+//        for (int i = 0;i < num1;i++)
+//        {
+//            this.price+="_";
+//        }
         this.price+=price;
 
     }
-    private void SetDoubleStrike()
-    {
+    private void SetDoubleStrike() {
         numberSize = 1;
         this.stringFontSize = new String(this.setFontSize);
         printerManager.printJob(new PrinterJob(stringFontSize+numberSize));
@@ -151,19 +208,20 @@ public class PrintReceipt  {
         stringFontSize = new String(removeFontSize);
         printerManager.printJob(new PrinterJob(stringFontSize));
     }
-    private String printCompanyInformation(){
-        int sumString1 = this.address2.length();
-        int sumString2 = this.hP.length();
-        int sumString3 = this.numberAddress.length();
-        int sum = sumString1+ sumString2 + sumString3;
-        sum = STANDART_LENGTH - sum;
+    private String twoColumns(String str1,String str2){
+        int sumString1 = str1.length();
+        int sumString2 = str2.length();
+//        int sumString3 = str3.length();
+
+        sumString1 = STANDART_LENGTH - sumString1 - sumString2;
+
         String str="";
-        str +=this.hP;
-        for(int i = 0 ; i < sum-1 ; i++)
+        str = str2;
+        for(int i = 0 ; i < sumString1 ; i++)
         {
             str +="_";
         }
-        str +=this.numberAddress + this.address2;
+        str +=str1;
 
 
         return str;
@@ -176,7 +234,7 @@ public class PrintReceipt  {
             int num = (STANDART_LENGTH-str.length());
             if(numberSize>0)
             {
-                num = num/4;
+                num = num/2;
             }
             for(int i = 0 ; i < num;i++)
             {
@@ -187,68 +245,109 @@ public class PrintReceipt  {
         str2+=str;
         return str2;
     }
-
     private void cutFunction(){
         cutString = new String(cutChar);
         printerManager.printJob(new PrinterJob(cutString));
     }
-    private String  hebrewString(String s ){
+    private String checkWord(String str){
+        int numSpace = 0 ;
+        String []str3;
         String str2="";
-        char []charArray = new char [s.length()];
-        char []charArray2 = new char [s.length()];
-        for (int i =0 ; i<s.length();i++)
-        {
-            charArray[i] = s.charAt(i);
-        }
-        char ch;
-        for (int i = s.length()-1,j=0; i>=0; i--,j++)
-        {
-            ch = charArray[j];
-            if(checkingLetters(ch))
-            {
-                charArray2[i] = ch;
-            }
-            else
-            {
-                charArray2[j]= ch;
-            }
+        String hebrewString="";
 
-        }
-        for(int i = 0 ; i < s.length();i++)
+        boolean hebrewWordExists = false;
+        str = str.trim();
+        str3 = str.split(" ");
+        if(str3.length == 1)
         {
-            str2 +=charArray2[i];
+            if(checkingLetters(str3[0].charAt(0)))
+                str2 = hebrewString(str3[0]);
+            else
+                str2 = str3[0];
+        }
+        else
+        {
+            for(int i =0 ; i < str3.length ;i++)
+            {
+
+                if(!str3[i].isEmpty())
+                {
+                    if(checkingLetters(str3[i].charAt(0)))
+                        str3[i] = hebrewString(str3[i]);
+                }
+                str2+=str3[i];
+
+
+            }
+                englishL = false;
+                str2="";
+                for(int i = str3.length -1; i >= 0 ; i--)
+                {
+
+                    str2 += str3[i];
+                    str2+=" ";
+                }
+
         }
         return str2;
     }
-    private boolean checkingLetters(char ch){
-        if(ch >= 1488 && ch <= 1514 || ch == 32)
+    private String hebrewString(String s){
+        String str="";
+
+          for(int i = s.length()-1 ; i >= 0;i--)
+          {
+
+              str += s.charAt(i);
+          }
+          return str;
+
+      }
+    private boolean checkingChars(char ch) {
+        if( ch >=31 && ch <= 47 )
             return true;
         return false;
     }
-
+    private boolean checkingLetters(char ch){
+        if(ch >= 'א' && ch <= 'ת' )
+            return true;
+        englishL = true;
+        return false;
+    }
+    private boolean checkingNumbers(char ch){
+        if(ch >= 30 && ch <= 39) {
+            return true;
+        }
+        return false;
+    }
     private String centerLine (String str){
         int sumSpace = str.length()/2;
         int sumCharInLine = STANDART_LENGTH /2;
         sumSpace = (sumCharInLine - sumSpace);
+
         if(numberSize>0)
         {
-            sumSpace=sumSpace/2;
+            sumSpace = str.length()/2;
+            sumCharInLine = STANDART_LENGTH_BIG_SIZE /2;
+            sumSpace = (sumCharInLine - sumSpace);
         }
         String str2 = "";
-        for(int i =0 ; i < sumSpace+1 ; i++)
+        for(int i =0 ; i < sumSpace ; i++)
         {
             str2 +="+";
         }
         str2+= str;
-        int num = (STANDART_LENGTH-str2.length());
+         sumSpace = (STANDART_LENGTH-str2.length());
         if (numberSize>0)
         {
-            num=num/2;
+        sumSpace = str.length()/2;
+        sumCharInLine = STANDART_LENGTH_BIG_SIZE /2;
+        sumSpace = (sumCharInLine - sumSpace);
+
         }
         if(str2.length() != STANDART_LENGTH)
         {
 
-            for(int i = 0 ; i < num;i++)
+            for(int i = 0 ; i < sumSpace;i++)
             {
                 str2 +="!";
             }

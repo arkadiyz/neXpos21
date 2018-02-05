@@ -10,6 +10,7 @@ public class Order {
     private int index;
     private int indexInButtons;
     private float total;
+    private double totalTax=0;
     private String dateAndTime;
     private ArrayList<Product>products;
 
