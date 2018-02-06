@@ -138,6 +138,7 @@ public class PrintReceipt  {
         this.product = product;
         for ( Product p : this.product) {
             this.name=checkWord(p.getProductName());
+            this.name=this.name.trim();
             arrangeARow(this.name,p.getAmount(),p.getPrice());
             printerManager.printJob(new PrinterJob(endOfLine(this.price+this.amount+this.name)));
         }
@@ -153,7 +154,7 @@ public class PrintReceipt  {
 
         this.cashInformation.setCity( checkWord(this.cashInformation.getCity()));
         this.cashInformation.setCity(endOfLine(this.cashInformation.getCity()));
-        this.printerManager.printJob(new PrinterJob(this.address));
+        this.printerManager.printJob(new PrinterJob(this.cashInformation.getCity()));
         this.cashInformation.setStreet(checkWord(this.cashInformation.getStreet()));
         this.cashInformation.setH_P(checkWord(this.cashInformation.getH_P()));
         this.printerManager.printJob(new PrinterJob(endOfLine(twoColumns(this.cashInformation.getStreet(),this.cashInformation.getH_P()))));
@@ -252,7 +253,7 @@ public class PrintReceipt  {
             int num = (STANDART_LENGTH-str.length());
             if(numberSize>0)
             {
-                num = num/2;
+                num = (num/2);
             }
             for(int i = 0 ; i < num;i++)
             {
@@ -274,10 +275,11 @@ public class PrintReceipt  {
         String hebrewString="";
 
         boolean hebrewWordExists = false;
-        str = str.trim();
+
         str3 = str.split(" ");
         if(str3.length == 1)
         {
+            str3[0]=str3[0].trim();
             if(checkingLetters(str3[0].charAt(0)))
                 str2 = hebrewString(str3[0]);
             else
@@ -287,7 +289,7 @@ public class PrintReceipt  {
         {
             for(int i =0 ; i < str3.length ;i++)
             {
-
+                str3[i]=str3[i].trim();
                 if(!str3[i].isEmpty())
                 {
                     if(checkingLetters(str3[i].charAt(0)))

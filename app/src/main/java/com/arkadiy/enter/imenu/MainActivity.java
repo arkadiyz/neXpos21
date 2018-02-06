@@ -368,7 +368,6 @@ public class MainActivity extends AppCompatActivity implements  Callbacks,CashFr
             case R.id.button8:
                 calcString += "8";
                 textViewScreenCalc.setText(calcString);
-
                 break;
             case R.id.button9:
                 calcString += "9";
@@ -430,7 +429,6 @@ public class MainActivity extends AppCompatActivity implements  Callbacks,CashFr
         getCategoryProductsList(product);
         layout = (GridLayout) findViewById(R.id.gridLayoutItem);
         fillInMenue(productName, layout);
-
     }
 
     //=========================================================
@@ -505,7 +503,6 @@ public class MainActivity extends AppCompatActivity implements  Callbacks,CashFr
 
     private void openNewButtonOrders(){
         Button temp=new Button(this);
-
         temp.setText(Integer.toString(COLORCOUNT));
         temp.setLayoutParams(new ViewGroup.LayoutParams(butWidthOrders,linearLayoutOrders.getHeight()));
 
