@@ -413,8 +413,12 @@ public class MainActivity extends AppCompatActivity implements  Callbacks,CashFr
                 break;
             case R.id.buttonCash:
 //               payCash(380);
-                bundleTotal.putString("total",textViewTotalNumber.getText().toString());
-                showCashDialog();
+                if(!textViewTotalNumber.getText().toString().equals(""))
+                {
+                    bundleTotal.putString("total",textViewTotalNumber.getText().toString());
+                    showCashDialog();
+
+                }
 
                 break;
             case R.id.buttonEnter:
@@ -535,26 +539,44 @@ public class MainActivity extends AppCompatActivity implements  Callbacks,CashFr
     }
 
     public void clickedOrderButton(View v){
-        int num=((Button)v).getId();
-        products2.clear();
-        int size= orders.get(num).getProducts().size();
-        ArrayList<Product> prod=orders.get(num).getProducts();
-        for (int i = 0; i <size; i++) {
-            products2.add(prod.get(i));
-        }
-        adapter.clear();
-        adapter.notifyDataSetChanged();
-        index=v.getId();
-        textViewTotalNumber.setText("");
 
-        if(!products2.isEmpty()){
-            for (int i = 0; i < products2.size(); i++) {
-                adapter.insert(products2.get(i),i);
+        try{
+            int num=((Button)v).getId();
+            products2.clear();
+            if(orders.size()>=num){
+                if(orders.size()==1){
+
+                    num=0;
+                    index=0;
+                }else{
+
+                    index=v.getId();
+                }
+
+                int size= orders.get(num).getProducts().size();
+                ArrayList<Product> prod=orders.get(num).getProducts();
+                for (int i = 0; i <size; i++) {
+                    products2.add(prod.get(i));
+                }
             }
-            textViewTotalNumber.setText(new DecimalFormat("##.##").format(orders.get(index).getTotal()));
 
+            adapter.clear();
             adapter.notifyDataSetChanged();
+            textViewTotalNumber.setText("0");
+
+            if(!products2.isEmpty()){
+                for (int i = 0; i < products2.size(); i++) {
+                    adapter.insert(products2.get(i),i);
+                }
+                textViewTotalNumber.setText(new DecimalFormat("##.##").format(orders.get(index).getTotal()));
+
+                adapter.notifyDataSetChanged();
+            }
+
+        }catch(Exception ex){
+            ex.printStackTrace();
         }
+
     }
 
 
@@ -887,7 +909,12 @@ public class MainActivity extends AppCompatActivity implements  Callbacks,CashFr
                 return;
             }
             else if(size>1){
-                clickedOrderButton((Button)linearLayoutOrders.findViewById(index-1));
+                if(index==0){
+                    clickedOrderButton((Button)linearLayoutOrders.findViewById(index+1));
+                }
+                else{
+                    clickedOrderButton((Button)linearLayoutOrders.findViewById(index-1));
+                }
                 COLORCOUNT-=1;
             }
 
@@ -896,8 +923,7 @@ public class MainActivity extends AppCompatActivity implements  Callbacks,CashFr
             {
 
                 Button b;
-                index-=1;
-                for (int i = 0; i <size ; i++) {
+                for (int i = 0; i <orders.size() ; i++) {
                     b=(Button)linearLayoutOrders.getChildAt(i);
                     b.setId(i);
 

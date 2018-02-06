@@ -12,7 +12,7 @@ public class Order {
     private float total;
     private double totalTax=0;
     private String dateAndTime;
-    private ArrayList<Product>products;
+    private ArrayList<Product>products=null;
     private ArrayList<Payment>payments;
 
 
@@ -53,7 +53,7 @@ public class Order {
     }
 
     public float getTotal(){
-        float t=0;
+        float t= (float) 0.0;
         for(Product p:products){
             t+=Float.parseFloat(p.getPrice());
         }
