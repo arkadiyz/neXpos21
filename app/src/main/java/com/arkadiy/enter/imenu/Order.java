@@ -14,7 +14,6 @@ public class Order {
     private String dateAndTime;
     private ArrayList<Product>products;
     private ArrayList<Payment>payments;
-    private String x;
 
 
     public Order(int index,float total){
