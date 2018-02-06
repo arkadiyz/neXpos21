@@ -48,6 +48,7 @@ public class PrintReceipt  {
     private Order order;
     private boolean englishL = false;
     private CashInformation cashInformation;
+    private String x;
 
     public PrintReceipt(Context ctx,Order order,String data,CashInformation cashInformation) {
         this.printerManager = PrinterManager_.getInstance_(ctx);
