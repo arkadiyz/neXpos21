@@ -98,6 +98,7 @@ import java.util.List;
 
         if (cursor.moveToFirst()) {
             do {
+                int itemId= cursor.getInt(0);
                 String productName = cursor.getString(1);
                 float p = cursor.getFloat(2);
                 String price = Float.toString(p);
@@ -106,7 +107,7 @@ import java.util.List;
                 String ig_id = cursor.getString(5);
                 int id = Integer.parseInt(ig_id);
 
-                item = new Product(productName, price, barcode, picPath, id);
+                item = new Product(productName, price, barcode, picPath, id,itemId);
                 itemsList.add(item);
 
             } while (cursor.moveToNext());
@@ -115,7 +116,29 @@ import java.util.List;
         return itemsList;
     }
 
+public Product getProductById(int itemId){
+    Product p = null;
+    String str = "SELECT * FROM items " +
+            "WHERE _id=" + itemId;
+    Cursor cursor = mDatabase.rawQuery(str, null);
+    if (cursor.moveToFirst()) {
+        do {
+            String productName = cursor.getString(1);
+            float pr = cursor.getFloat(2);
+            String price = Float.toString(pr);
+            String picPath = cursor.getString(3);
+            String bar = cursor.getString(4);
+            String ig_id = cursor.getString(5);
+            int id = Integer.parseInt(ig_id);
 
+            p = new Product(productName, price, bar, picPath, id,itemId);
+
+
+        } while (cursor.moveToNext());
+
+    }
+    return p;
+}
     synchronized public void createItemIfNotExists(int id, String name, float price, String path, String barcode, int ig_id) {
         String item = "INSERT OR REPLACE INTO items (_id, name, price, picture_path, barcode, ig_id) VALUES(" + id + ", '"
                 + name + "', "
@@ -151,6 +174,7 @@ import java.util.List;
         Cursor cursor = mDatabase.rawQuery(str, null);
         if (cursor.moveToFirst()) {
             do {
+                int itemId= cursor.getInt(0);
                 String productName = cursor.getString(1);
                 float pr = cursor.getFloat(2);
                 String price = Float.toString(pr);
@@ -159,7 +183,7 @@ import java.util.List;
                 String ig_id = cursor.getString(5);
                 int id = Integer.parseInt(ig_id);
 
-                p = new Product(productName, price, barcode, picPath, id);
+                p = new Product(productName, price, barcode, picPath, id,itemId);
 
 
             } while (cursor.moveToNext());
@@ -194,9 +218,9 @@ import java.util.List;
         }
     }
 
-    synchronized public void insertIntoOrderItems(int id, int quantity, int status, String price,String name) {
+    synchronized public void insertIntoOrderItems(int id, int quantity, int status, String price,String name,int itemId) {
         float pr = Float.parseFloat(price);
-        String str = "INSERT INTO Order_items (Order_id, Quantity, Price, Status, Name) Values (" + id + ", " + quantity + ", " + pr + ", " + status +", '"+name+"')";
+        String str = "INSERT INTO Order_items (Order_id, Quantity, Price, Status, Item_id) Values (" + id + ", " + quantity + ", " + pr + ", " + status +", '"+itemId+"')";
         mDatabase.execSQL(str);
     }
 

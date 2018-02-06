@@ -54,8 +54,10 @@ public class ProductListAdapter extends ArrayAdapter<Product> {
         String name = getItem(position).getProductName();
         String amount = getItem(position).getAmount();
         String price = getItem(position).getPrice();
+        int id = getItem(position).getItemId();
+
         //Create the product object with the informtion
-        Product product = new Product(name,amount,price);
+        Product product = new Product(name,amount,price,id);
         LayoutInflater inflater = LayoutInflater.from(mContext);
         convertView =inflater.inflate(mResource,parent,false);
         TextView tvProduct = (TextView)convertView.findViewById(R.id.textViewProductName);

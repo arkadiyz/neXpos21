@@ -296,7 +296,7 @@ public class MainActivity extends AppCompatActivity implements  Callbacks,CashFr
                        }
                        try{
 
-                           dataConfig.insertIntoOrderItems(indexData, 1, 0, product.getPrice(), product.getProductName());
+                           dataConfig.insertIntoOrderItems(indexData, 1, 0, product.getPrice(), product.getProductName(),product.getItemId());
                            dataConfig.updateTotalOrder(indexData,orders.get(index).getTotal());
 
                        }catch(Exception ex){
@@ -411,7 +411,6 @@ public class MainActivity extends AppCompatActivity implements  Callbacks,CashFr
                 }
                 break;
             case R.id.buttonCash:
-//               payCash(380);
                 if(!textViewTotalNumber.getText().toString().equals(""))
                 {
                     bundleTotal.putString("total",textViewTotalNumber.getText().toString());
@@ -421,7 +420,8 @@ public class MainActivity extends AppCompatActivity implements  Callbacks,CashFr
 
                 break;
             case R.id.buttonEnter:
-                addProductToListView(general);
+               Product pr= new Product(general);
+                addProductToListView2(pr);
                 calcString = "";
                 textViewScreenCalc.setText(calcString);
                 ifHaveDot = false;
@@ -434,7 +434,7 @@ public class MainActivity extends AppCompatActivity implements  Callbacks,CashFr
         if(index==-1)
             index=0;
 
-//        printReceipt = new PrintReceipt(this,orders.get(index),getDateTime(),cashInformation,str);
+        printReceipt = new PrintReceipt(this,orders.get(index),getDateTime(),cashInformation,str);
     }
 
     private void printReceiptTemp(){
@@ -477,6 +477,7 @@ public class MainActivity extends AppCompatActivity implements  Callbacks,CashFr
 
         for (int i = 0; i < products.size(); i++) {
             String name = products.get(i);
+
             Button tempBut = new Button(MainActivity.this);
             tempBut.setText(name);
             tempBut.setTextAlignment(View.TEXT_ALIGNMENT_GRAVITY);
@@ -489,6 +490,8 @@ public class MainActivity extends AppCompatActivity implements  Callbacks,CashFr
                     getSize();
                     flag = false;
                 }
+                tempBut.setId(itemsList.get(i).getItemId());
+
 
                 tempBut.setOnClickListener(new View.OnClickListener() {
 
@@ -496,9 +499,10 @@ public class MainActivity extends AppCompatActivity implements  Callbacks,CashFr
                     @RequiresApi(api = Build.VERSION_CODES.O)
                     public void onClick(View view) {
                         Button b = (Button) view;
+                        Product p = dataConfig.getProductById(view.getId());
 
                         String name = b.getText().toString();
-                        addProductToListView(name);
+                        addProductToListView2(p);
                     }
                 });
 
@@ -609,22 +613,24 @@ public class MainActivity extends AppCompatActivity implements  Callbacks,CashFr
 
     //========================================================
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    public void addProductToListView(String name) {
 
-        String price = getPrice(name);
+    public void addProductToListView2(Product prod) {
+
+        String price = prod.getPrice();
+        String name=prod.getProductName();
+        int id=prod.getItemId();
         Message msg=Message.obtain();
         Message msg2=Message.obtain();
 
         try{
-          if(flag2){
-              flag2=false;
-              openNewButtonOrders();
-               orderUpdater.run();
-          }
+            if(flag2){
+                flag2=false;
+                openNewButtonOrders();
+                orderUpdater.run();
+            }
 
             if(!groupAllItems(name,price)){
-                p = new Product(name, "1", price);
+                p = new Product(name, "1", price,id);
                 productList.add(p);
                 products2.add(p);
                 orders.get(index).addToProducts(p);
@@ -645,15 +651,6 @@ public class MainActivity extends AppCompatActivity implements  Callbacks,CashFr
         }
 
 
-    }
-
-    public void addProductToListView2(Product prod) {
-
-
-        String price = prod.getPrice();
-        listViewSummary.setAdapter(adapter);
-        productList.add(prod);
-        listViewSummary.setSelection(adapter.getCount() - 1);
 
     }
 
@@ -893,6 +890,8 @@ public class MainActivity extends AppCompatActivity implements  Callbacks,CashFr
             Toast.makeText(this,"עודף"+change,Toast.LENGTH_LONG).show();
             masKabalaMakor=dataConfig.getMasKabala();
             printReceipt(masKabalaMakor);
+
+
 
             orders.remove(index);
             adapter.clear();

@@ -20,6 +20,7 @@ public class Order {
         this.index=index;
         this.total=total;
         this.products=new ArrayList<>();
+        this.payments=new ArrayList<>();
     }
 
     public Order(int index,int indexInButtons,String dateAndTime){
@@ -28,6 +29,8 @@ public class Order {
         this.indexInButtons=indexInButtons;
         this.products=new ArrayList<>();
         this.dateAndTime=dateAndTime;
+        this.payments=new ArrayList<>();
+
 
     }
     public void addPayment(String type,float summ){

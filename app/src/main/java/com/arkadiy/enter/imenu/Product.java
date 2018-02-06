@@ -11,6 +11,7 @@ public class Product {
     private String barcode=null;
     private String picPath=null;
     private int ig_id=0;
+    private int itemId;
 
 
     public Product(String productName, String amount, String price,String barcode,String path,int id) {
@@ -20,22 +21,32 @@ public class Product {
         this.barcode=barcode;
         this.picPath=path;
         this.ig_id=id;
+        this.itemId=itemId;
+
 
     }
 
-    public Product(String productName, String price,String barcode,String path,int id) {
+    public Product(String productName, String price,String barcode,String path,int id,int itemId) {
         this.productName = productName;
         this.price = price;
         this.barcode=barcode;
         this.picPath=path;
         this.ig_id=id;
+        this.itemId=itemId;
 
     }
-    public Product(String productName, String amount, String price) {
+    public Product(String productName, String amount, String price,int id) {
         this.productName = productName;
         this.amount = amount;
         this.price = price;
+        this.itemId=id;
     }
+
+    public Product(String productName) {
+        this.productName = productName;
+        this.itemId=0;
+    }
+
 
     public Product() {
 
@@ -81,5 +92,9 @@ public class Product {
 
     public void setPicPath(String path){
         this.picPath=path;
+    }
+
+    public int getItemId(){
+        return this.itemId;
     }
 }
