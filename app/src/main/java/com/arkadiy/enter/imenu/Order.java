@@ -53,7 +53,11 @@ public class Order {
     }
 
     public float getTotal(){
-        return this.total;
+        float t=0;
+        for(Product p:products){
+            t+=Float.parseFloat(p.getPrice());
+        }
+        return t;
     }
 
     public ArrayList<Product> getProducts(){
@@ -65,6 +69,7 @@ public class Order {
     }
 
     public void setProducts(ArrayList<Product> products){
+
         this.products=products;
     }
 

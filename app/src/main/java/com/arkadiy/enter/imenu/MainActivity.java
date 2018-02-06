@@ -26,6 +26,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
@@ -240,7 +242,7 @@ public class MainActivity extends AppCompatActivity implements  Callbacks,CashFr
                 index=COLORCOUNT-1;
                 adapter.clear();
                 adapter.notifyDataSetChanged();
-                textViewTotalNumber.setText("");
+                textViewTotalNumber.setText("0");
             }
         });
 
@@ -309,6 +311,30 @@ public class MainActivity extends AppCompatActivity implements  Callbacks,CashFr
         });
         orderItemsUpdater.start();
         cashInformation=dataConfig.getCashInformation();
+
+        textViewTotalNumber.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                String sl=s.toString();
+                if(!sl.equals("0"))
+                {
+                    Button b= (Button)linearLayoutOrders.findViewById(index);
+                    b.setText(textViewTotalNumber.getText());
+
+                }
+            }
+        });
 
     }
 
@@ -402,10 +428,16 @@ public class MainActivity extends AppCompatActivity implements  Callbacks,CashFr
 
     }
     private void printReceipt(String str){
-        printReceipt = new PrintReceipt(this,orders.get(index),getDateTime(),cashInformation,str);
+        if(index==-1)
+            index=0;
+
+//        printReceipt = new PrintReceipt(this,orders.get(index),getDateTime(),cashInformation,str);
     }
 
     private void printReceiptTemp(){
+        if(index==-1)
+            index=0;
+
         printReceipt = new PrintReceipt(getDateTime(),this,orders.get(index),cashInformation);
     }
 
@@ -502,10 +534,33 @@ public class MainActivity extends AppCompatActivity implements  Callbacks,CashFr
         return curTime;
     }
 
+    public void clickedOrderButton(View v){
+        int num=((Button)v).getId();
+        products2.clear();
+        int size= orders.get(num).getProducts().size();
+        ArrayList<Product> prod=orders.get(num).getProducts();
+        for (int i = 0; i <size; i++) {
+            products2.add(prod.get(i));
+        }
+        adapter.clear();
+        adapter.notifyDataSetChanged();
+        index=v.getId();
+        textViewTotalNumber.setText("");
+
+        if(!products2.isEmpty()){
+            for (int i = 0; i < products2.size(); i++) {
+                adapter.insert(products2.get(i),i);
+            }
+            textViewTotalNumber.setText(new DecimalFormat("##.##").format(orders.get(index).getTotal()));
+
+            adapter.notifyDataSetChanged();
+        }
+    }
+
+
     private void openNewButtonOrders(){
         Button temp=new Button(this);
 
-        temp.setText(Integer.toString(COLORCOUNT));
         temp.setLayoutParams(new ViewGroup.LayoutParams(butWidthOrders,linearLayoutOrders.getHeight()));
 
         temp.setId(COLORCOUNT);
@@ -513,35 +568,20 @@ public class MainActivity extends AppCompatActivity implements  Callbacks,CashFr
         orders.add(order);
 
         temp.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View v) {
-                int num=((Button)v).getId();
-                products2.clear();
-                int size= orders.get(num).getProducts().size();
-                ArrayList<Product> prod=orders.get(num).getProducts();
-                for (int i = 0; i <size; i++) {
-                    products2.add(prod.get(i));
-                }
-                adapter.clear();
-                adapter.notifyDataSetChanged();
-                index=v.getId();
-                textViewTotalNumber.setText("");
-
-                if(!products2.isEmpty()){
-                    for (int i = 0; i < products2.size(); i++) {
-                        adapter.insert(products2.get(i),i);
-                    }
-                    textViewTotalNumber.setText(new DecimalFormat("##.##").format(orders.get(index).getTotal()));
-
-                    adapter.notifyDataSetChanged();
-                }
+                clickedOrderButton(v);
             }
         });
+
+
         temp.setBackgroundColor(colors[COLORCOUNT++]);
         linearLayoutOrders.addView(temp);
         plus.setText("+");
         plus.setLayoutParams(new ViewGroup.LayoutParams(90, linearLayoutOrders.getHeight()));
         linearLayoutOrders.addView(plus);
+        plus.setId(-1);
     }
 
 
@@ -551,14 +591,9 @@ public class MainActivity extends AppCompatActivity implements  Callbacks,CashFr
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void addProductToListView(String name) {
 
-
         String price = getPrice(name);
         Message msg=Message.obtain();
         Message msg2=Message.obtain();
-
-        p = new Product(name, "1", price);
-        listViewSummary.setAdapter(adapter);
-
 
         try{
           if(flag2){
@@ -566,14 +601,23 @@ public class MainActivity extends AppCompatActivity implements  Callbacks,CashFr
               openNewButtonOrders();
                orderUpdater.run();
           }
-            productList.add(p);
-            products2.add(p);
-            orders.get(index).addToProducts(p);
+
+            if(!groupAllItems(name,price)){
+                p = new Product(name, "1", price);
+                productList.add(p);
+                products2.add(p);
+                orders.get(index).addToProducts(p);
+            }
+
+
+
+            listViewSummary.setAdapter(adapter);
             textViewTotalNumber.setText(new DecimalFormat("##.##").format(orders.get(index).getTotal()));
             listViewSummary.setSelection(adapter.getCount() - 1);
             indexData=orders.get(index).getIndex();
             msg2.obj=p;
             handler2.sendMessage(msg2);
+
         }catch(Exception ex)
         {
             ex.printStackTrace();
@@ -827,13 +871,74 @@ public class MainActivity extends AppCompatActivity implements  Callbacks,CashFr
             payCash(payed+change);
             Toast.makeText(this,"עודף"+change,Toast.LENGTH_LONG).show();
             masKabalaMakor=dataConfig.getMasKabala();
+            printReceipt(masKabalaMakor);
 
-//              linearLayoutOrders.removeView((Button)linearLayoutOrders.findViewById(index));
+            orders.remove(index);
+            adapter.clear();
+            linearLayoutOrders.removeViewInLayout(linearLayoutOrders.findViewById(index));
+            adapter.notifyDataSetChanged();
+            textViewTotalNumber.setText("0");
+            int size=linearLayoutOrders.getChildCount();
+            if(size==1)
+            {
+                linearLayoutOrders.removeAllViews();
+                COLORCOUNT=0;
+                flag2=true;
+                return;
+            }
+            else if(size>1){
+                clickedOrderButton((Button)linearLayoutOrders.findViewById(index-1));
+                COLORCOUNT-=1;
+            }
+
+
+            if(index<=orders.size()-1)
+            {
+
+                Button b;
+                index-=1;
+                for (int i = 0; i <size ; i++) {
+                    b=(Button)linearLayoutOrders.getChildAt(i);
+                    b.setId(i);
+
+                }
+            }
+
+
         }
-        printReceipt(masKabalaMakor);
 
 
     }
+
+    public boolean groupAllItems(String name,String price2){
+        String num;
+        int n;
+        float pric;
+        float price=Float.parseFloat(price2);
+        boolean x=false;
+        Product p;
+        for(int i=0;i<productList.size();i++)
+        {
+            p=productList.get(i);
+            if(name.equals(p.getProductName()))
+            {
+                num=p.getAmount();
+                n=Integer.parseInt(num);
+                n++;
+                productList.get(i).setAmount(Integer.toString(n));
+                orders.get(index).getProducts().get(i).setAmount(Integer.toString(n));
+                num=p.getPrice();
+                pric=Float.parseFloat(num);
+                pric+=price;
+                productList.get(i).setPrice(Float.toString(pric));
+                orders.get(index).getProducts().get(i).setPrice(Float.toString(pric));
+                x=true;
+
+            }
+        }
+        return x;
+    }
+
 }
 
 
