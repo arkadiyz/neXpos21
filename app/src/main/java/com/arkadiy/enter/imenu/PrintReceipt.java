@@ -48,9 +48,9 @@ public class PrintReceipt  {
     private Order order;
     private boolean englishL = false;
     private CashInformation cashInformation;
-    private String x;
+    private String invoiceNum;
 
-    public PrintReceipt(Context ctx,Order order,String data,CashInformation cashInformation) {
+    public PrintReceipt(Context ctx,Order order,String data,CashInformation cashInformation,String invoiceNum) {
         this.printerManager = PrinterManager_.getInstance_(ctx);
         this.order = order;
         this.product = order.getProducts();
@@ -58,6 +58,7 @@ public class PrintReceipt  {
         this.totalPrice = String.valueOf(order.getTotal());
         this.printData = data;
         this.cashInformation = cashInformation;
+        this.invoiceNum=invoiceNum;
         printTitel();
         printDate();
         // start print product
@@ -138,7 +139,6 @@ public class PrintReceipt  {
         this.product = product;
         for ( Product p : this.product) {
             this.name=checkWord(p.getProductName());
-            this.name=this.name.trim();
             arrangeARow(this.name,p.getAmount(),p.getPrice());
             printerManager.printJob(new PrinterJob(endOfLine(this.price+this.amount+this.name)));
         }
@@ -154,14 +154,14 @@ public class PrintReceipt  {
 
         this.cashInformation.setCity( checkWord(this.cashInformation.getCity()));
         this.cashInformation.setCity(endOfLine(this.cashInformation.getCity()));
-        this.printerManager.printJob(new PrinterJob(this.cashInformation.getCity()));
+        this.printerManager.printJob(new PrinterJob(this.address));
         this.cashInformation.setStreet(checkWord(this.cashInformation.getStreet()));
         this.cashInformation.setH_P(checkWord(this.cashInformation.getH_P()));
         this.printerManager.printJob(new PrinterJob(endOfLine(twoColumns(this.cashInformation.getStreet(),this.cashInformation.getH_P()))));
 
-        this.numberOrderId += String.valueOf(order.getIndex());
+        this.numberOrderId += this.invoiceNum;
         this.numberOrderId = checkWord(this.numberOrderId);
-        this.numberOrderId = centerLine(this.numberOrderId);
+        this.numberOrderId = centerLine(this.invoiceNum+this.numberOrderId);
         this.printerManager.printJob(new PrinterJob(this.numberOrderId));
     }
     private void openDrawer(){
@@ -253,7 +253,7 @@ public class PrintReceipt  {
             int num = (STANDART_LENGTH-str.length());
             if(numberSize>0)
             {
-                num = (num/2);
+                num = num/2;
             }
             for(int i = 0 ; i < num;i++)
             {
@@ -275,11 +275,10 @@ public class PrintReceipt  {
         String hebrewString="";
 
         boolean hebrewWordExists = false;
-
+        str = str.trim();
         str3 = str.split(" ");
         if(str3.length == 1)
         {
-            str3[0]=str3[0].trim();
             if(checkingLetters(str3[0].charAt(0)))
                 str2 = hebrewString(str3[0]);
             else
@@ -289,7 +288,7 @@ public class PrintReceipt  {
         {
             for(int i =0 ; i < str3.length ;i++)
             {
-                str3[i]=str3[i].trim();
+
                 if(!str3[i].isEmpty())
                 {
                     if(checkingLetters(str3[i].charAt(0)))

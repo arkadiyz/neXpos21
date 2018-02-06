@@ -267,4 +267,36 @@ import java.util.List;
         }
         return cashInformation;
     }
-}
+
+
+    public String getMasKabala() {
+        int answer = 0;
+        String str="";
+        try {
+             str= "Select Number from Invoice_number";
+            Cursor cursor = mDatabase.rawQuery(str, null);
+            if (cursor.moveToFirst()) {
+                answer = cursor.getInt(1);
+                str = "UPDATE In_num SET NumInvoice=NumInvoice+1";
+                mDatabase.execSQL(str);
+
+            }
+
+        }catch(Exception ex){
+                ex.printStackTrace();
+            }
+
+            String cashId=getCashInformation().getCashId();
+
+        str=cashId+Integer.toString(answer);
+            return str;
+
+        }
+
+
+
+
+    }
+
+
+
