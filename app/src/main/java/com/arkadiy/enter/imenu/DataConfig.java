@@ -46,6 +46,8 @@ import java.util.List;
     }
 
 
+
+
       public ArrayList<String> getDataFromDataBase(String categoryName) {
         ArrayList<String> list = new ArrayList<>();
         String bla = getDatabaseName();
@@ -240,9 +242,29 @@ import java.util.List;
 
     }
 
+
     public void insertPaymentIntoOrder(int indexOrder)
     {
 
     }
 
+    public CashInformation getCashInformation() {
+        CashInformation cashInformation = null;
+        String str = "Select * from Global";
+
+        try {
+            Cursor cursor = mDatabase.rawQuery(str, null);
+            if (cursor.moveToFirst()) {
+                cashInformation = new CashInformation(cursor.getString(0),
+                        cursor.getString(1),
+                        cursor.getString(2),
+                        cursor.getString(3),
+                        cursor.getString(4),
+                        cursor.getString(5));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return cashInformation;
     }
+}

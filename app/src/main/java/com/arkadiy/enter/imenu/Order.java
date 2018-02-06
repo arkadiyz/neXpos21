@@ -13,6 +13,8 @@ public class Order {
     private double totalTax=0;
     private String dateAndTime;
     private ArrayList<Product>products;
+    private ArrayList<Payment>payments;
+
 
     public Order(int index,float total){
         this.index=index;
@@ -27,6 +29,9 @@ public class Order {
         this.products=new ArrayList<>();
         this.dateAndTime=dateAndTime;
 
+    }
+    public void addPayment(String type,float summ){
+        payments.add(new Payment(type,summ));
     }
 
     public String getDateAndTime()

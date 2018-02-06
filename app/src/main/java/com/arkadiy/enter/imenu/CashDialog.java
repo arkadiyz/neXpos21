@@ -1,6 +1,9 @@
 package com.arkadiy.enter.imenu;
 
+import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.MainThread;
 import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,6 +11,9 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+
+import java.text.DecimalFormat;
+import java.text.Format;
 
 /**
  * Created by vadnu on 01/02/2018.
@@ -27,7 +33,7 @@ public class CashDialog extends DialogFragment implements View.OnClickListener {
     ImageButton enter;
     ImageButton zero;
     ImageButton z;
-
+private Context context;
     ImageButton twoHundred;
     ImageButton oneHundred;
     ImageButton fifty;
@@ -38,10 +44,16 @@ public class CashDialog extends DialogFragment implements View.OnClickListener {
     ImageButton oneShekel;
     ImageButton halfShekel;
     ImageButton tenAgorot;
+    private String t;
+    private Format format;
 
-   private EditText editTextTotal;
+    private EditText editTextTotal;
     private String payed="0";
     private float pay=0;
+    private float pay2=0;
+
+private CalculateChangeListener listener;
+
 
     public View onCreateView(LayoutInflater inflator, ViewGroup container, Bundle savedInstance){
 
@@ -71,6 +83,7 @@ public class CashDialog extends DialogFragment implements View.OnClickListener {
             oneShekel=(ImageButton)v.findViewById(R.id.imageButtonOne);
             halfShekel=(ImageButton)v.findViewById(R.id.imageButtonHalf);
             tenAgorot=(ImageButton)v.findViewById(R.id.imageButtonTenAgorot);
+            format=new DecimalFormat("##.##");
 
         }catch(Exception ex){
             ex.printStackTrace();
@@ -106,14 +119,35 @@ public class CashDialog extends DialogFragment implements View.OnClickListener {
         return v;
     }
 
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        try {
+            listener = (CalculateChangeListener) context;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(context.toString()
+                    + " must implement EditNameDialogListener");
+        }
+    }
+
+
+
     public View getView(){
         return v;
     }
 
     public void setTotalEditText(){
         editTextTotal=(EditText)v.findViewById(R.id.textViewTotal);
-        String t=this.getArguments().getString("total");
+        t=this.getArguments().getString("total");
         editTextTotal.setText(t);
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+
+
 
     }
 
@@ -129,111 +163,85 @@ public class CashDialog extends DialogFragment implements View.OnClickListener {
 
                 break;
             case R.id.button1:
-                pay=Float.parseFloat(payed);
-                pay+=1;
-                payed=Float.toString(pay);
+                pay=1;
                 break;
             case R.id.button2:
-                pay=Float.parseFloat(payed);
-                pay+=2;
-                payed=Float.toString(pay);
+                pay=2;
                 break;
             case R.id.button3:
-                pay=Float.parseFloat(payed);
-                pay+=3;
-                payed=Float.toString(pay);
+                pay=3;
                 break;
             case R.id.button4:
-                pay=Float.parseFloat(payed);
-                pay+=4;
-                payed=Float.toString(pay);
+                pay=4;
                 break;
             case R.id.button5:
-                pay=Float.parseFloat(payed);
-                pay+=5;
-                payed=Float.toString(pay);
+                pay=5;
                 break;
             case R.id.button6:
-                pay=Float.parseFloat(payed);
-                pay+=6;
-                payed=Float.toString(pay);
+                pay=6;
                 break;
             case R.id.button7:
-                pay=Float.parseFloat(payed);
-                pay+=7;
-                payed=Float.toString(pay);
+                pay=7;
                 break;
             case R.id.button8:
-                pay=Float.parseFloat(payed);
-                pay+=8;
-                payed=Float.toString(pay);
+                pay=8;
                 break;
             case R.id.button9:
-                pay=Float.parseFloat(payed);
-                pay+=9;
-                payed=Float.toString(pay);
+                pay=9;
                 break;
             case R.id.imageButtonTwoHundred:
-                pay=Float.parseFloat(payed);
-                pay+=200;
-                payed=Float.toString(pay);
+                pay=200;
                 break;
             case R.id.imageButtonOneHundred:
-                pay=Float.parseFloat(payed);
-                pay+=100;
-                payed=Float.toString(pay);
+                pay=100;
                 break;
             case R.id.imageButtonFifty:
-                pay=Float.parseFloat(payed);
-                pay+=50;
-                payed=Float.toString(pay);
+                pay=50;
                 break;
             case R.id.imageButtonTwenty:
-                pay=Float.parseFloat(payed);
-                pay+=20;
-                payed=Float.toString(pay);
+                pay=20;
                 break;
             case R.id.imageButtonTen:
-                pay=Float.parseFloat(payed);
-                pay+=10;
-                payed=Float.toString(pay);
+                pay=10;
                 break;
             case R.id.imageButtonFive:
-                pay=Float.parseFloat(payed);
-                pay+=5;
-                payed=Float.toString(pay);
+                pay=5;
                 break;
             case R.id.imageButtonTwo:
-                pay=Float.parseFloat(payed);
-                pay+=2;
-                payed=Float.toString(pay);
+                pay=2;
                 break;
             case R.id.imageButtonOne:
-                pay=Float.parseFloat(payed);
-                pay+=1;
-                payed=Float.toString(pay);
+                pay=1;
                 break;
             case R.id.imageButtonHalf:
-                pay=Float.parseFloat(payed);
-                pay+=0.5;
-                payed=Float.toString(pay);
+                pay= (float) 0.5;
                 break;
             case R.id.imageButtonTenAgorot:
-                pay=Float.parseFloat(payed);
-                pay+=0.1;
-                payed=Float.toString(pay);
+                pay=(float)0.1;
                 break;
             case R.id.buttonEnter:
-                //update database and print reciept and delete from open orders
-                break;
+
+listener.Calculate(Float.parseFloat(t),pay2);
+this.dismiss();
+return;
 
         }
 
 
-        editTextTotal.setText(payed);
+        Float p=Float.parseFloat(t);
+        p-=pay;
+        pay2+=pay;
+        t=p.toString();
+
+        editTextTotal.setText(format.format(p));
 
 
     }
+
+
+public String getPayed(){
+        return t;
+}
 
 
 

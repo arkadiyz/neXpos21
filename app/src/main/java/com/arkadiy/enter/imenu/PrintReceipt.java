@@ -24,7 +24,6 @@ public class PrintReceipt  {
     private String totalPrice="";
     private String totalStringName="סה\"כ";
     private String coinString = "ש\"ח";
-    private String StringOrderId = "";
     private String stringDateOpen = "נפתח ב ";
     private String stringDatePrint = "הודפס ב ";
     private String printData =  "";
@@ -48,15 +47,16 @@ public class PrintReceipt  {
     private int numberSize;
     private Order order;
     private boolean englishL = false;
+    private CashInformation cashInformation;
 
-    public PrintReceipt(Context ctx,Order order,String data) {
+    public PrintReceipt(Context ctx,Order order,String data,CashInformation cashInformation) {
         this.printerManager = PrinterManager_.getInstance_(ctx);
         this.order = order;
         this.product = order.getProducts();
         this.numberSize = 0;
         this.totalPrice = String.valueOf(order.getTotal());
         this.printData = data;
-
+        this.cashInformation = cashInformation;
         printTitel();
         printDate();
         // start print product
@@ -65,6 +65,7 @@ public class PrintReceipt  {
 
         // ~~~~~~~~~~~~~~print total price~~~~~~~~~~~~~~~~~~~~~
         // ~~~~~~~~~~~~~~print total price~~~~~~~~~~~~~~~~~~~~~
+
         printTotalPrice();
 
         //~~~~~~~~~~~~~~~~~~~~cut paper~~~~~~~~~~~~~~~~~~~~~~~~
@@ -73,6 +74,23 @@ public class PrintReceipt  {
         cutFunction();
 
     }
+
+    public PrintReceipt(String data,Context ctx,Order order,CashInformation cashInformation) {
+        this.printerManager = PrinterManager_.getInstance_(ctx);
+        this.order = order;
+        this.product = order.getProducts();
+        this.numberSize = 0;
+        this.totalPrice = String.valueOf(order.getTotal());
+        this.printData = data;
+
+
+
+
+
+    }
+
+
+
     private void printDate(){
         String str = hebrewString(this.stringDateOpen);
 
@@ -125,19 +143,19 @@ public class PrintReceipt  {
     }
     private void printTitel() {
         setBold();
-        this.string = checkWord(title);
-        this.string = centerLine(string);
-        this.string = endOfLine(this.string);
-        printerManager.printJob(new PrinterJob(this.string));
+        this.cashInformation.setCompanyName(checkWord(this.cashInformation.getCompanyName()));
+        this.cashInformation.setCompanyName(centerLine(this.cashInformation.getCompanyName()));
+        this.cashInformation.setCompanyName(endOfLine(this.cashInformation.getCompanyName()));
+        printerManager.printJob(new PrinterJob(this.cashInformation.getCompanyName()));
         removeBold();
         openDrawer();
 
-        this.address = checkWord(this.address);
-        this.address = endOfLine(this.address);
+        this.cashInformation.setCity( checkWord(this.cashInformation.getCity()));
+        this.cashInformation.setCity(endOfLine(this.cashInformation.getCity()));
         this.printerManager.printJob(new PrinterJob(this.address));
-        this.address2 = checkWord(this.address2);
-        this.hP = checkWord(this.hP);
-        this.printerManager.printJob(new PrinterJob(endOfLine(twoColumns(this.address2,this.hP))));
+        this.cashInformation.setStreet(checkWord(this.cashInformation.getStreet()));
+        this.cashInformation.setH_P(checkWord(this.cashInformation.getH_P()));
+        this.printerManager.printJob(new PrinterJob(endOfLine(twoColumns(this.cashInformation.getStreet(),this.cashInformation.getH_P()))));
 
         this.numberOrderId += String.valueOf(order.getIndex());
         this.numberOrderId = checkWord(this.numberOrderId);
@@ -361,6 +379,7 @@ public class PrintReceipt  {
 
         printerManager.printJob(new PrinterJob(boldStringStart));
     }
+
     private void removeBold(){
         boldStringEnd=new String(boldFinish);
         printerManager.printJob(new PrinterJob(boldStringEnd));
