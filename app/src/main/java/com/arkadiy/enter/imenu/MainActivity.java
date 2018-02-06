@@ -309,18 +309,6 @@ public class MainActivity extends AppCompatActivity implements  Callbacks,CashFr
 
         });
         orderItemsUpdater.start();
-
-//
-//        Fragment fragment=manager1.findFragmentById(R.id.fragment_cash);
-//        ScrollView scrollView=(ScrollView)findViewById(R.id.scrollViewItems);
-//
-//
-//        if(fragment==null){
-//            fragment=new CashFragment();
-//            scrollView.removeAllViews();
-
-//        }
-
         cashInformation=dataConfig.getCashInformation();
 
     }
