@@ -273,10 +273,10 @@ import java.util.List;
         int answer = 0;
         String str="";
         try {
-             str= "Select Number from Invoice_number";
+             str= "Select NumInvoice from In_num";
             Cursor cursor = mDatabase.rawQuery(str, null);
             if (cursor.moveToFirst()) {
-                answer = cursor.getInt(1);
+                answer = cursor.getInt(0);
                 str = "UPDATE In_num SET NumInvoice=NumInvoice+1";
                 mDatabase.execSQL(str);
 
