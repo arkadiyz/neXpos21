@@ -89,7 +89,6 @@ public class MainActivity extends AppCompatActivity implements  Callbacks,CashFr
     private ArrayAdapter<String> listAdapter;
 
     private static final String general = "כללי";
-    private Button btn_calc;
     private String numCalc;
     private TextView screenCalc;
     private ArrayList<Product> productList;
