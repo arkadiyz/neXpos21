@@ -14,6 +14,7 @@ public class Order {
     private String dateAndTime;
     private ArrayList<Product>products=null;
     private ArrayList<Payment>payments;
+    private float maam=0;
 
 
     public Order(int index,float total){
@@ -60,7 +61,7 @@ public class Order {
         for(Product p:products){
             t+=Float.parseFloat(p.getPrice());
         }
-        return t;
+        return (this.total=t);
     }
 
     public ArrayList<Product> getProducts(){
@@ -87,4 +88,12 @@ public class Order {
     }
 
 
+    public float getMaam()
+    {
+        maam=getTotal()*(float)0.17;
+        return this.maam;
+    }
+    public float getPriceBeforeTax(){
+        return (this.total-maam);
+    }
 }

@@ -50,6 +50,8 @@ public class PrintReceipt  {
     private CashInformation cashInformation;
     private String x;
     private String invoiceNum;
+    private float tax;
+    private float beforeTax;
 
     public PrintReceipt(Context ctx,Order order,String data,CashInformation cashInformation,String invoiceNum) {
         this.printerManager = PrinterManager_.getInstance_(ctx);
@@ -60,6 +62,8 @@ public class PrintReceipt  {
         this.printData = data;
         this.cashInformation = cashInformation;
         this.invoiceNum=invoiceNum;
+        this.tax=order.getMaam();
+        this.beforeTax=order.getPriceBeforeTax();
         printTitel();
         printDate();
         // start print product
