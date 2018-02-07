@@ -318,8 +318,27 @@ public Product getProductById(int itemId){
         }
 
 
+public ArrayList<Payment> getAllPaymentsBetweenTwoDates(String firstDate,String secondDate) {
+    String str = "select * from Payment where Date_Time between '" + firstDate + "' and '" + secondDate + "'";
+    Cursor cursor = mDatabase.rawQuery(str, null);
+    Payment payment;
+    ArrayList<Payment> payments = new ArrayList<>();
+    if (cursor.moveToFirst()) {
+        do {
+            String type = cursor.getString(1);
+            String date = cursor.getString(2);
+            float amount = cursor.getFloat(3);
+            int orderId = cursor.getInt(4);
 
 
+            payment = new Payment(type, amount, date, orderId);
+            payments.add(payment);
+
+        } while (cursor.moveToNext());
+
+    }
+    return payments;
+}
 
     }
 

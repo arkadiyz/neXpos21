@@ -420,7 +420,7 @@ public class MainActivity extends AppCompatActivity implements  Callbacks,CashFr
 
                 break;
             case R.id.buttonEnter:
-               Product pr= new Product(general);
+                Product pr= new Product(general);
                 addProductToListView2(pr);
                 calcString = "";
                 textViewScreenCalc.setText(calcString);
@@ -528,10 +528,10 @@ public class MainActivity extends AppCompatActivity implements  Callbacks,CashFr
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     private int addOrderToOrders(){
-        int ind=-1;
+        int lastOrderIndex=-1;
     String curTime=getDateTime();
-        ind=dataConfig.insertIntoOrders(curTime);
-        return ind;
+        lastOrderIndex=dataConfig.insertIntoOrders(curTime);
+        return lastOrderIndex;
     }
 
     public String getDateTime(){
@@ -851,12 +851,12 @@ public class MainActivity extends AppCompatActivity implements  Callbacks,CashFr
             String cash="מזומן";
             float change;
             Order current =orders.get(index);
-            orders.get(index).addPayment(cash,summ);
             float total=current.getTotal();
             int indexInData=current.getIndex();
             DateFormat timeFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
             timeFormat.setTimeZone(TimeZone.getTimeZone("Asia/Jerusalem"));
             String curTime = timeFormat.format(new Date());
+            current.addPayment(cash,summ,curTime,current.getIndex());
             dataConfig.createNewPayment(summ,curTime,indexInData);
                 dataConfig.updateStatusItem(indexInData);
                 dataConfig.updateStatusOrder(indexInData);
