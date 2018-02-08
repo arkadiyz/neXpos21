@@ -385,7 +385,7 @@ public String getLastZedDateTime(){
     String str="SELECT Date_Time FROM DohZed WHERE _id = (SELECT MAX(_id)  FROM DohZed)";
     Cursor cursor = mDatabase.rawQuery(str, null);
     cursor.moveToFirst();
-    if (cursor.getCount()==-1)
+    if (cursor.getCount()==0)
     {
         cursor.close();
         return null;
