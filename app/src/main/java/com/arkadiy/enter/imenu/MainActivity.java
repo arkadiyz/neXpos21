@@ -359,7 +359,7 @@ public class MainActivity extends AppCompatActivity implements  Callbacks,CashFr
                         // open
                         break;
                     case 1:
-                        // delete
+                        deleteProductFromListView(position);
                         break;
                 }
                 // false : close the menu; true : not close the menu
@@ -685,6 +685,52 @@ public class MainActivity extends AppCompatActivity implements  Callbacks,CashFr
             indexData=orders.get(index).getIndex();
             msg2.obj=p;
             handler2.sendMessage(msg2);
+
+        }catch(Exception ex)
+        {
+            ex.printStackTrace();
+        }
+
+
+
+    }
+
+    public void deleteProductFromListView(int  ind) {
+
+        Order current=orders.get(index);
+        String amount;
+//        String name=prod.getProductName();
+//        int id=prod.getItemId();
+//        Message msg=Message.obtain();
+//        Message msg2=Message.obtain();
+        int num=Integer.parseInt(current.getProducts().get(ind).getAmount());
+        try{
+            if(num>1){
+                num--;
+                amount=Integer.toString(num);
+               current.getProducts().get(ind).setAmount(amount);
+                productList.get(ind).setAmount(amount);
+                products2.get(ind).setAmount(amount);
+            }
+            else{
+                productList.remove(ind);
+                products2.remove(ind);
+                orders.get(index).removeFromProducts(ind);
+                listViewSummary.setSelection(adapter.getCount() - 1);
+
+            }
+
+//            adapter.remove(productList.get(ind));
+//            listViewSummary.setSelection(adapter.getCount() - 1);
+
+            textViewTotalNumber.setText(new DecimalFormat("##.##").format(orders.get(index).getTotal()));
+            listViewSummary.setAdapter(adapter);
+
+            dataConfig.deleteItemFromOrder(current.getIndex());//add to thread!!!!!!!!!!!!!!!!!!!!!!!!!!!NEED
+
+//            indexData=orders.get(index).getIndex();
+//            msg2.obj=p;
+//            handler2.sendMessage(msg2);
 
         }catch(Exception ex)
         {
@@ -1081,11 +1127,11 @@ public class MainActivity extends AppCompatActivity implements  Callbacks,CashFr
                 n++;
                 productList.get(i).setAmount(Integer.toString(n));
                 orders.get(index).getProducts().get(i).setAmount(Integer.toString(n));
-                num=p.getPrice();
-                pric=Float.parseFloat(num);
-                pric+=price;
-                productList.get(i).setPrice(Float.toString(pric));
-                orders.get(index).getProducts().get(i).setPrice(Float.toString(pric));
+//                num=p.getPrice();
+//                pric=Float.parseFloat(num);
+//                pric+=price;
+//                productList.get(i).setPrice(Float.toString(pric));
+//                orders.get(index).getProducts().get(i).setPrice(Float.toString(pric));
                 x=true;
 
             }

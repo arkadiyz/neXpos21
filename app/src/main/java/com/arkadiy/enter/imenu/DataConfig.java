@@ -266,6 +266,13 @@ public Product getProductById(int itemId){
 
     }
 
+    public void deleteItemFromOrder(int orderId){
+        String str="delete " +
+                "from   Order_items " +
+                "where _id = (select _id from Order_items where Order_id="+orderId+" limit 1)";
+        mDatabase.execSQL(str);
+
+    }
 
     public void insertPaymentIntoOrder(int indexOrder)
     {

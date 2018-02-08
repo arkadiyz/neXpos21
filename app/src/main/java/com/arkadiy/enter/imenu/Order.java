@@ -37,6 +37,9 @@ public class Order {
     public void addPayment(int type,float summ,String dateAndTime,int orderIndex,String cardCompany){
         payments.add(new Payment(type,summ,dateAndTime,orderIndex,cardCompany));
     }
+    public void removeFromProducts(int ind){
+        this.products.remove(ind);
+    }
 
     public String getDateAndTime()
     {
@@ -59,7 +62,8 @@ public class Order {
     public float getTotal(){
         float t= (float) 0.0;
         for(Product p:products){
-            t+=Float.parseFloat(p.getPrice());
+            int am=Integer.parseInt(p.getAmount());
+            t+=Float.parseFloat(p.getPrice())*am;
         }
         return (this.total=t);
     }
