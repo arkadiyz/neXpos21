@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbInterface;
 import android.hardware.usb.UsbManager;
@@ -37,6 +38,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.arkadiy.enter.imenu.Fragments.CashFragment;
+import com.baoyz.swipemenulistview.SwipeMenu;
+import com.baoyz.swipemenulistview.SwipeMenuCreator;
+import com.baoyz.swipemenulistview.SwipeMenuItem;
+import com.baoyz.swipemenulistview.SwipeMenuListView;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -58,7 +63,7 @@ public class MainActivity extends AppCompatActivity implements  Callbacks,CashFr
     private String calcString = "";
     private TextView textViewScreenCalc;
     private boolean ifHaveDot = false;
-    private ListView listViewSummary;
+    private SwipeMenuListView listViewSummary;
     private ArrayAdapter<String> listAdapter;
 
     private static final String general = "כללי";
@@ -131,7 +136,7 @@ public class MainActivity extends AppCompatActivity implements  Callbacks,CashFr
             }
         };
         textViewScreenCalc = (TextView) findViewById(R.id.textViewScreenCalc);
-        listViewSummary = (ListView) findViewById(R.id.listViewSummary);
+        listViewSummary = (SwipeMenuListView) findViewById(R.id.listViewSummary);
         productList = new ArrayList<Product>();
         products2 = new ArrayList<Product>();
         itemsList = new ArrayList<>();
@@ -307,6 +312,60 @@ public class MainActivity extends AppCompatActivity implements  Callbacks,CashFr
             }
         });
 
+        SwipeMenuCreator creator = new SwipeMenuCreator() {
+
+            @Override
+            public void create(SwipeMenu menu) {
+                // create "open" item
+                SwipeMenuItem openItem = new SwipeMenuItem(
+                        getApplicationContext());
+                // set item background
+                openItem.setBackground(new ColorDrawable(Color.rgb(0xC9, 0xC9,
+                        0xCE)));
+                // set item width
+                openItem.setWidth(listViewSummary.getWidth()/6);
+                // set item title
+                openItem.setTitle("Open");
+                // set item title fontsize
+                openItem.setTitleSize(18);
+                // set item title font color
+                openItem.setTitleColor(Color.WHITE);
+                // add to menu
+                menu.addMenuItem(openItem);
+
+                // create "delete" item
+                SwipeMenuItem deleteItem = new SwipeMenuItem(
+                        getApplicationContext());
+                // set item background
+                deleteItem.setBackground(new ColorDrawable(Color.rgb(0xF9,
+                        0x3F, 0x25)));
+                // set item width
+                deleteItem.setWidth(listViewSummary.getWidth()/6);
+                // set a icon
+                deleteItem.setIcon(R.drawable.delete_item);
+                // add to menu
+                menu.addMenuItem(deleteItem);
+            }
+        };
+
+// set creator
+        listViewSummary.setMenuCreator(creator);
+
+        listViewSummary.setOnMenuItemClickListener(new SwipeMenuListView.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(int position, SwipeMenu menu, int index) {
+                switch (index) {
+                    case 0:
+                        // open
+                        break;
+                    case 1:
+                        // delete
+                        break;
+                }
+                // false : close the menu; true : not close the menu
+                return false;
+            }
+        });
     }
 
     public void showCashDialog(){

@@ -86,7 +86,7 @@
 
             </RelativeLayout>
 
-            <ListView
+            <com.baoyz.swipemenulistview.SwipeMenuListView
 
 
 
@@ -101,7 +101,7 @@
                 >
 
 
-            </ListView>
+            </com.baoyz.swipemenulistview.SwipeMenuListView>
 
             <RelativeLayout
                 android:layout_width="match_parent"
