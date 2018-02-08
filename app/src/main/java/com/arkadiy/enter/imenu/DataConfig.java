@@ -243,8 +243,8 @@ public Product getProductById(int itemId){
     }
 
 
-    public void createNewPayment(float summ,String dateTime,int orderId){
-        String str = "INSERT INTO Payment (Payment_type, Date_Time, Summ, Order_id) Values ('Cash', '"+dateTime+"', "+summ+", "+orderId+")";
+    public void createNewPayment(float summ,String dateTime,int orderId,int type){
+        String str = "INSERT INTO Payment (Payment_type, Date_Time, Summ, Order_id) Values ("+type+", '"+dateTime+"', "+summ+", "+orderId+")";
         mDatabase.execSQL(str);
 
     }
@@ -312,7 +312,7 @@ public Product getProductById(int itemId){
 
             String cashId=getCashInformation().getCashId();
 
-        str=cashId+Integer.toString(answer);
+        str=cashId+"/"+Integer.toString(answer);
             return str;
 
         }
@@ -325,13 +325,14 @@ public ArrayList<Payment> getAllPaymentsBetweenTwoDates(String firstDate,String 
     ArrayList<Payment> payments = new ArrayList<>();
     if (cursor.moveToFirst()) {
         do {
-            String type = cursor.getString(1);
+            int type = cursor.getInt(1);
             String date = cursor.getString(2);
             float amount = cursor.getFloat(3);
             int orderId = cursor.getInt(4);
+            String cardCompany=cursor.getString(5);
 
 
-            payment = new Payment(type, amount, date, orderId);
+            payment = new Payment(type, amount, date, orderId,cardCompany);
             payments.add(payment);
 
         } while (cursor.moveToNext());
@@ -339,6 +340,81 @@ public ArrayList<Payment> getAllPaymentsBetweenTwoDates(String firstDate,String 
     }
     return payments;
 }
+    public ArrayList<Payment> getAllPayments() {
+        String str = "select * from Payment";
+        Cursor cursor = mDatabase.rawQuery(str, null);
+        Payment payment;
+        ArrayList<Payment> payments = new ArrayList<>();
+        if (cursor.moveToFirst()) {
+            do {
+                int type = cursor.getInt(1);
+                String date = cursor.getString(2);
+                float amount = cursor.getFloat(3);
+                int orderId = cursor.getInt(4);
+                String cardCompany=cursor.getString(5);
+
+
+                payment = new Payment(type, amount, date, orderId,cardCompany);
+                payments.add(payment);
+
+            } while (cursor.moveToNext());
+
+        }
+        return payments;
+    }
+
+
+public ArrayList<Payment>getZed(String dateAndTimeNow,Employee employee,String lastDate){
+
+        String str;
+
+
+        if(lastDate==null)
+        {
+            str="INSERT INTO DohZed (Date_Time, Employee_id) Values ('"+dateAndTimeNow+"',"+employee.getId()+")";
+            mDatabase.execSQL(str);
+            return getAllPayments();
+        }
+        str="INSERT INTO DohZed (Date_Time, Employee_id) Values ('"+dateAndTimeNow+"',"+employee.getId()+")";
+        mDatabase.execSQL(str);
+
+        return getAllPaymentsBetweenTwoDates(lastDate,dateAndTimeNow);
+}
+
+public String getLastZedDateTime(){
+    String str="SELECT Date_Time FROM DohZed WHERE _id = (SELECT MAX(_id)  FROM DohZed)";
+    Cursor cursor = mDatabase.rawQuery(str, null);
+    cursor.moveToFirst();
+    if (cursor.getCount()==-1)
+    {
+        cursor.close();
+        return null;
+    }else
+        return cursor.getString(0);
+
+}
+
+public ArrayList<Payment> getDohX(String dateStartDoh,String dateTimeNow,Employee employee){
+    String dateStart=dateStartDoh;
+
+    if(dateStart==null)
+        dateStart=getFirstOrderClosedDate();
+
+    String str="INSERT INTO DohX (Date_Time, Employee_id) Values ('"+dateTimeNow+"',"+employee.getId()+")";
+    mDatabase.execSQL(str);
+
+    return getAllPaymentsBetweenTwoDates(dateStart,dateTimeNow);
+
+}
+
+
+public String getFirstOrderClosedDate(){
+    String str="select Date_Time from Orders where Status=1 order by Date_Time asc limit 1";
+    Cursor cursor = mDatabase.rawQuery(str, null);
+    str=cursor.getString(0);
+    return str;
+}
+
 
     }
 

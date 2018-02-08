@@ -558,15 +558,19 @@
                 <Button
                     android:layout_width="match_parent"
                     android:layout_height="80dp"
-                    android:text="Fast Btn"
+                    android:text="דוחX"
+                    android:id="@+id/dohX"
+                    android:onClick="calc_onClick"
                     android:layout_marginTop="-1dip"
                     android:layout_marginBottom="-10dip"/>
                 <Button
                     android:layout_width="match_parent"
+                    android:id="@+id/dohZ"
                     android:layout_height="80dp"
-                    android:text="Fast Btn"
+                    android:text="דוח Z"
                     android:layout_marginTop="-1dip"
-                    android:layout_marginBottom="-10dip"/>
+                    android:layout_marginBottom="-10dip"
+                    android:onClick="calc_onClick"/>
                 <Button
                     android:layout_width="match_parent"
                     android:layout_height="80dp"

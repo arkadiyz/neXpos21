@@ -1,12 +1,7 @@
 package com.arkadiy.enter.imenu;
-import android.app.Dialog;
 import android.app.ProgressDialog;
-import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.AssetManager;
-import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
@@ -21,65 +16,42 @@ import android.os.Looper;
 import android.os.Message;
 
 import android.support.annotation.RequiresApi;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
-import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.GridLayout;
-import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.ScrollView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.arkadiy.enter.imenu.Fragments.CashFragment;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 
 import java.io.OutputStream;
-import java.security.PrivateKey;
-import java.sql.Time;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.Scanner;
 import java.util.TimeZone;
-import java.util.concurrent.TimeUnit;
-
 
 
 public class MainActivity extends AppCompatActivity implements  Callbacks,CashFragment.CashFragmentInteractionListener,CalculateChangeListener {
@@ -425,6 +397,16 @@ public class MainActivity extends AppCompatActivity implements  Callbacks,CashFr
                 calcString = "";
                 textViewScreenCalc.setText(calcString);
                 ifHaveDot = false;
+
+                break;
+
+                case R.id.dohZ:
+               printDohZed();
+
+                break;
+
+            case R.id.dohX:
+                printDohX();
 
                 break;
         }
@@ -845,34 +827,120 @@ public class MainActivity extends AppCompatActivity implements  Callbacks,CashFr
     }
 
 
-    public void payCash(float summ){
+    public void payCash(float summ) {
 
-        try{
-            String cash="מזומן";
+        try {
+            int cash = 1;
             float change;
-            Order current =orders.get(index);
-            float total=current.getTotal();
-            int indexInData=current.getIndex();
+            Order current = orders.get(index);
+            float total = current.getTotal();
+            int indexInData = current.getIndex();
             DateFormat timeFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
             timeFormat.setTimeZone(TimeZone.getTimeZone("Asia/Jerusalem"));
             String curTime = timeFormat.format(new Date());
-            current.addPayment(cash,summ,curTime,current.getIndex());
-            dataConfig.createNewPayment(summ,curTime,indexInData);
-                dataConfig.updateStatusItem(indexInData);
-                dataConfig.updateStatusOrder(indexInData);
-                //open draw!!!!!!!!!!!
+            current.addPayment(cash, summ, curTime, current.getIndex(), null);
+            dataConfig.createNewPayment(summ, curTime, indexInData, cash);
+            dataConfig.updateStatusItem(indexInData);
+            dataConfig.updateStatusOrder(indexInData);
+            //open draw!!!!!!!!!!!
 
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+    }
+        public Doh getDohZed(Employee employee){
+
+            Doh doh =new Doh();
+            String dateTimeNow=getDateTime();
+            String dateTimeLastZed=dataConfig.getLastZedDateTime();
+            float cash=0;
+            float visa=0;
+            ArrayList<Payment>paymentDohZed=dataConfig.getZed(dateTimeNow,employee,dateTimeLastZed);
+           for(Payment p:paymentDohZed){
+               float summ=p.getAmount();
+               switch(p.getType()) {
+                   case 1:
+                       doh.addToCash(p);
+                       doh.addToTotalCash( summ);
+                       break;
+                   case 2:
+                       doh.addToVisa(p);
+                       doh.addToTotalVisa(summ);
+                       break;
+                   case 3:
+                       doh.addToCards(p);
+                       break;
+
+               }
+               doh.addToTotal(summ);
+           }
+           if(dateTimeLastZed!=null)
+           doh.setStartDateTime(dateTimeLastZed);
+            doh.setFinishDateTime(dateTimeNow);
+
+         return doh;
+    }
+
+    public void printDohZed(){
+            try{
+                Doh doh =getDohZed(new Employee("Vadim",1));
+                doh.getCards();
+                //print doh zed
+
+            }catch(Exception ex){
+                ex.printStackTrace();
+            }
+
+    }
+
+    public void printDohX(){
+        try{
+            Doh doh =getDohX(new Employee("Vadim",1));
+            doh.getCards();
+            //print doh X
 
         }catch(Exception ex){
             ex.printStackTrace();
         }
 
-
-
-
-
-
     }
+
+
+    public Doh getDohX(Employee employee){
+
+        Doh doh =new Doh();
+        String dateStart=dataConfig.getLastZedDateTime();
+        String dateTimeNow=getDateTime();
+        float cash=0;
+        float visa=0;
+        ArrayList<Payment>paymentDoh=dataConfig.getDohX(dateStart,dateTimeNow,employee);
+        for(Payment p:paymentDoh){
+            float summ=p.getAmount();
+            switch(p.getType()) {
+                case 1:
+                    doh.addToCash(p);
+                    doh.addToTotalCash( summ);
+                    break;
+                case 2:
+                    doh.addToVisa(p);
+                    doh.addToTotalVisa(summ);
+                    break;
+                case 3:
+                    doh.addToCards(p);
+                    break;
+
+            }
+            doh.addToTotal(summ);
+        }
+        if(dateStart!=null)
+            doh.setStartDateTime(dateStart);
+        doh.setFinishDateTime(dateTimeNow);
+
+        return doh;
+    }
+
 
     @Override
     public void onCashFragmentInteraction(Uri uri) {

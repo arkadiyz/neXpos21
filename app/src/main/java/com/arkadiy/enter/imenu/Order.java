@@ -34,8 +34,8 @@ public class Order {
 
 
     }
-    public void addPayment(String type,float summ,String dateAndTime,int orderIndex){
-        payments.add(new Payment(type,summ,dateAndTime,orderIndex));
+    public void addPayment(int type,float summ,String dateAndTime,int orderIndex,String cardCompany){
+        payments.add(new Payment(type,summ,dateAndTime,orderIndex,cardCompany));
     }
 
     public String getDateAndTime()
