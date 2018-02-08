@@ -912,6 +912,9 @@ public class MainActivity extends AppCompatActivity implements  Callbacks,CashFr
 
         Doh doh =new Doh();
         String dateStart=dataConfig.getLastZedDateTime();
+        if(dateStart==null){
+            dateStart=dataConfig.getFirstOrderClosedDate();
+        }
         String dateTimeNow=getDateTime();
         float cash=0;
         float visa=0;

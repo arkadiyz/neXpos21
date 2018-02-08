@@ -395,15 +395,16 @@ public String getLastZedDateTime(){
 }
 
 public ArrayList<Payment> getDohX(String dateStartDoh,String dateTimeNow,Employee employee){
-    String dateStart=dateStartDoh;
 
-    if(dateStart==null)
-        dateStart=getFirstOrderClosedDate();
+
+
+    if(dateStartDoh==null)
+        return null;
 
     String str="INSERT INTO DohX (Date_Time, Employee_id) Values ('"+dateTimeNow+"',"+employee.getId()+")";
     mDatabase.execSQL(str);
 
-    return getAllPaymentsBetweenTwoDates(dateStart,dateTimeNow);
+    return getAllPaymentsBetweenTwoDates(dateStartDoh,dateTimeNow);
 
 }
 
@@ -411,6 +412,12 @@ public ArrayList<Payment> getDohX(String dateStartDoh,String dateTimeNow,Employe
 public String getFirstOrderClosedDate(){
     String str="select Date_Time from Orders where Status=1 order by Date_Time asc limit 1";
     Cursor cursor = mDatabase.rawQuery(str, null);
+    cursor.moveToFirst();
+    if (cursor.getCount()==0)
+    {
+        cursor.close();
+        return null;
+    }else
     str=cursor.getString(0);
     return str;
 }
