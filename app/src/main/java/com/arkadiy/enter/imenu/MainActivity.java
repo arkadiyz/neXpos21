@@ -387,6 +387,7 @@ public class MainActivity extends AppCompatActivity implements  Callbacks,CashFr
                 {
                     bundleTotal.putString("total",textViewTotalNumber.getText().toString());
                     showCashDialog();
+
                 }
 
                 break;
@@ -406,9 +407,7 @@ public class MainActivity extends AppCompatActivity implements  Callbacks,CashFr
 
             case R.id.dohX:
                 printDohX();
-                break;
-            case R.id.buttonCopyReceipt:
-                printReceiptTemp();
+
                 break;
         }
 
@@ -421,9 +420,10 @@ public class MainActivity extends AppCompatActivity implements  Callbacks,CashFr
     }
 
     private void printReceiptTemp(){
-//        if(index==-1)
-//            index=0;
-        printReceipt = new PrintReceipt(getDateTime(),this,orders.get(index),cashInformation,dataConfig.getMasKabala());
+        if(index==-1)
+            index=0;
+
+        printReceipt = new PrintReceipt(getDateTime(),this,orders.get(index),cashInformation);
     }
 
     //=======================================================
@@ -534,40 +534,55 @@ public class MainActivity extends AppCompatActivity implements  Callbacks,CashFr
                     num=0;
                     index=0;
                 }else{
+
                     index=v.getId();
                 }
+
                 int size= orders.get(num).getProducts().size();
                 ArrayList<Product> prod=orders.get(num).getProducts();
                 for (int i = 0; i <size; i++) {
                     products2.add(prod.get(i));
                 }
             }
+
             adapter.clear();
             adapter.notifyDataSetChanged();
             textViewTotalNumber.setText("0");
+
             if(!products2.isEmpty()){
                 for (int i = 0; i < products2.size(); i++) {
                     adapter.insert(products2.get(i),i);
                 }
                 textViewTotalNumber.setText(new DecimalFormat("##.##").format(orders.get(index).getTotal()));
+
                 adapter.notifyDataSetChanged();
             }
+
         }catch(Exception ex){
             ex.printStackTrace();
         }
+
     }
+
+
     private void openNewButtonOrders(){
         Button temp=new Button(this);
+
         temp.setLayoutParams(new ViewGroup.LayoutParams(butWidthOrders,linearLayoutOrders.getHeight()));
+
         temp.setId(COLORCOUNT);
         Order order=new Order(indexData,COLORCOUNT,getDateTime());
         orders.add(order);
+
         temp.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View v) {
                 clickedOrderButton(v);
             }
         });
+
+
         temp.setBackgroundColor(colors[COLORCOUNT++]);
         linearLayoutOrders.addView(temp);
         plus.setText("+");
@@ -575,37 +590,52 @@ public class MainActivity extends AppCompatActivity implements  Callbacks,CashFr
         linearLayoutOrders.addView(plus);
         plus.setId(-1);
     }
+
+
+
     //========================================================
+
+
     public void addProductToListView2(Product prod) {
+
         String price = prod.getPrice();
         String name=prod.getProductName();
         int id=prod.getItemId();
         Message msg=Message.obtain();
         Message msg2=Message.obtain();
+
         try{
             if(flag2){
                 flag2=false;
                 openNewButtonOrders();
                 orderUpdater.run();
             }
+
             if(!groupAllItems(name,price)){
                 p = new Product(name, "1", price,id);
                 productList.add(p);
                 products2.add(p);
                 orders.get(index).addToProducts(p);
             }
+
+
+
             listViewSummary.setAdapter(adapter);
-            textViewTotalNumber.setText(new DecimalFormat("##.00").format(orders.get(index).getTotal()));
+            textViewTotalNumber.setText(new DecimalFormat("##.##").format(orders.get(index).getTotal()));
             listViewSummary.setSelection(adapter.getCount() - 1);
             indexData=orders.get(index).getIndex();
-            orders.get(index).setTotalAmount(1);
             msg2.obj=p;
             handler2.sendMessage(msg2);
+
         }catch(Exception ex)
         {
             ex.printStackTrace();
         }
+
+
+
     }
+
     //=======================================================
     private boolean copyDatabase(Context context) {
         try {
@@ -634,6 +664,7 @@ public class MainActivity extends AppCompatActivity implements  Callbacks,CashFr
             return false;
         }
     }
+
     //=======================================================
     public float setSizeInButton(int dp) {
         Resources resources = getResources();
@@ -643,11 +674,13 @@ public class MainActivity extends AppCompatActivity implements  Callbacks,CashFr
 
         return pixels;
     }
+
     //=======================================================
     public void getCategoryProductsList(String name) {
         itemsList = dataConfig.getProductsList(name);
         setItemsNames();
     }
+
     //=======================================================
     public void setItemsNames() {
         int length = itemsList.size();
@@ -657,6 +690,7 @@ public class MainActivity extends AppCompatActivity implements  Callbacks,CashFr
 
         }
     }
+
     //=======================================================
     public String getPrice(String itemName) {
         String p = null;
@@ -672,6 +706,7 @@ public class MainActivity extends AppCompatActivity implements  Callbacks,CashFr
 
         return p;
     }
+
     //=======================================================
     public String getBarcode(String itemName) {
         String b = null;
@@ -686,6 +721,7 @@ public class MainActivity extends AppCompatActivity implements  Callbacks,CashFr
         return b;
 
     }
+
     //=======================================================
     private void getSize() {
 
@@ -699,6 +735,7 @@ public class MainActivity extends AppCompatActivity implements  Callbacks,CashFr
         adjustSize();
 
     }
+
     //=======================================================
     private void adjustSize() {
 
@@ -717,6 +754,7 @@ public class MainActivity extends AppCompatActivity implements  Callbacks,CashFr
         }
 
     }
+
     private void adjustSizeButtonOrders() {
 
         if (sizeScreen > 10) {
@@ -731,7 +769,11 @@ public class MainActivity extends AppCompatActivity implements  Callbacks,CashFr
         }
 
     }
+
     //=======================================================
+
+
+
     @Override
     public void onAboutToStart() {
 //        progressDialog=new ProgressDialog(this);
@@ -739,6 +781,7 @@ public class MainActivity extends AppCompatActivity implements  Callbacks,CashFr
 //        progressDialog.setMessage("Please Wait...");
 //        progressDialog.show();
     }
+
     @Override
     public void onSuccess(String downloadedText) {
 
@@ -752,31 +795,38 @@ public class MainActivity extends AppCompatActivity implements  Callbacks,CashFr
 
 
     }
+
     @Override
     public void onReportProgress(int progress) {
 
     }
+
     @Override
     public void onError(int httpStatusCode, String errorMessage) {
         progressDialog.dismiss();
 
         int x = httpStatusCode;
     }
+
     @Override
     protected void onResume() {
         super.onResume();
         printerManager.registerReceivers();
     }
+
     @Override
     protected void onDestroy() {
         printerManager.unRegisterReceivers();
         super.onDestroy();
     }
+
     @Override
     protected void onPause() {
         printerManager.unRegisterReceivers();
         super.onPause();
     }
+
+
     public void payCash(float summ) {
 
         try {
@@ -798,6 +848,7 @@ public class MainActivity extends AppCompatActivity implements  Callbacks,CashFr
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+
     }
         public Doh getDohZed(Employee employee){
 
@@ -831,6 +882,7 @@ public class MainActivity extends AppCompatActivity implements  Callbacks,CashFr
 
          return doh;
     }
+
     public void printDohZed(){
             try{
                 Doh doh =getDohZed(new Employee("Vadim",1));
@@ -842,6 +894,7 @@ public class MainActivity extends AppCompatActivity implements  Callbacks,CashFr
             }
 
     }
+
     public void printDohX(){
         try{
             Doh doh =getDohX(new Employee("Vadim",1));
@@ -853,6 +906,8 @@ public class MainActivity extends AppCompatActivity implements  Callbacks,CashFr
         }
 
     }
+
+
     public Doh getDohX(Employee employee){
 
         Doh doh =new Doh();
@@ -885,11 +940,15 @@ public class MainActivity extends AppCompatActivity implements  Callbacks,CashFr
 
         return doh;
     }
+
+
     @Override
     public void onCashFragmentInteraction(Uri uri) {
 
 
     }
+
+
     @Override
     public void Calculate(float change,float payed) {
         String masKabalaMakor="";
@@ -898,8 +957,10 @@ public class MainActivity extends AppCompatActivity implements  Callbacks,CashFr
             payCash(payed+change);
             Toast.makeText(this,"עודף"+change,Toast.LENGTH_LONG).show();
             masKabalaMakor=dataConfig.getMasKabala();
-            orders.get(index).getPament(index).setChange(change);
             printReceipt(masKabalaMakor);
+
+
+
             orders.remove(index);
             adapter.clear();
             linearLayoutOrders.removeViewInLayout(linearLayoutOrders.findViewById(index));
@@ -922,6 +983,8 @@ public class MainActivity extends AppCompatActivity implements  Callbacks,CashFr
                 }
                 COLORCOUNT-=1;
             }
+
+
             if(index<=orders.size()-1)
             {
 
@@ -932,8 +995,13 @@ public class MainActivity extends AppCompatActivity implements  Callbacks,CashFr
 
                 }
             }
+
+
         }
+
+
     }
+
     public boolean groupAllItems(String name,String price2){
         String num;
         int n;
