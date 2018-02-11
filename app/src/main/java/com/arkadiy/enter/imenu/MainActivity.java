@@ -229,7 +229,7 @@ public class MainActivity extends AppCompatActivity implements  Callbacks,CashFr
 
         }
 
-        s = "ארקדי הלך לניורופידבק ויחזור עוד איזה שעה וחצי";
+
 
         this.printerManager = PrinterManager_.getInstance_(this);
         ServerUpdate serverUpdate=new ServerUpdate(this);
@@ -409,7 +409,12 @@ public class MainActivity extends AppCompatActivity implements  Callbacks,CashFr
                 printDohX();
 
                 break;
+            case R.id.buttonCopyReceipt:
+                printReceiptTemp();
+                break;
+
         }
+
 
     }
     private void printReceipt(String str){
@@ -420,10 +425,10 @@ public class MainActivity extends AppCompatActivity implements  Callbacks,CashFr
     }
 
     private void printReceiptTemp(){
-        if(index==-1)
-            index=0;
+        if(orders.size()>0)
+            printReceipt = new PrintReceipt(getDateTime(),this,orders.get(index),cashInformation,dataConfig.getMasKabala());
 
-        printReceipt = new PrintReceipt(getDateTime(),this,orders.get(index),cashInformation);
+
     }
 
     //=======================================================
@@ -553,7 +558,7 @@ public class MainActivity extends AppCompatActivity implements  Callbacks,CashFr
                 for (int i = 0; i < products2.size(); i++) {
                     adapter.insert(products2.get(i),i);
                 }
-                textViewTotalNumber.setText(new DecimalFormat("##.##").format(orders.get(index).getTotal()));
+                textViewTotalNumber.setText(new DecimalFormat("##.00").format(orders.get(index).getTotal()));
 
                 adapter.notifyDataSetChanged();
             }
@@ -621,7 +626,7 @@ public class MainActivity extends AppCompatActivity implements  Callbacks,CashFr
 
 
             listViewSummary.setAdapter(adapter);
-            textViewTotalNumber.setText(new DecimalFormat("##.##").format(orders.get(index).getTotal()));
+            textViewTotalNumber.setText(new DecimalFormat("##.00").format(orders.get(index).getTotal()));
             listViewSummary.setSelection(adapter.getCount() - 1);
             indexData=orders.get(index).getIndex();
             msg2.obj=p;
@@ -958,9 +963,7 @@ public class MainActivity extends AppCompatActivity implements  Callbacks,CashFr
             Toast.makeText(this,"עודף"+change,Toast.LENGTH_LONG).show();
             masKabalaMakor=dataConfig.getMasKabala();
             printReceipt(masKabalaMakor);
-
-
-
+            orders.get(index).getPament(index).setChange(change);
             orders.remove(index);
             adapter.clear();
             linearLayoutOrders.removeViewInLayout(linearLayoutOrders.findViewById(index));

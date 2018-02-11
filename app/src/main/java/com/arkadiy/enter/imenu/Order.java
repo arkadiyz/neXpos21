@@ -102,11 +102,12 @@ public class Order {
         this.maam = Float.parseFloat(formatter.format(maam=getTotal()*(float)0.17));
         return this.maam;
     }
-    public float getPriceBeforeTax(){
-        return (this.total-maam);
+    public float getPriceBeforeTax()
+    {
+        NumberFormat formatter = new DecimalFormat("##.00");
+        return Float.parseFloat(formatter.format(this.total-maam));
     }
-    public int getTotalAmount() {
-        return totalAmount;
+    public int getTotalAmount() {return totalAmount;
     }
 
     public void setTotalAmount(int totalAmount) {
