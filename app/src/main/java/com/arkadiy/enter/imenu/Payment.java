@@ -10,10 +10,13 @@ public class Payment {
     private String date;
     private int orderId;
     private String cardCompany;
+    private float change = 0;
+
 
     public Payment(int typePayment, float amountPayed, String date, int orderId, String cardCompany){
         type=typePayment;
         amount=amountPayed;
+
         this.date=date;
         this.orderId=orderId;
         this.cardCompany=cardCompany;
@@ -59,4 +62,8 @@ public class Payment {
     public void setCardCompany(String cardCompany) {
         this.cardCompany = cardCompany;
     }
+
+    public float getChange() {return change;}
+
+    public void setChange(float change) {this.change = Math.abs(change);}
 }

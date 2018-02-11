@@ -83,7 +83,7 @@ private CalculateChangeListener listener;
             oneShekel=(ImageButton)v.findViewById(R.id.imageButtonOne);
             halfShekel=(ImageButton)v.findViewById(R.id.imageButtonHalf);
             tenAgorot=(ImageButton)v.findViewById(R.id.imageButtonTenAgorot);
-            format=new DecimalFormat("##.##");
+            format=new DecimalFormat("##.00");
 
         }catch(Exception ex){
             ex.printStackTrace();

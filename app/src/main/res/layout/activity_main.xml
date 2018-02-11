@@ -552,7 +552,9 @@
                 <Button
                     android:layout_width="match_parent"
                     android:layout_height="80dp"
-                    android:text="Fast Btn"
+                    android:text="העתק קבלה"
+                    android:onClick="calc_onClick"
+                    android:id="@+id/buttonCopyReceipt"
                     android:layout_marginTop="-1dip"
                     android:layout_marginBottom="-10dip"/>
                 <Button

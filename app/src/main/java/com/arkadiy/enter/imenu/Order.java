@@ -1,5 +1,7 @@
 package com.arkadiy.enter.imenu;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 
 /**
@@ -15,9 +17,11 @@ public class Order {
     private ArrayList<Product>products=null;
     private ArrayList<Payment>payments;
     private float maam=0;
+    private int totalAmount=0;
 
 
-    public Order(int index,float total){
+
+    public Order(int index, float total){
         this.index=index;
         this.total=total;
         this.products=new ArrayList<>();
@@ -90,10 +94,29 @@ public class Order {
 
     public float getMaam()
     {
-        maam=getTotal()*(float)0.17;
+        NumberFormat formatter = new DecimalFormat("##.00");
+        this.maam = Float.parseFloat(formatter.format(maam=getTotal()*(float)0.17));
         return this.maam;
     }
     public float getPriceBeforeTax(){
         return (this.total-maam);
     }
+    public int getTotalAmount() {
+        return totalAmount;
+    }
+
+    public void setTotalAmount(int totalAmount) {
+        this.totalAmount += totalAmount;
+    }
+    public ArrayList<Payment> getPaments()
+    {
+        return this.payments;
+    }
+    public Payment getPament(int index)
+    {
+        return this.payments.get(index);
+    }
+
+
+
 }

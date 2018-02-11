@@ -1,5 +1,8 @@
 package com.arkadiy.enter.imenu;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+
 /**
  * Created by Arkadiy on 1/4/2018.
  */
@@ -17,7 +20,8 @@ public class Product {
     public Product(String productName, String amount, String price,String barcode,String path,int id) {
         this.productName = productName;
         this.amount = amount;
-        this.price = price;
+        NumberFormat formatter = new DecimalFormat("##.00");
+        this.price = formatter.format(Double.parseDouble(price));
         this.barcode=barcode;
         this.picPath=path;
         this.ig_id=id;
@@ -28,7 +32,8 @@ public class Product {
 
     public Product(String productName, String price,String barcode,String path,int id,int itemId) {
         this.productName = productName;
-        this.price = price;
+        NumberFormat formatter = new DecimalFormat("##.00");
+        this.price = formatter.format(Double.parseDouble(price));
         this.barcode=barcode;
         this.picPath=path;
         this.ig_id=id;
@@ -38,7 +43,8 @@ public class Product {
     public Product(String productName, String amount, String price,int id) {
         this.productName = productName;
         this.amount = amount;
-        this.price = price;
+        NumberFormat formatter = new DecimalFormat("##.00");
+        this.price = formatter.format(Double.parseDouble(price));
         this.itemId=id;
     }
 
@@ -73,7 +79,8 @@ public class Product {
     }
 
     public void setPrice(String price) {
-        this.price = price;
+        NumberFormat formatter = new DecimalFormat("##.00");
+        this.price = formatter.format(Double.parseDouble(price));
     }
 
     public String getBarcode()
@@ -97,4 +104,5 @@ public class Product {
     public int getItemId(){
         return this.itemId;
     }
+
 }
